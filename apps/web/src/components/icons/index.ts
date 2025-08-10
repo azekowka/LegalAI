@@ -8,6 +8,7 @@ export { GoogleCloudIcon } from "./google-cloud-icon";
 export { GoogleDriveIcon } from "./google-drive-icon";
 export { GoogleIcon } from "./google-icon";
 export { ICloudIcon } from "./icloud-icon";
+export { LanguagesIcon } from "./languages-icon";
 export { LogoIcon } from "./logo-icon";
 export { MicrosoftIcon } from "./microsoft-icon";
 export { OneDriveIcon } from "./onedrive-icon";

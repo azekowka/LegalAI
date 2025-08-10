@@ -1,10 +1,9 @@
 "use client";
 
-import { DiscordIcon, GitHubIcon, LogoIcon, XPlatformIcon } from "@/components/icons";
+import { DiscordIcon, GitHubIcon, LanguagesIcon, LogoIcon, XPlatformIcon } from "@/components/icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
 import Link from "next/link";
 
 export default function Header() {
@@ -21,13 +20,13 @@ export default function Header() {
 			<div className="flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" asChild aria-label="Contributors" className="h-9 w-9">
+						<Button variant="ghost" asChild aria-label="Languages" className="h-9 w-9">
 							<Link href="#">
-								<Users className="h-5 w-5" />
+								<LanguagesIcon size={20} />
 							</Link>
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>Contributors</TooltipContent>
+					<TooltipContent>Languages</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>

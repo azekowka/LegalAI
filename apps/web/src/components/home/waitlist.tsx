@@ -31,7 +31,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
 			setEmailError("");
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				setEmailError(error.errors[0].message);
+				setEmailError(error.issues[0].message);
 				return;
 			}
 		}

@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+- Исправлена работа theme toggle в header - добавлен ThemeProvider в layout.tsx
+- Теперь переключение между светлой и темной темой работает корректно
+
 ### Changed
 - Удалена вся логика waitlist из компонента WaitlistForm
 - Оставлен только UI компонент без функциональности

@@ -9,7 +9,7 @@ export function useWaitlist() {
   const addToWaitlist = async (email: string) => {
     setIsLoading(true);
     try {
-      // Проверяем, есть ли уже такой email
+      // Check if email already exists
       const { data: existingEmail } = await supabase
         .from('waitlist')
         .select('email')
@@ -17,27 +17,27 @@ export function useWaitlist() {
         .single();
 
       if (existingEmail) {
-        toast.error('Этот email уже добавлен в список ожидания');
+        toast.error('This email is already on the waitlist');
         return false;
       }
 
-      // Добавляем новый email
+      // Add new email
       const { error } = await supabase
         .from('waitlist')
         .insert([{ email }]);
 
       if (error) {
-        console.error('Ошибка при добавлении в waitlist:', error);
-        toast.error('Произошла ошибка при добавлении в список ожидания');
+        console.error('Error adding to waitlist:', error);
+        toast.error('An error occurred while adding to the waitlist');
         return false;
       }
 
-      toast.success('Вы успешно добавлены в список ожидания!');
-      await getWaitlistCount(); // Обновляем счетчик
+      toast.success('You have been successfully added to the waitlist!');
+      await getWaitlistCount(); // Update counter
       return true;
     } catch (error) {
-      console.error('Ошибка:', error);
-      toast.error('Произошла ошибка при добавлении в список ожидания');
+      console.error('Error:', error);
+      toast.error('An error occurred while adding to the waitlist');
       return false;
     } finally {
       setIsLoading(false);
@@ -51,13 +51,13 @@ export function useWaitlist() {
         .select('*', { count: 'exact', head: true });
 
       if (error) {
-        console.error('Ошибка при получении количества:', error);
+        console.error('Error getting count:', error);
         return;
       }
 
       setCount(count || 0);
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Error:', error);
     }
   };
 

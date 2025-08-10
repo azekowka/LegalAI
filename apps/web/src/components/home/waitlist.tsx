@@ -11,7 +11,7 @@ interface WaitlistFormProps {
 	className?: string;
 }
 
-const emailSchema = z.string().email("Введите корректный email адрес");
+const emailSchema = z.string().email("Please enter a valid email address");
 
 export function WaitlistForm({ className }: WaitlistFormProps) {
 	const { addToWaitlist, getWaitlistCount, isLoading, count } = useWaitlist();
@@ -64,13 +64,13 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
 					type="submit"
 					disabled={isLoading || !email.trim()}
 				>
-					{isLoading ? "Добавление..." : "Присоединиться"}
+					{isLoading ? "Adding..." : "Join Waitlist"}
 				</Button>
 			</form>
 			<div className="relative mt-3 flex flex-row items-center justify-center gap-3 text-sm sm:text-base">
 				<span className="size-2 animate-pulse rounded-full bg-green-600 dark:bg-green-400" />
 				<span className="absolute left-0 size-2 animate-pulse rounded-full bg-green-600 blur-xs dark:bg-green-400" />
-				{count} {count === 1 ? 'человек уже присоединился' : 'людей уже присоединились'} к списку ожидания
+				{count} {count === 1 ? 'person has already' : 'people have already'} joined the waitlist
 			</div>
 		</div>
 	);

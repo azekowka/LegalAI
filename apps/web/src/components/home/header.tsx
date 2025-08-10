@@ -22,7 +22,7 @@ export default function Header() {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" asChild aria-label="Contributors" className="h-9 w-9">
-							<Link href="/contributors">
+							<Link href="#">
 								<Users className="h-5 w-5" />
 							</Link>
 						</Button>
@@ -32,7 +32,7 @@ export default function Header() {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" aria-label="Discord" className="h-9 w-9">
-							<a href="https://discord.gg/c9nWy26ubK" target="_blank" rel="noopener noreferrer">
+							<a href="#" target="_blank" rel="noopener noreferrer">
 								<DiscordIcon />
 							</a>
 						</Button>
@@ -42,7 +42,7 @@ export default function Header() {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" asChild className="h-9 w-9">
-							<a href="https://github.com/nimbusdotstorage/Nimbus" target="_blank" rel="noopener noreferrer">
+							<a href="#" target="_blank" rel="noopener noreferrer">
 								<GitHubIcon />
 							</a>
 						</Button>
@@ -52,7 +52,7 @@ export default function Header() {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" aria-label="X (Twitter)" className="h-9 w-9">
-							<a href="https://x.com/nimbusdotcloud" target="_blank" rel="noopener noreferrer">
+							<a href="#" target="_blank" rel="noopener noreferrer">
 								<XPlatformIcon />
 							</a>
 						</Button>

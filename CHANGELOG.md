@@ -14,10 +14,15 @@
 - Обработка ошибок и уведомления пользователя
 - SQL скрипт для создания таблицы waitlist в Supabase
 - Переменные окружения для Supabase в .env.example
+- Индикатор статуса API в footer с автоматической проверкой каждые 30 секунд
+- Компонент HealthStatus для отображения состояния backend API
+- Health check endpoint в tRPC роутере
 
 ### Fixed
 - Исправлена работа theme toggle в header - добавлен ThemeProvider в layout.tsx
 - Теперь переключение между светлой и темной темой работает корректно
+- Исправлена настройка tRPC клиента для корректной работы с React hooks
+- Обновлен tRPC Provider в компоненте Providers для правильной инициализации
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

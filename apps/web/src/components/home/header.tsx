@@ -18,6 +18,9 @@ export default function Header() {
 				</Link>
 			</h1>
 			<div className="flex items-center gap-1">
+				<Button variant="ghost" asChild className="h-9 px-3 text-sm font-medium">
+					<Link href="/sign-in">Sign In</Link>
+				</Button>
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" asChild aria-label="Languages" className="h-9 w-9">

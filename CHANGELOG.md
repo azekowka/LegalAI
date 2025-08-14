@@ -38,6 +38,7 @@
 - Исправлена ошибка "No Output Directory named '.next' found" - обновлены команды сборки в vercel.json
 - Исправлена ошибка git diff в ignoreCommand - удалена проблемная команда из vercel.json
 - Исправлена ошибка сборки с exit code 1 - возвращены команды Turbo в vercel.json
+- Исправлена конфигурация Turbo - добавлен .next/** в outputs для корректного определения выходной директории
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

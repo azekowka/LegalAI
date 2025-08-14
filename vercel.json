@@ -1,11 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "turbo run build --filter=web",
+  "buildCommand": "turbo run build --filter=web && cp -r apps/web/.next .next",
   "outputDirectory": ".next",
   "devCommand": "turbo run dev --filter=web",
   "installCommand": "pnpm install",
   "framework": null,
-  "cwd": "apps/web",
   "functions": {
     "apps/web/src/app/api/**/*.ts": {
       "runtime": "nodejs20.x"

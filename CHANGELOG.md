@@ -33,6 +33,8 @@
 - Установлены недостающие зависимости: @types/react-syntax-highlighter, @radix-ui/react-select
 - Добавлены недостающие UI компоненты: hover-card, carousel с экспортом useCarousel
 - Исправлены типы в inline-citation компоненте для совместимости с Badge
+- Исправлена ошибка развертывания Vercel - добавлен vercel.json с правильной конфигурацией для монорепозитория
+- Очищена и пересобрана директория .next для генерации routes-manifest.json
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

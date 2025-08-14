@@ -44,7 +44,7 @@ export default function RecentPage() {
         // Обновляем статус избранного в локальном состоянии
         setDocuments(prev => prev.map(doc => 
           doc.id === docId 
-            ? { ...doc, starred: response.data.starred || false }
+            ? { ...doc, starred: response.data?.starred || false }
             : doc
         ))
       } else {

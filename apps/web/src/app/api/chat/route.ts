@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { streamText } from 'ai'
 
 // Mock AI response for demonstration
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       messages: messages,
     })
 
-    return result.toDataStreamResponse()
+    return result.toTextStreamResponse()
     
   } catch (error) {
     console.error('Chat API error:', error)

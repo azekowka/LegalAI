@@ -23,6 +23,11 @@
 - Теперь переключение между светлой и темной темой работает корректно
 - Исправлена настройка tRPC клиента для корректной работы с React hooks
 - Обновлен tRPC Provider в компоненте Providers для правильной инициализации
+- Исправлена совместимость API routes с Next.js 15 - обновлены типы params в динамических маршрутах
+- Обновлены обработчики в /api/documents/[id]/access/route.ts и /api/documents/[id]/star/route.ts для работы с Promise<params>
+- Исправлена совместимость с AI SDK - заменен метод toDataStreamResponse() на toTextStreamResponse() в chat API
+- Исправлены типы API клиента для getRecentDocuments и getStarredDocuments - теперь возвращают правильную структуру с documents и count
+- Добавлен недостающий импорт NextResponse в chat API route
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

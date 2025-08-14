@@ -3,10 +3,11 @@ import { updateLastAccessed } from '@/lib/documents-store'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const documentId = parseInt(params.id)
+    const { id } = await params
+    const documentId = parseInt(id)
     
     if (isNaN(documentId)) {
       return NextResponse.json(

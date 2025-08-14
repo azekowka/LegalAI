@@ -151,15 +151,15 @@ class ApiClient {
   }
 
   async toggleStarDocument(id: number) {
-    return this.request(`/documents/${id}/star`, { method: 'POST' })
+    return this.request<{ message: string, starred: boolean }>(`/documents/${id}/star`, { method: 'POST' })
   }
 
   async getStarredDocuments() {
-    return this.request<Document[]>('/documents/starred')
+    return this.request<{ documents: Document[], count: number }>(`/documents/starred`)
   }
 
   async getRecentDocuments(limit: number = 10) {
-    return this.request<Document[]>(`/documents/recent?limit=${limit}`)
+    return this.request<{ documents: Document[], count: number }>(`/documents/recent?limit=${limit}`)
   }
 
   async updateLastAccessed(id: number) {

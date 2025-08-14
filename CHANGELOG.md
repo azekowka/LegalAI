@@ -36,7 +36,7 @@
 - Исправлена ошибка развертывания Vercel - добавлен vercel.json с правильной конфигурацией для монорепозитория
 - Очищена и пересобрана директория .next для генерации routes-manifest.json
 - Исправлена ошибка "No Output Directory named '.next' found" - обновлены команды сборки в vercel.json
-- Добавлена команда ignoreCommand для оптимизации деплоя только при изменениях в apps/web
+- Исправлена ошибка git diff в ignoreCommand - удалена проблемная команда из vercel.json
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

@@ -37,6 +37,7 @@
 - Очищена и пересобрана директория .next для генерации routes-manifest.json
 - Исправлена ошибка "No Output Directory named '.next' found" - обновлены команды сборки в vercel.json
 - Исправлена ошибка git diff в ignoreCommand - удалена проблемная команда из vercel.json
+- Исправлена ошибка сборки с exit code 1 - возвращены команды Turbo в vercel.json
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

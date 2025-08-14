@@ -28,6 +28,11 @@
 - Исправлена совместимость с AI SDK - заменен метод toDataStreamResponse() на toTextStreamResponse() в chat API
 - Исправлены типы API клиента для getRecentDocuments и getStarredDocuments - теперь возвращают правильную структуру с documents и count
 - Добавлен недостающий импорт NextResponse в chat API route
+- Исправлена ошибка типизации toggleStarDocument - добавлен правильный тип возвращаемого значения
+- Добавлена поддержка optional chaining для безопасного доступа к response.data?.starred
+- Установлены недостающие зависимости: @types/react-syntax-highlighter, @radix-ui/react-select
+- Добавлены недостающие UI компоненты: hover-card, carousel с экспортом useCarousel
+- Исправлены типы в inline-citation компоненте для совместимости с Badge
 
 ### Changed
 - Полностью переработан компонент WaitlistForm с функциональностью Supabase

@@ -23,27 +23,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { FileText, Plus, Calendar, User, Loader2, Trash2, CheckSquare, Square, MoreVertical, Download, Edit, Copy, Flame } from "lucide-react"
 import { apiClient, type Document, type User as UserType } from "@/lib/api"
+import { useAuthSession } from "@/components/auth-provider"
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<UserType | null>(null)
   const [documents, setDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedDocuments, setSelectedDocuments] = useState<Set<number>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
   const [isDeleteMode, setIsDeleteMode] = useState(false)
   const router = useRouter()
+  const { user } = useAuthSession()
 
   const loadData = async () => {
     setIsLoading(true)
-
-    // Load user data
-    const userResponse = await apiClient.getMe()
-    if (userResponse.error) {
-      // Продолжаем работу даже если пользователь не аутентифицирован
-      console.log("User not authenticated, continuing as guest")
-    } else {
-      setUser(userResponse.data as UserType)
-    }
 
     // Load documents
     const docsResponse = await apiClient.getDocuments()
@@ -312,7 +304,7 @@ export default function DashboardPage() {
               <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user?.name || "Гость"}</div>
+              <div className="text-2xl font-bold">{user?.name || "Пользователь"}</div>
             </CardContent>
           </Card>
           

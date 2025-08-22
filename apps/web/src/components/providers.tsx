@@ -1,11 +1,19 @@
 "use client";
 
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { queryClient, trpc, trpcClient } from "@/utils/trpc";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
+import { AuthProvider } from "./auth-provider";
 
+// Создаем QueryClient локально
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute
+    },
+  },
+});
 
 export default function Providers({
   children
@@ -19,12 +27,12 @@ export default function Providers({
       enableSystem
       disableTransitionOnChange
     >
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <AuthProvider>
         <QueryClientProvider client={queryClient}>
           {children}
           <ReactQueryDevtools />
         </QueryClientProvider>
-      </trpc.Provider>
+      </AuthProvider>
       <Toaster richColors />
     </ThemeProvider>
   );

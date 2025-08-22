@@ -34,14 +34,10 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PanelLeft } from "lucide-react"
+import { useAuthSession } from "@/components/auth-provider"
 
-// This is sample data.
-const data = {
-  user: {
-    name: "Азиз",
-    email: "aziz@legal.ai",
-    avatar: "/avatars/shadcn.jpg",
-  },
+// Static data that doesn't depend on user
+const staticData = {
   teams: [
     {
       name: "Legal AI",
@@ -121,19 +117,39 @@ function SidebarToggleButton() {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, isLoading, isAuthenticated } = useAuthSession()
+
+  // Sidebar доступен только для аутентифицированных пользователей
+  if (!isAuthenticated || !user) {
+    return null
+  }
+
+  // Используем только реальные данные пользователя
+  const currentUser = {
+    name: user.name || 'Пользователь',
+    email: user.email || '',
+    avatar: user.image || undefined
+  }
+
   return (
     <Sidebar collapsible="icon" className="group-data-[collapsible=icon]:w-12" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={staticData.teams} />
         <SidebarToggleButton />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain as unknown as React.ComponentProps<typeof NavMain>['items']} />
+        <NavMain items={staticData.navMain as unknown as React.ComponentProps<typeof NavMain>['items']} />
         {/* TODO: Временно скрыто - раздел "Проекты" для будущего использования */}
-        {/* <NavProjects projects={data.projects} /> */}
+        {/* <NavProjects projects={staticData.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {isLoading ? (
+          <div className="p-4 text-center text-sm text-muted-foreground">
+            Загрузка...
+          </div>
+        ) : (
+          <NavUser user={currentUser} />
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

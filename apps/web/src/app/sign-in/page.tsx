@@ -1,6 +1,10 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { SignInPage, type Testimonial } from "./sign-in";
+import { authClient } from '@/lib/auth-client';
+import { useAuthSession } from '@/components/auth-provider';
+import { toast } from 'sonner';
 
 const sampleTestimonials: Testimonial[] = [
   {
@@ -25,28 +29,90 @@ const sampleTestimonials: Testimonial[] = [
 
 const SignInPageDemo = () => {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const { isAuthenticated, isLoading: sessionLoading } = useAuthSession()
 
-  const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
+  // Перенаправляем аутентифицированных пользователей на дашборд
+  useEffect(() => {
+    if (!sessionLoading && isAuthenticated) {
+      router.replace('/dashboard')
+    }
+  }, [isAuthenticated, sessionLoading, router])
+
+  // Показываем загрузку пока проверяем сессию
+  if (sessionLoading) {
+    return (
+      <div className="h-[100dvh] flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Проверка сессии...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Если пользователь аутентифицирован, не показываем форму входа
+  if (isAuthenticated) {
+    return null
+  }
+
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
+    
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log("Sign In submitted:", data);
-    // Simulate login and redirect to dashboard
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1000)
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const rememberMe = formData.get('rememberMe') === 'on';
+
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+        rememberMe,
+        callbackURL: '/dashboard'
+      });
+
+      if (error) {
+        toast.error(error.message || 'Ошибка входа');
+        return;
+      }
+
+      if (data) {
+        toast.success('Успешный вход!');
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      toast.error('Произошла ошибка при входе');
+      console.error('Sign in error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
-    console.log("Continue with Google clicked");
-    // Simulate Google login and redirect to dashboard
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1000)
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/dashboard'
+      });
+
+      if (error) {
+        toast.error(error.message || 'Ошибка входа через Google');
+        return;
+      }
+    } catch (error) {
+      toast.error('Произошла ошибка при входе через Google');
+      console.error('Google sign in error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const handleResetPassword = () => {
-    alert("Reset Password clicked");
+    // TODO: Implement password reset functionality
+    toast.info("Функция сброса пароля будет доступна в ближайшее время");
   }
 
   const handleCreateAccount = () => {

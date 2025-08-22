@@ -377,7 +377,7 @@ const ColorButton = memo(() => {
             ].map((color) => (
               <button
                 key={color}
-                className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform"
+                className="w-6 h-6 rounded border border-border hover:scale-110 transition-transform"
                 style={{ backgroundColor: color }}
                 onMouseDown={handleColorClick(color, false)}
               />
@@ -390,7 +390,7 @@ const ColorButton = memo(() => {
           ].map((color) => (
             <button
               key={color}
-              className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform"
+              className="w-6 h-6 rounded border border-border hover:scale-110 transition-transform"
               style={{ backgroundColor: color }}
                 onMouseDown={handleColorClick(color, true)}
             />
@@ -1092,13 +1092,13 @@ const Element = memo(({ attributes, children, element }: any) => {
       )
     case "code-block":
       return (
-        <pre style={style} className="bg-gray-100 p-4 rounded font-mono text-sm my-4" {...attributes}>
+        <pre style={style} className="bg-muted p-4 rounded font-mono text-sm my-4" {...attributes}>
           <code>{children}</code>
         </pre>
       )
     case "link":
       return (
-        <a {...attributes} href={element.url} className="text-blue-600 underline hover:text-blue-800">
+        <a {...attributes} href={element.url} className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300">
           {children}
         </a>
       )

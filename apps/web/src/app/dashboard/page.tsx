@@ -403,9 +403,9 @@ export default function DashboardPage() {
             <div className="space-y-2">
               {documents.length === 0 ? (
                 <div className="col-span-full text-center py-12">
-                  <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">Нет документов</h3>
-                  <p className="mt-1 text-sm text-gray-500">Начните с создания нового документа.</p>
+                  <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-2 text-sm font-medium text-foreground">Нет документов</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">Начните с создания нового документа.</p>
                   <div className="mt-6">
                     <Button onClick={handleCreateDocument}>
                       <Plus className="mr-2 h-4 w-4" />
@@ -417,8 +417,8 @@ export default function DashboardPage() {
                 documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className={`flex items-center gap-4 p-4 rounded-lg border hover:bg-gray-50 transition-colors ${
-                      isDeleteMode && selectedDocuments.has(doc.id) ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white'
+                    className={`flex items-center gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors ${
+                      isDeleteMode && selectedDocuments.has(doc.id) ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950' : 'bg-card'
                     }`}
                   >
                     {/* Checkbox for delete mode */}
@@ -428,19 +428,19 @@ export default function DashboardPage() {
                           e.preventDefault()
                           toggleDocumentSelection(doc.id)
                         }}
-                        className="p-1 hover:bg-gray-100 rounded"
+                        className="p-1 hover:bg-muted rounded"
                       >
                         {selectedDocuments.has(doc.id) ? (
                           <CheckSquare className="h-4 w-4 text-blue-600" />
                         ) : (
-                          <Square className="h-4 w-4 text-gray-400" />
+                          <Square className="h-4 w-4 text-muted-foreground" />
                         )}
                       </button>
                     )}
 
                     {/* Document preview/thumbnail */}
-                    <div className="w-16 h-12 bg-blue-100 rounded border flex items-center justify-center flex-shrink-0">
-                      <FileText className="h-6 w-6 text-blue-600" />
+                    <div className="w-16 h-12 bg-blue-100 dark:bg-blue-900/30 rounded border flex items-center justify-center flex-shrink-0">
+                      <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
 
                     {/* Document info */}
@@ -450,10 +450,10 @@ export default function DashboardPage() {
                         className="block"
                         onClick={() => handleDocumentAccess(doc.id)}
                       >
-                        <h3 className="font-medium text-gray-900 truncate hover:text-blue-600 transition-colors">
+                        <h3 className="font-medium text-foreground truncate hover:text-blue-600 transition-colors">
                           {doc.title}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {doc.content ? (
                             typeof doc.content === 'string' && doc.content.startsWith('[') ? 
                               'Форматированный документ' : 
@@ -462,7 +462,7 @@ export default function DashboardPage() {
                             'Пустой документ'
                           )}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           Обновлено {formatDate(doc.updated_at)}
                         </p>
                       </Link>
@@ -492,7 +492,7 @@ export default function DashboardPage() {
                             e.preventDefault()
                             handleToggleStar(doc.id)
                           }}
-                          className={doc.starred ? "text-orange-500 hover:text-orange-600" : "text-gray-400 hover:text-orange-500"}
+                          className={doc.starred ? "text-orange-500 hover:text-orange-600" : "text-muted-foreground hover:text-orange-500"}
                         >
                           <Flame className={`h-4 w-4 ${doc.starred ? 'fill-current' : ''}`} />
                         </Button>

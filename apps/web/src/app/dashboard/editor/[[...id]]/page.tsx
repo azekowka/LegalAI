@@ -239,11 +239,11 @@ export default function EditorPage() {
   // Chat is now handled by useChat hook from AI SDK
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-background">
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header with breadcrumb */}
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-white border-b">
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-background border-b border-border">
           <div className="flex items-center gap-2 px-4">
             <Breadcrumb>
               <BreadcrumbList>
@@ -268,7 +268,7 @@ export default function EditorPage() {
             {/* Editor Section */}
             <div className="flex-1 flex flex-col">
             {/* Title Input */}
-            <div className="p-4 bg-white border-b flex items-center justify-between">
+            <div className="p-4 bg-background border-b border-border flex items-center justify-between">
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -277,7 +277,7 @@ export default function EditorPage() {
               />
               <div className="flex items-center gap-2">
                  {lastSaved && (
-                   <span className="text-sm text-gray-500">
+                   <span className="text-sm text-muted-foreground">
                      Сохранено {lastSaved.toLocaleTimeString()}
                    </span>
                  )}
@@ -319,7 +319,7 @@ export default function EditorPage() {
             </div>
 
               {/* Rich Text Editor */}
-              <div className="flex-1 p-4 bg-white">
+              <div className="flex-1 p-4 bg-background">
                 <RichTextEditor
                   value={content}
                   onChange={setContent}
@@ -333,19 +333,19 @@ export default function EditorPage() {
       </div>
 
       {/* AI Chat Sidebar with AI Elements */}
-      <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+      <div className="w-96 bg-background border-l border-border flex flex-col">
         {/* Chat Header */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Bot className="h-5 w-5 text-blue-600" />
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground">
+              <Bot className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               ИИ Юрист
             </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => window.location.reload()}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-muted-foreground hover:text-foreground"
             >
               <RefreshCw className="h-4 w-4" />
             </Button>

@@ -161,8 +161,8 @@ export default function RecentPage() {
           <h1 className="text-2xl font-bold">Недавние документы</h1>
         </div>
         <div className="flex items-center justify-center min-h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <p className="ml-2 text-gray-600">Загрузка...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground"></div>
+          <p className="ml-2 text-muted-foreground">Загрузка...</p>
         </div>
       </div>
     )
@@ -177,9 +177,9 @@ export default function RecentPage() {
 
       {documents.length === 0 ? (
         <div className="text-center py-12">
-          <Clock className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Нет недавних документов</h3>
-          <p className="text-gray-500 mb-4">Откройте документы, чтобы они появились в этом списке.</p>
+          <Clock className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">Нет недавних документов</h3>
+          <p className="text-muted-foreground mb-4">Откройте документы, чтобы они появились в этом списке.</p>
           <Link href="/dashboard">
             <Button>Перейти к документам</Button>
           </Link>
@@ -189,16 +189,16 @@ export default function RecentPage() {
           {documents.map((doc) => (
             <div
               key={doc.id}
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors bg-card"
             >
               <div className="flex items-center space-x-4 flex-1">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-6 w-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 truncate">{doc.title}</h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                  <h3 className="font-medium text-foreground truncate">{doc.title}</h3>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {doc.last_accessed ? getTimeAgo(doc.last_accessed) : 'Недавно'}
@@ -208,7 +208,7 @@ export default function RecentPage() {
                       Обновлен {formatDate(doc.updated_at)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                     {typeof doc.content === 'string' 
                       ? doc.content.substring(0, 150) + (doc.content.length > 150 ? '...' : '')
                       : 'Документ без содержимого'
@@ -222,7 +222,7 @@ export default function RecentPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleToggleStar(doc.id)}
-                  className={doc.starred ? "text-orange-500 hover:text-orange-600" : "text-gray-400 hover:text-orange-500"}
+                  className={doc.starred ? "text-orange-500 hover:text-orange-600" : "text-muted-foreground hover:text-orange-500"}
                 >
                   <Flame className={`h-4 w-4 ${doc.starred ? 'fill-current' : ''}`} />
                 </Button>

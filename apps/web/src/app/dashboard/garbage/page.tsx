@@ -195,9 +195,9 @@ export default function GarbagePage() {
           </div>
         ) : deletedDocuments.length === 0 ? (
           <div className="text-center py-12">
-            <Trash2 className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">Корзина пуста</h3>
-            <p className="mt-1 text-sm text-gray-500">Удаленные документы будут отображаться здесь.</p>
+            <Trash2 className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-2 text-sm font-medium text-foreground">Корзина пуста</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Удаленные документы будут отображаться здесь.</p>
             <div className="mt-6">
               <Link href="/dashboard">
                 <Button variant="outline">
@@ -217,7 +217,7 @@ export default function GarbagePage() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-lg text-gray-700">
+                        <CardTitle className="text-lg text-foreground">
                           {doc.title}
                         </CardTitle>
                         <CardDescription>
@@ -255,7 +255,7 @@ export default function GarbagePage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-sm text-muted-foreground line-clamp-3">
                       {doc.content ? (
                         typeof doc.content === 'string' && doc.content.startsWith('[') ? 
                           'Форматированный документ' : 

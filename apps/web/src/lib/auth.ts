@@ -8,22 +8,30 @@ console.log('BETTER_AUTH_SECRET:', process.env.BETTER_AUTH_SECRET ? 'Set' : 'Not
 console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set');
 
-// Создаем Prisma client только в Node.js runtime, не в Edge
+// Создаем Prisma client только в Node.js runtime, не в Edge и не во время сборки
 let prisma: any = null;
 
-if (typeof window === 'undefined' && !('EdgeRuntime' in globalThis)) {
-  console.log('Initializing Prisma client for Node.js runtime...');
-  const { PrismaClient } = require('@prisma/client');
-  prisma = new PrismaClient();
-  
-  // Проверяем подключение к базе данных
-  prisma.$connect().then(() => {
-    console.log('Prisma connected to database successfully');
-  }).catch((error: unknown) => {
-    console.error('Prisma connection error:', error);
-  });
+const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV;
+const isEdgeRuntime = 'EdgeRuntime' in globalThis;
+const isBrowser = typeof window !== 'undefined';
+
+if (!isBrowser && !isEdgeRuntime && !isBuildTime && process.env.DATABASE_URL) {
+  try {
+    console.log('Initializing Prisma client for Node.js runtime...');
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+    
+    // Проверяем подключение к базе данных (не блокирующе)
+    prisma.$connect().then(() => {
+      console.log('Prisma connected to database successfully');
+    }).catch((error: unknown) => {
+      console.error('Prisma connection error:', error);
+    });
+  } catch (error) {
+    console.error('Failed to initialize Prisma client:', error);
+  }
 } else {
-  console.log('Skipping Prisma client initialization (Edge runtime detected)');
+  console.log('Skipping Prisma client initialization (build time, edge runtime, or browser detected)');
 }
 
 console.log('Creating Better Auth instance...');
@@ -59,7 +67,12 @@ const authConfig: any = {
       expiresIn: 300, // 5 minutes
       allowedAttempts: 3,
       async sendVerificationOTP({ email, otp, type }) {
-        await sendVerificationOTP({ email, otp, type });
+        try {
+          await sendVerificationOTP({ email, otp, type });
+        } catch (error) {
+          console.error('Error sending verification OTP:', error);
+          throw error;
+        }
       },
     })
   ]
@@ -72,8 +85,17 @@ if (prisma) {
   });
 }
 
-export const auth = betterAuth(authConfig);
+let auth: any;
 
-console.log('Better Auth initialized successfully');
-console.log('Auth instance type:', typeof auth);
-console.log('Auth keys:', Object.keys(auth));
+try {
+  auth = betterAuth(authConfig);
+  console.log('Better Auth initialized successfully');
+} catch (error) {
+  console.error('Failed to initialize Better Auth:', error);
+  // Create a minimal fallback auth object to prevent runtime errors
+  auth = {
+    handler: () => new Response('Auth service unavailable', { status: 503 })
+  };
+}
+
+export { auth };

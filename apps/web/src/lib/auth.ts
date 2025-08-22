@@ -9,7 +9,7 @@ console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set
 // Создаем Prisma client только в Node.js runtime, не в Edge
 let prisma: any = null;
 
-if (typeof window === 'undefined' && typeof EdgeRuntime === 'undefined') {
+if (typeof window === 'undefined' && !('EdgeRuntime' in globalThis)) {
   console.log('Initializing Prisma client for Node.js runtime...');
   const { PrismaClient } = require('@prisma/client');
   prisma = new PrismaClient();
@@ -17,7 +17,7 @@ if (typeof window === 'undefined' && typeof EdgeRuntime === 'undefined') {
   // Проверяем подключение к базе данных
   prisma.$connect().then(() => {
     console.log('Prisma connected to database successfully');
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     console.error('Prisma connection error:', error);
   });
 } else {

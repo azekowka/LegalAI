@@ -16,5 +16,5 @@ export const {
     updateUser,
     deleteUser,
     linkSocial,
-    unlinkSocial
+    unlinkAccount
 } = authClient;

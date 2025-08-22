@@ -42,10 +42,11 @@ const authConfig: any = {
       }
   },
   secret: process.env.BETTER_AUTH_SECRET || 'your-secret-key-here-32-chars',
-  baseURL: 'http://localhost:3001',
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3001',
   trustedOrigins: [
       'http://localhost:3001',
-      'http://localhost:3000'
+      'http://localhost:3000',
+      process.env.BETTER_AUTH_URL || 'http://localhost:3001'
   ],
   telemetry: {
       enabled: false

@@ -21,7 +21,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   
   return (
     <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-200 ${
-      state === "expanded" ? "ml-64" : "ml-12"
+      state === "expanded" ? "ml-56" : "ml-12"
     }`}>
       <ThemeToggleButton />
       <main className="flex-1 overflow-auto p-6">

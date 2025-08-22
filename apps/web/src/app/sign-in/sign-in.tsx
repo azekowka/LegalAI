@@ -100,7 +100,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                   <input type="checkbox" name="rememberMe" className="custom-checkbox" />
                   <span className="text-foreground/90">Запомнить меня</span>
                 </label>
-                <a href="#" onClick={(e) => { e.preventDefault(); onResetPassword?.(); }} className="hover:underline text-violet-400 transition-colors">Сбросить пароль</a>
+                <a href="/forgot-password" className="hover:underline text-violet-400 transition-colors">Сбросить пароль</a>
               </div>
 
               <button type="submit" className="animate-element animate-delay-600 w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors">

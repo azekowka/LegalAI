@@ -1,5 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { emailOTP } from 'better-auth/plugins';
+import { sendVerificationOTP } from './email-service';
 
 console.log('Environment variables check:');
 console.log('BETTER_AUTH_SECRET:', process.env.BETTER_AUTH_SECRET ? 'Set' : 'Not set');
@@ -30,7 +32,8 @@ console.log('Creating Better Auth instance...');
 const authConfig: any = {
   emailAndPassword: {
       enabled: true,
-      autoSignIn: true
+      autoSignIn: false, // Disable auto sign-in to require email verification
+      requireEmailVerification: true
   },
   socialProviders: {
       google: {
@@ -46,7 +49,19 @@ const authConfig: any = {
   ],
   telemetry: {
       enabled: false
-  }
+  },
+  plugins: [
+    emailOTP({
+      sendVerificationOnSignUp: true, // Send OTP on sign-up
+      overrideDefaultEmailVerification: true, // Use OTP instead of email links
+      otpLength: 6,
+      expiresIn: 300, // 5 minutes
+      allowedAttempts: 3,
+      async sendVerificationOTP({ email, otp, type }) {
+        await sendVerificationOTP({ email, otp, type });
+      },
+    })
+  ]
 };
 
 // Добавляем database адаптер только если Prisma доступна

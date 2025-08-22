@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { SignUpPage, type Testimonial } from './sign-up'
 import { authClient } from '@/lib/auth-client'
 import { useAuthSession } from '@/components/auth-provider'
+import { EmailVerification } from '@/components/auth/email-verification'
 import { toast } from 'sonner'
 
 const sampleTestimonials: Testimonial[] = [
@@ -31,6 +32,8 @@ const sampleTestimonials: Testimonial[] = [
 export default function SignUpPageWrapper() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [showEmailVerification, setShowEmailVerification] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
   const { isAuthenticated, isLoading: sessionLoading } = useAuthSession()
 
   // Перенаправляем аутентифицированных пользователей на дашборд
@@ -101,8 +104,10 @@ export default function SignUpPageWrapper() {
       }
 
       if (data) {
-        toast.success('Аккаунт успешно создан!')
-        router.push('/dashboard')
+        // Since email verification is required, show verification step instead of redirecting
+        setUserEmail(email)
+        setShowEmailVerification(true)
+        toast.success('Аккаунт создан! Проверьте свою почту для верификации.')
       }
     } catch (error) {
       toast.error('Произошла ошибка при регистрации')
@@ -134,6 +139,23 @@ export default function SignUpPageWrapper() {
 
   const handleSignIn = () => {
     router.push('/sign-in')
+  }
+
+  const handleVerificationComplete = () => {
+    toast.success('Email verified successfully! You can now sign in.')
+    router.push('/sign-in')
+  }
+
+  // Show email verification step if needed
+  if (showEmailVerification) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <EmailVerification
+          email={userEmail}
+          onVerificationComplete={handleVerificationComplete}
+        />
+      </div>
+    )
   }
 
   return (

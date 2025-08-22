@@ -1,7 +1,11 @@
 import { createAuthClient } from 'better-auth/react';
+import { emailOTPClient } from 'better-auth/client/plugins';
 
 export const authClient = createAuthClient({
-    baseURL: 'http://localhost:3001' // Фиксированный URL для разработки
+    baseURL: 'http://localhost:3001', // Фиксированный URL для разработки
+    plugins: [
+        emailOTPClient()
+    ]
 });
 
 export const {
@@ -18,3 +22,11 @@ export const {
     linkSocial,
     unlinkAccount
 } = authClient;
+
+// Email OTP methods are nested under emailOtp
+export const {
+    sendVerificationOtp,
+    checkVerificationOtp,
+    verifyEmail,
+    resetPassword: resetPasswordOtp
+} = authClient.emailOtp;

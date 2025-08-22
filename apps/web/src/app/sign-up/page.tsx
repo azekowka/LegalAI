@@ -1,7 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { SignUpPage, type Testimonial } from './sign-up'
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
 
 const sampleTestimonials: Testimonial[] = [
   {
@@ -26,11 +29,12 @@ const sampleTestimonials: Testimonial[] = [
 
 export default function SignUpPageWrapper() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setIsLoading(true)
     
-    // Simulate registration - replace with actual registration logic
     const formData = new FormData(event.currentTarget)
     const name = formData.get('name') as string
     const email = formData.get('email') as string
@@ -40,30 +44,66 @@ export default function SignUpPageWrapper() {
 
     // Basic validation
     if (!name || !email || !password || !confirmPassword) {
-      alert('Пожалуйста, заполните все поля')
+      toast.error('Пожалуйста, заполните все поля')
+      setIsLoading(false)
       return
     }
 
     if (password !== confirmPassword) {
-      alert('Пароли не совпадают')
+      toast.error('Пароли не совпадают')
+      setIsLoading(false)
       return
     }
 
     if (!agreeToTerms) {
-      alert('Необходимо согласиться с условиями использования')
+      toast.error('Необходимо согласиться с условиями использования')
+      setIsLoading(false)
       return
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      alert('Аккаунт успешно создан!')
-      router.push('/dashboard')
-    }, 1000)
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        callbackURL: '/dashboard'
+      });
+
+      if (error) {
+        toast.error(error.message || 'Ошибка регистрации')
+        return
+      }
+
+      if (data) {
+        toast.success('Аккаунт успешно создан!')
+        router.push('/dashboard')
+      }
+    } catch (error) {
+      toast.error('Произошла ошибка при регистрации')
+      console.error('Sign up error:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleGoogleSignUp = () => {
-    // Implement Google sign-up logic
-    console.log('Google sign-up clicked')
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true)
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/dashboard'
+      });
+
+      if (error) {
+        toast.error(error.message || 'Ошибка регистрации через Google')
+        return
+      }
+    } catch (error) {
+      toast.error('Произошла ошибка при регистрации через Google')
+      console.error('Google sign up error:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleSignIn = () => {

@@ -552,7 +552,7 @@ const Toolbar = memo(() => {
 
   return (
     <TooltipProvider>
-      <div className="border-b border-gray-200 bg-white">
+      <div className="border-b border-border bg-background">
         <div className="flex items-center gap-1 p-2 flex-wrap">
           {/* File operations */}
           <Tooltip>
@@ -949,15 +949,15 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
   const pageCount = Math.max(1, Math.ceil(JSON.stringify(editorValue).length / 1800))
 
   return (
-    <div className="bg-white h-full flex flex-col">
+    <div className="bg-background h-full flex flex-col">
       <Slate editor={editor} initialValue={editorValue} onChange={handleChange}>
         <Toolbar />
-        <div className="bg-gray-100 flex-1 overflow-auto">
+        <div className="bg-muted/30 flex-1 overflow-auto">
           <div className="py-8 px-6">
             <div className="max-w-none flex flex-col items-center space-y-6">
               {/* Main content page */}
               <div
-                className="bg-white shadow-lg flex-shrink-0 relative"
+                className="bg-card shadow-lg flex-shrink-0 relative border"
                 style={{
                   width: '8.5in',
                   minHeight: '11in',
@@ -972,7 +972,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
             spellCheck
             autoFocus
                   onKeyDown={handleKeyDown}
-                  className="outline-none w-full leading-relaxed resize-none"
+                  className="outline-none w-full leading-relaxed resize-none text-foreground"
                   style={{ 
                     fontFamily: "Arial, sans-serif", 
                     fontSize: "14px", 
@@ -982,7 +982,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
                   }}
                 />
                 
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-muted-foreground">
                   1
                 </div>
               </div>
@@ -991,7 +991,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
               {pageCount > 1 && Array.from({ length: pageCount - 1 }, (_, index) => (
                 <div
                   key={`page-${index + 2}`}
-                  className="bg-white shadow-lg flex-shrink-0 relative"
+                  className="bg-card shadow-lg flex-shrink-0 relative border"
                   style={{
                     width: '8.5in',
                     height: '11in',
@@ -1009,7 +1009,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
                     }}
           />
                   
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs text-muted-foreground">
                     {index + 2}
                   </div>
                 </div>
@@ -1086,7 +1086,7 @@ const Element = memo(({ attributes, children, element }: any) => {
       )
     case "blockquote":
       return (
-        <blockquote style={style} className="border-l-4 border-gray-300 pl-4 my-4 italic" {...attributes}>
+        <blockquote style={style} className="border-l-4 border-border pl-4 my-4 italic" {...attributes}>
           {children}
         </blockquote>
       )

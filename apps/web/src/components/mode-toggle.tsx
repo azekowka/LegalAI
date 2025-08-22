@@ -22,7 +22,7 @@ export function ModeToggle() {
 				</Button>
 			</TooltipTrigger>
 			<TooltipContent side="bottom">
-				{theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+				{theme === "light" ? "Темная тема" : "Светлая тема"}
 			</TooltipContent>
 		</Tooltip>
 	);

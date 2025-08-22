@@ -25,7 +25,15 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { PanelLeft } from "lucide-react"
 
 // This is sample data.
 const data = {
@@ -97,11 +105,27 @@ const data = {
   ],
 }
 
+function SidebarToggleButton() {
+  const { toggleSidebar } = useSidebar()
+  
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton onClick={toggleSidebar} tooltip="Скрыть панель">
+          <PanelLeft />
+          <span>Скрыть панель</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
+        <SidebarToggleButton />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain as unknown as React.ComponentProps<typeof NavMain>['items']} />

@@ -123,6 +123,9 @@ importers:
       harden-react-markdown:
         specifier: ^1.0.4
         version: 1.0.4(react-markdown@10.1.0(@types/react@19.1.9)(react@19.1.1))(react@19.1.1)
+      katex:
+        specifier: ^0.16.22
+        version: 0.16.22
       lucide-react:
         specifier: ^0.487.0
         version: 0.487.0(react@19.1.1)

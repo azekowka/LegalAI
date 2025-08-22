@@ -155,22 +155,22 @@ export default function RecentPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex items-center gap-2">
           <Clock className="h-6 w-6 text-blue-500" />
           <h1 className="text-2xl font-bold">Недавние документы</h1>
         </div>
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Загрузка...</p>
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <p className="ml-2 text-gray-600">Загрузка...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center gap-2 mb-6">
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="flex items-center gap-2">
         <Clock className="h-6 w-6 text-blue-500" />
         <h1 className="text-2xl font-bold">Недавние документы</h1>
       </div>

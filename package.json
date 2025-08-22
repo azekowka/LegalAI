@@ -13,9 +13,8 @@
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev"
   },
-  "dependencies": {},
   "devDependencies": {
     "turbo": "^2.5.4"
   },
-  "packageManager": "pnpm@10.14.0"
+  "packageManager": "pnpm@10.15.0"
 }

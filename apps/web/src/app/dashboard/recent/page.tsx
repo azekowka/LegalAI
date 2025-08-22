@@ -155,7 +155,7 @@ export default function RecentPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex items-center gap-2">
           <Clock className="h-6 w-6 text-blue-500" />
           <h1 className="text-2xl font-bold">Недавние документы</h1>
@@ -169,7 +169,7 @@ export default function RecentPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-center gap-2">
         <Clock className="h-6 w-6 text-blue-500" />
         <h1 className="text-2xl font-bold">Недавние документы</h1>

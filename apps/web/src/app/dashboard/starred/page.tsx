@@ -134,7 +134,7 @@ export default function StarredPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex items-center gap-2">
           <Flame className="h-6 w-6 text-orange-500" />
           <h1 className="text-2xl font-bold">Избранные документы</h1>
@@ -148,7 +148,7 @@ export default function StarredPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-center gap-2">
         <Flame className="h-6 w-6 text-orange-500" />
         <h1 className="text-2xl font-bold">Избранные документы</h1>

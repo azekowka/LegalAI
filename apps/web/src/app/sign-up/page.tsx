@@ -1,9 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SignUpPage, type Testimonial } from './sign-up'
 import { authClient } from '@/lib/auth-client'
+import { useAuthSession } from '@/components/auth-provider'
 import { toast } from 'sonner'
 
 const sampleTestimonials: Testimonial[] = [
@@ -30,6 +31,31 @@ const sampleTestimonials: Testimonial[] = [
 export default function SignUpPageWrapper() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const { isAuthenticated, isLoading: sessionLoading } = useAuthSession()
+
+  // Перенаправляем аутентифицированных пользователей на дашборд
+  useEffect(() => {
+    if (!sessionLoading && isAuthenticated) {
+      router.replace('/dashboard')
+    }
+  }, [isAuthenticated, sessionLoading, router])
+
+  // Показываем загрузку пока проверяем сессию
+  if (sessionLoading) {
+    return (
+      <div className="h-[100dvh] flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Проверка сессии...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Если пользователь аутентифицирован, не показываем форму регистрации
+  if (isAuthenticated) {
+    return null
+  }
 
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

@@ -119,19 +119,17 @@ function SidebarToggleButton() {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, isLoading, isAuthenticated } = useAuthSession()
 
-  // Данные по умолчанию для неаутентифицированного пользователя
-  const defaultUser = {
-    name: "Гость",
-    email: "guest@legal.ai",
-    avatar: undefined
+  // Sidebar доступен только для аутентифицированных пользователей
+  if (!isAuthenticated || !user) {
+    return null
   }
 
-  // Используем данные пользователя из сессии или данные по умолчанию
-  const currentUser = isAuthenticated && user ? {
+  // Используем только реальные данные пользователя
+  const currentUser = {
     name: user.name || 'Пользователь',
     email: user.email || '',
     avatar: user.image || undefined
-  } : defaultUser
+  }
 
   return (
     <Sidebar collapsible="icon" className="group-data-[collapsible=icon]:w-12" {...props}>

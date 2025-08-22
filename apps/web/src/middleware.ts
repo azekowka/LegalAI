@@ -16,11 +16,11 @@ export async function middleware(request: NextRequest) {
     pathname === route || pathname.startsWith(`${route}/`)
   );
 
-  // For now, let's disable session checking in middleware to avoid Edge Runtime issues
-  // We'll handle authentication on the client side and in API routes
+  // For protected routes, we'll rely on client-side authentication checks
+  // since Better Auth session checking requires Node.js runtime which isn't available in Edge Runtime
   
-  // If trying to access auth routes, allow it for now
-  // Later we can add proper session checking using cookies or other Edge-compatible methods
+  // Allow all requests to pass through - authentication will be handled client-side
+  // in the page components using useAuthSession hook
   
   return NextResponse.next();
 }

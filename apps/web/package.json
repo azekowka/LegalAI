@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack --port=3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "knip": "knip"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
@@ -74,6 +75,7 @@
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.7",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "knip": "^5.63.0",
     "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2"
   }

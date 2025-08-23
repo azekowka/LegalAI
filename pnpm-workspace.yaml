@@ -1,9 +1,10 @@
 packages:
-  - 'apps/*'
+  - apps/*
 
 onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'
   - '@tailwindcss/oxide'
+  - oxc-resolver
   - prisma
   - sharp

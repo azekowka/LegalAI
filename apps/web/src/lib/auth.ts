@@ -8,18 +8,23 @@ console.log('BETTER_AUTH_SECRET:', process.env.BETTER_AUTH_SECRET ? 'Set' : 'Not
 console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set');
 
-// Создаем Prisma client только в Node.js runtime, не в Edge и не во время сборки
+// Создаем Prisma client только если есть DATABASE_URL и не в браузере
 let prisma: any = null;
 
-const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV;
 const isEdgeRuntime = 'EdgeRuntime' in globalThis;
 const isBrowser = typeof window !== 'undefined';
 
-if (!isBrowser && !isEdgeRuntime && !isBuildTime && process.env.DATABASE_URL) {
+if (!isBrowser && !isEdgeRuntime && process.env.DATABASE_URL) {
   try {
-    console.log('Initializing Prisma client for Node.js runtime...');
+    console.log('Initializing Prisma client...');
     const { PrismaClient } = require('@prisma/client');
-    prisma = new PrismaClient();
+    prisma = new PrismaClient({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+    });
     
     // Проверяем подключение к базе данных (не блокирующе)
     prisma.$connect().then(() => {
@@ -31,7 +36,7 @@ if (!isBrowser && !isEdgeRuntime && !isBuildTime && process.env.DATABASE_URL) {
     console.error('Failed to initialize Prisma client:', error);
   }
 } else {
-  console.log('Skipping Prisma client initialization (build time, edge runtime, or browser detected)');
+  console.log('Skipping Prisma client initialization (no DATABASE_URL, edge runtime, or browser detected)');
 }
 
 console.log('Creating Better Auth instance...');
@@ -80,9 +85,12 @@ const authConfig: any = {
 
 // Добавляем database адаптер только если Prisma доступна
 if (prisma) {
+  console.log('Using PostgreSQL database adapter');
   authConfig.database = prismaAdapter(prisma, {
     provider: 'postgresql'
   });
+} else {
+  console.warn('WARN [Better Auth]: No database configuration provided. Using memory adapter in development');
 }
 
 let auth: any;

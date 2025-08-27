@@ -24,8 +24,10 @@ pnpm i
 Then, initialize prisma & configurate database:
 
 ```bash
+npx prisma validate
 npx prisma generate
 npx prisma db push
+npx prisma db pull
 ```
 
 Run the development server:
@@ -34,19 +36,7 @@ Run the development server:
 pnpm dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
-
-
-
-## Project Structure
-
-```
-LegalAI/
-├── apps/
-│   ├── web/         # Frontend application (Next.js)
-│   └── server/      # Backend API (Next, TRPC)
-```
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the web application.
 
 ## Available Scripts
 

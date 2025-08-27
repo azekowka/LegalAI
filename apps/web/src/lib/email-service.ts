@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 // Initialize Resend with fallback for build time
-const resend = new Resend(process.env.RESEND_API_KEY || 're_WwNJVxnr_ELiLWhre1AQS8jw5AvMmn52f');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export interface EmailOTPParams {
   email: string;

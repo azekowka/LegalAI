@@ -21,8 +21,14 @@ First, install the dependencies:
 pnpm i
 ```
 
+Then, initialize prisma & configurate database:
 
-Then, run the development server:
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+Run the development server:
 
 ```bash
 pnpm dev

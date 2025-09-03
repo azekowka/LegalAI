@@ -1,8 +1,18 @@
-// Document storage using Supabase
+// Document storage using Supabase with Redis caching
 // Migrated from local storage to Supabase with RLS for user isolation
+// Enhanced with Upstash Redis for caching to reduce database load
 
 import { supabase } from './supabase'
 import type { Database } from './supabase'
+import { 
+  getCached, 
+  setCached, 
+  deleteCached, 
+  cacheKeys, 
+  CACHE_TTL,
+  invalidateUserCaches,
+  invalidateDocumentCaches
+} from './redis'
 
 export type Document = Database['public']['Tables']['documents']['Row']
 export type DocumentInsert = Database['public']['Tables']['documents']['Insert']
@@ -14,11 +24,20 @@ export interface DocumentWithMetadata extends Document {
 }
 
 /**
- * Get all non-deleted documents for the current user
+ * Get all non-deleted documents for the current user with caching
  * RLS policies ensure users only see their own documents
  */
 export async function getDocuments(userId: string): Promise<Document[]> {
   try {
+    // Check cache first
+    const cacheKey = cacheKeys.userDocuments(userId)
+    const cachedData = await getCached<Document[]>(cacheKey)
+    
+    if (cachedData) {
+      return cachedData
+    }
+
+    // Cache miss - fetch from database
     const { data, error } = await supabase
       .from('documents')
       .select('*')
@@ -31,7 +50,12 @@ export async function getDocuments(userId: string): Promise<Document[]> {
       throw new Error('Failed to fetch documents')
     }
 
-    return data || []
+    const documents = data || []
+    
+    // Cache the results
+    await setCached(cacheKey, documents, CACHE_TTL.DOCUMENTS_LIST)
+    
+    return documents
   } catch (error) {
     console.error('Error in getDocuments:', error)
     throw error
@@ -87,7 +111,7 @@ export async function getDeletedDocuments(userId: string): Promise<Document[]> {
 }
 
 /**
- * Find a non-deleted document by ID for the current user
+ * Find a non-deleted document by ID for the current user with caching
  */
 export async function findDocumentById(id: string, userId: string): Promise<Document | null> {
   try {
@@ -95,6 +119,18 @@ export async function findDocumentById(id: string, userId: string): Promise<Docu
     console.log('Looking for document ID:', id)
     console.log('User ID:', userId)
     
+    // Check cache first
+    const cacheKey = cacheKeys.document(id)
+    const cachedDoc = await getCached<Document>(cacheKey)
+    
+    if (cachedDoc) {
+      // Verify the cached document belongs to the user
+      if (cachedDoc.user_id === userId && !cachedDoc.deleted_at) {
+        return cachedDoc
+      }
+    }
+    
+    // Cache miss or invalid - fetch from database
     const { data, error } = await supabase
       .from('documents')
       .select('*')
@@ -115,6 +151,9 @@ export async function findDocumentById(id: string, userId: string): Promise<Docu
     console.log('Found document:', data.id, 'Title:', data.title)
     console.log('Found content length:', data.content?.length || 0)
     console.log('Found content preview:', data.content?.substring(0, 100) + '...')
+
+    // Cache the document
+    await setCached(cacheKey, data, CACHE_TTL.DOCUMENT)
 
     return data
   } catch (error) {
@@ -152,7 +191,7 @@ export async function findDocumentByIdIncludeDeleted(id: string, userId: string)
 }
 
 /**
- * Update a document for the current user
+ * Update a document for the current user and invalidate cache
  */
 export async function updateDocument(id: string, userId: string, updates: DocumentUpdate): Promise<Document | null> {
   try {
@@ -186,6 +225,14 @@ export async function updateDocument(id: string, userId: string, updates: Docume
     console.log('Updated content length:', data.content?.length || 0)
     console.log('Updated content preview:', data.content?.substring(0, 100) + '...')
 
+    // Invalidate related caches
+    await invalidateDocumentCaches(id, userId)
+    
+    // If the document was starred/unstarred, also invalidate starred cache
+    if ('starred' in updates) {
+      await deleteCached(cacheKeys.starredDocuments(userId))
+    }
+
     return data
   } catch (error) {
     console.error('Error in updateDocument:', error)
@@ -194,7 +241,7 @@ export async function updateDocument(id: string, userId: string, updates: Docume
 }
 
 /**
- * Soft delete a document (move to garbage)
+ * Soft delete a document (move to garbage) and invalidate cache
  */
 export async function deleteDocument(id: string, userId: string): Promise<boolean> {
   try {
@@ -213,6 +260,10 @@ export async function deleteDocument(id: string, userId: string): Promise<boolea
       throw new Error('Failed to delete document')
     }
 
+    // Invalidate related caches
+    await invalidateDocumentCaches(id, userId)
+    await deleteCached(cacheKeys.starredDocuments(userId))
+
     return true
   } catch (error) {
     console.error('Error in deleteDocument:', error)
@@ -221,7 +272,7 @@ export async function deleteDocument(id: string, userId: string): Promise<boolea
 }
 
 /**
- * Soft delete multiple documents
+ * Soft delete multiple documents and invalidate caches
  */
 export async function deleteDocuments(ids: string[], userId: string): Promise<number> {
   try {
@@ -241,6 +292,15 @@ export async function deleteDocuments(ids: string[], userId: string): Promise<nu
       throw new Error('Failed to delete documents')
     }
 
+    // Invalidate caches for all deleted documents
+    const cacheKeysToDelete = [
+      ...ids.map(id => cacheKeys.document(id)),
+      cacheKeys.userDocuments(userId),
+      cacheKeys.recentDocuments(userId),
+      cacheKeys.starredDocuments(userId)
+    ]
+    await deleteCached(cacheKeysToDelete)
+
     return data?.length || 0
   } catch (error) {
     console.error('Error in deleteDocuments:', error)
@@ -249,7 +309,7 @@ export async function deleteDocuments(ids: string[], userId: string): Promise<nu
 }
 
 /**
- * Restore a soft-deleted document
+ * Restore a soft-deleted document and invalidate caches
  */
 export async function restoreDocument(id: string, userId: string): Promise<boolean> {
   try {
@@ -267,6 +327,9 @@ export async function restoreDocument(id: string, userId: string): Promise<boole
       console.error('Error restoring document:', error)
       throw new Error('Failed to restore document')
     }
+
+    // Invalidate caches since the document is back in the active list
+    await invalidateDocumentCaches(id, userId)
 
     return true
   } catch (error) {
@@ -353,7 +416,7 @@ export async function cleanupAllExpiredDocuments(): Promise<number> {
 }
 
 /**
- * Create a new document
+ * Create a new document and invalidate user's document list cache
  */
 export async function createDocument(title: string, content: string, userId: string): Promise<Document> {
   try {
@@ -388,6 +451,12 @@ export async function createDocument(title: string, content: string, userId: str
     console.log('Saved content length:', data.content?.length || 0)
     console.log('Saved content preview:', data.content?.substring(0, 100) + '...')
 
+    // Invalidate user's document list cache since a new document was added
+    await deleteCached([
+      cacheKeys.userDocuments(userId),
+      cacheKeys.recentDocuments(userId)
+    ])
+
     return data
   } catch (error) {
     console.error('Error in createDocument:', error)
@@ -396,7 +465,7 @@ export async function createDocument(title: string, content: string, userId: str
 }
 
 /**
- * Toggle star status of a document
+ * Toggle star status of a document and invalidate caches
  */
 export async function toggleStarDocument(id: string, userId: string): Promise<boolean> {
   try {
@@ -418,6 +487,13 @@ export async function toggleStarDocument(id: string, userId: string): Promise<bo
       throw new Error('Failed to toggle star')
     }
 
+    // Invalidate related caches
+    await deleteCached([
+      cacheKeys.document(id),
+      cacheKeys.starredDocuments(userId),
+      cacheKeys.userDocuments(userId)
+    ])
+
     return true
   } catch (error) {
     console.error('Error in toggleStarDocument:', error)
@@ -426,10 +502,19 @@ export async function toggleStarDocument(id: string, userId: string): Promise<bo
 }
 
 /**
- * Get starred documents for the current user
+ * Get starred documents for the current user with caching
  */
 export async function getStarredDocuments(userId: string): Promise<Document[]> {
   try {
+    // Check cache first
+    const cacheKey = cacheKeys.starredDocuments(userId)
+    const cachedData = await getCached<Document[]>(cacheKey)
+    
+    if (cachedData) {
+      return cachedData
+    }
+
+    // Cache miss - fetch from database
     const { data, error } = await supabase
       .from('documents')
       .select('*')
@@ -443,7 +528,12 @@ export async function getStarredDocuments(userId: string): Promise<Document[]> {
       throw new Error('Failed to fetch starred documents')
     }
 
-    return data || []
+    const documents = data || []
+    
+    // Cache the results
+    await setCached(cacheKey, documents, CACHE_TTL.STARRED_DOCUMENTS)
+    
+    return documents
   } catch (error) {
     console.error('Error in getStarredDocuments:', error)
     throw error
@@ -451,7 +541,7 @@ export async function getStarredDocuments(userId: string): Promise<Document[]> {
 }
 
 /**
- * Update last accessed timestamp for a document
+ * Update last accessed timestamp for a document and invalidate recent cache
  */
 export async function updateLastAccessed(id: string, userId: string): Promise<boolean> {
   try {
@@ -468,6 +558,14 @@ export async function updateLastAccessed(id: string, userId: string): Promise<bo
       return false
     }
 
+    // Invalidate recent documents cache since the order might change
+    // Use a pattern to clear all limit variations
+    await deleteCached([
+      `${cacheKeys.recentDocuments(userId)}:10`,
+      `${cacheKeys.recentDocuments(userId)}:20`,
+      `${cacheKeys.recentDocuments(userId)}:50`
+    ])
+
     return true
   } catch (error) {
     console.error('Error in updateLastAccessed:', error)
@@ -476,10 +574,19 @@ export async function updateLastAccessed(id: string, userId: string): Promise<bo
 }
 
 /**
- * Get recently accessed documents for the current user
+ * Get recently accessed documents for the current user with caching
  */
 export async function getRecentDocuments(userId: string, limit: number = 10): Promise<Document[]> {
   try {
+    // Check cache first - include limit in cache key for different queries
+    const cacheKey = `${cacheKeys.recentDocuments(userId)}:${limit}`
+    const cachedData = await getCached<Document[]>(cacheKey)
+    
+    if (cachedData) {
+      return cachedData
+    }
+
+    // Cache miss - fetch from database
     const { data, error } = await supabase
       .from('documents')
       .select('*')
@@ -494,7 +601,12 @@ export async function getRecentDocuments(userId: string, limit: number = 10): Pr
       throw new Error('Failed to fetch recent documents')
     }
 
-    return data || []
+    const documents = data || []
+    
+    // Cache the results with shorter TTL for recent documents
+    await setCached(cacheKey, documents, CACHE_TTL.RECENT_DOCUMENTS)
+    
+    return documents
   } catch (error) {
     console.error('Error in getRecentDocuments:', error)
     throw error

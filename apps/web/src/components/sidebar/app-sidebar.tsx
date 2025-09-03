@@ -12,9 +12,9 @@ import { LayoutPanelTopIcon } from "@/components/icons/layout-panel-top-icon"
 import { DeleteIcon } from "@/components/icons/delete"
 import { FoldersIcon } from "@/components/icons/folders-icon"
 import { FileTextIcon } from "@/components/icons/file-text-icon";
-import { FlameIcon } from "@/components/icons/flame-icon"
-import { ClockIcon } from "@/components/icons/clock-icon"
-import { UsersIcon } from "@/components/icons/users-icon"
+import { FlameIcon } from "@/components/icons/flame-icon";
+import { ClockIcon } from "@/components/icons/clock-icon";
+import { UsersIcon } from "@/components/icons/users-icon";
 import { NavMain } from "@/components/sidebar/nav-main"
 import { NavProjects } from "@/components/sidebar/nav-projects"
 import { NavUser } from "@/components/sidebar/nav-user"
@@ -117,7 +117,7 @@ function SidebarToggleButton() {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isLoading, isAuthenticated } = useAuthSession()
+  const { user, isLoading, isAuthenticated } = useAuthSession();
 
   // Sidebar доступен только для аутентифицированных пользователей
   if (!isAuthenticated || !user) {
@@ -153,5 +153,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

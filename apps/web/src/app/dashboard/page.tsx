@@ -24,6 +24,7 @@ import {
 import { FileText, Plus, Calendar, User, Loader2, Trash2, CheckSquare, Square, MoreVertical, Download, Edit, Copy, Flame } from "lucide-react"
 import { apiClient, type Document, type User as UserType } from "@/lib/api"
 import { useAuthSession } from "@/components/auth-provider"
+import { DocumentCreationModal } from "@/components/document-creation-modal";
 
 export default function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([])
@@ -31,6 +32,7 @@ export default function DashboardPage() {
   const [selectedDocuments, setSelectedDocuments] = useState<Set<number>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
   const [isDeleteMode, setIsDeleteMode] = useState(false)
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
   const router = useRouter()
   const { user } = useAuthSession()
 
@@ -380,7 +382,7 @@ export default function DashboardPage() {
                   Удалить
                 </Button>
               )}
-              <Button onClick={handleCreateDocument}>
+              <Button onClick={() => setIsDocumentModalOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Создать документ
               </Button>
@@ -399,7 +401,7 @@ export default function DashboardPage() {
                   <h3 className="mt-2 text-sm font-medium text-foreground">Нет документов</h3>
                   <p className="mt-1 text-sm text-muted-foreground">Начните с создания нового документа.</p>
                   <div className="mt-6">
-                    <Button onClick={handleCreateDocument}>
+                    <Button onClick={() => setIsDocumentModalOpen(true)}>
                       <Plus className="mr-2 h-4 w-4" />
                       Создать документ
                     </Button>
@@ -535,6 +537,11 @@ export default function DashboardPage() {
            )}
          </div>
        </div>
-   </div>
- )
+
+      <DocumentCreationModal
+        isOpen={isDocumentModalOpen}
+        onClose={() => setIsDocumentModalOpen(false)}
+      />
+    </div>
+  );
 }

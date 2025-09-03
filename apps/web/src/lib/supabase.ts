@@ -29,6 +29,41 @@ export type Database = {
           created_at?: string;
         };
       };
+      documents: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          content: string | null;
+          created_at: string;
+          updated_at: string;
+          deleted_at: string | null;
+          starred: boolean;
+          last_accessed: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          title: string;
+          content?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          deleted_at?: string | null;
+          starred?: boolean;
+          last_accessed?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          title?: string;
+          content?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          deleted_at?: string | null;
+          starred?: boolean;
+          last_accessed?: string | null;
+        };
+      };
     };
   };
 };

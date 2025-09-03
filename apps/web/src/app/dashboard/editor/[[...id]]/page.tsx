@@ -54,7 +54,7 @@ interface Conversation {
 export default function EditorPage() {
   const params = useParams()
   const router = useRouter()
-  const documentId = params.id ? Number.parseInt(params.id[0]) : null
+  const documentId = params.id ? params.id[0] : null
 
   const [document, setDocument] = useState<Document | null>(null)
   const [title, setTitle] = useState("")
@@ -101,9 +101,9 @@ export default function EditorPage() {
     if (documentId) {
       loadDocument()
     } else {
-      // New document
+      // New document - initialize with empty Slate content
       setTitle("Untitled Document")
-      setContent("")
+      setContent(JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]))
     }
 
     // Load user's documents for knowledge base selector
@@ -123,12 +123,21 @@ export default function EditorPage() {
 
   // Auto-save 2s after user stops typing or changing title
   useEffect(() => {
+    // Don't auto-save if both title and content are empty or if content is just empty Slate structure
     if (!title && !content) return
+    if (!title && content === JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }])) return
+    
+    console.log('Auto-save timer set for title:', title, 'content length:', content?.length)
+    
     const timeout = setTimeout(() => {
+        console.log('Auto-save triggered')
         handleSave(true)
     }, 2000)
 
-    return () => clearTimeout(timeout)
+    return () => {
+      console.log('Auto-save timer cleared')
+      clearTimeout(timeout)
+    }
   }, [title, content])
 
   // Auto-scroll is handled by AI Elements Conversation component
@@ -137,14 +146,57 @@ export default function EditorPage() {
     if (!documentId) return
 
     setIsLoading(true)
-    const response = await apiClient.getDocument(documentId)
+    try {
+      console.log('=== LOADING DOCUMENT ===')
+      console.log('Document ID:', documentId, 'Type:', typeof documentId)
+      
+      const response = await apiClient.getDocument(documentId)
+      console.log('API Response:', response)
 
-    if (response.data) {
-      setDocument(response.data)
-      setTitle(response.data.title)
-      setContent(response.data.content)
-    } else {
-      router.push("/dashboard")
+      if (response.data) {
+        setDocument(response.data)
+        setTitle(response.data.title || "")
+        
+        // Handle content - if it's JSON (from Slate editor), use it as-is
+        // If it's plain text, convert it to Slate format
+        let loadedContent = response.data.content || ""
+        console.log('Raw loaded content:', loadedContent.substring(0, 100) + '...')
+        
+        if (loadedContent) {
+          try {
+            // Try to parse as JSON (Slate format)
+            JSON.parse(loadedContent)
+            console.log('Content is valid JSON (Slate format)')
+            setContent(loadedContent) // It's already in Slate JSON format
+          } catch {
+            // It's plain text, convert to Slate format
+            console.log('Content is plain text, converting to Slate format')
+            const slateContent = JSON.stringify([
+              { type: "paragraph", children: [{ text: loadedContent }] }
+            ])
+            setContent(slateContent)
+          }
+        } else {
+          console.log('No content found, setting empty')
+          setContent("")
+        }
+        
+        // Force a small delay to ensure state updates
+        setTimeout(() => {
+          console.log('Content should now be visible in editor')
+        }, 100)
+        
+        console.log('Document loaded successfully:', response.data.title)
+        console.log('Content type:', typeof loadedContent, 'Length:', loadedContent.length)
+      } else {
+        console.error('No document data received, redirecting to dashboard')
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      console.error('Failed to load document:', error)
+      // Don't redirect on error - stay in editor for new document creation
+      setTitle("Untitled Document")
+      setContent(JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]))
     }
 
     setIsLoading(false)
@@ -185,7 +237,18 @@ export default function EditorPage() {
   }
 
   const handleSave = async (isAutoSave = false) => {
-    if (!title && !content) return
+    console.log('=== SAVING DOCUMENT (SIMPLIFIED) ===')
+    console.log('Document ID:', documentId)
+    console.log('Title:', title)
+    console.log('Content length:', content?.length || 0)
+    console.log('Content preview:', content?.substring(0, 200))
+    console.log('Is auto-save:', isAutoSave)
+    
+    // For debugging, let's save everything for now
+    if (!title && !content) {
+      console.log('Both title and content empty, skipping save')
+      return
+    }
 
     setIsSaving(true)
 
@@ -193,13 +256,16 @@ export default function EditorPage() {
       let response
       if (documentId) {
         // Update existing document
+        console.log('Updating existing document...')
         response = await apiClient.updateDocument(documentId, title, content)
       } else {
         // Create new document
+        console.log('Creating new document...')
         response = await apiClient.createDocument(title, content)
         if (response.data) {
           // Update URL to reflect the new document ID
           const newDocumentId = response.data.id
+          console.log('New document created with ID:', newDocumentId)
           router.replace(`/dashboard/editor/${newDocumentId}`)
           setDocument(response.data)
         }
@@ -207,6 +273,7 @@ export default function EditorPage() {
 
       if (response.data) {
         setLastSaved(new Date())
+        console.log('Document saved successfully:', response.data.title)
         if (!isAutoSave) {
           // Show success message for manual saves
         }
@@ -318,14 +385,15 @@ export default function EditorPage() {
                </div>
             </div>
 
-              {/* Rich Text Editor */}
-              <div className="flex-1 p-4 bg-background">
-                <RichTextEditor
-                  value={content}
-                  onChange={setContent}
-                  placeholder="Начните писать..."
-                />
-              </div>
+                             {/* Rich Text Editor */}
+               <div className="flex-1 p-4 bg-background">
+                 <RichTextEditor
+                   key={documentId || 'new'} // Force re-render when document changes
+                   value={content}
+                   onChange={setContent}
+                   placeholder="Начните писать..."
+                 />
+               </div>
             </div>
           </div>
 

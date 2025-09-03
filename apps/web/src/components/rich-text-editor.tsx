@@ -742,6 +742,32 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
     return [{ type: "paragraph", children: [{ text: "" }] }]
   })
 
+  // Update editor value when the value prop changes (e.g., when loading a document)
+  useEffect(() => {
+    if (value) {
+      try {
+        const parsedValue = JSON.parse(value)
+        // Only update if the content is actually different to avoid unnecessary re-renders
+        if (JSON.stringify(parsedValue) !== JSON.stringify(editorValue)) {
+          console.log('RichTextEditor: Updating editor value from prop')
+          console.log('New value preview:', value.substring(0, 100) + '...')
+          setEditorValue(parsedValue)
+        }
+      } catch {
+        // Handle plain text
+        const textValue = [{ type: "paragraph", children: [{ text: value }] }]
+        if (JSON.stringify(textValue) !== JSON.stringify(editorValue)) {
+          console.log('RichTextEditor: Updating editor with plain text')
+          setEditorValue(textValue)
+        }
+      }
+    } else if (value === "" && editorValue.length > 0) {
+      // Handle empty value
+      console.log('RichTextEditor: Clearing editor value')
+      setEditorValue([{ type: "paragraph", children: [{ text: "" }] }])
+    }
+  }, [value]) // Remove editorValue from dependencies to avoid infinite loops
+
   // Batch parent updates with RAF for smooth performance
   const parentUpdateRef = useRef<number | undefined>(undefined)
   
@@ -755,9 +781,24 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
     }
     
     parentUpdateRef.current = requestAnimationFrame(() => {
-      onChange(JSON.stringify(newValue))
+      const newValueString = JSON.stringify(newValue)
+      console.log('RichTextEditor: onChange triggered')
+      console.log('New value:', newValueString.substring(0, 100) + '...')
+      
+      // Don't call onChange if the content is just empty and we're not intentionally clearing
+      const isEmpty = newValue.length === 1 && 
+                     newValue[0].type === "paragraph" && 
+                     newValue[0].children.length === 1 && 
+                     newValue[0].children[0].text === ""
+      
+      if (isEmpty && value && value !== JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }])) {
+        console.log('RichTextEditor: Preventing empty content override')
+        return
+      }
+      
+      onChange(newValueString)
     })
-  }, [onChange])
+  }, [onChange, value])
 
   // Clean up on unmount
   useEffect(() => {
@@ -950,7 +991,12 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
 
   return (
     <div className="bg-background h-full flex flex-col">
-      <Slate editor={editor} initialValue={editorValue} onChange={handleChange}>
+      <Slate 
+        editor={editor} 
+        initialValue={editorValue} 
+        onChange={handleChange}
+        key={JSON.stringify(editorValue)} // Force re-render when content changes
+      >
         <Toolbar />
         <div className="bg-muted/30 flex-1 overflow-auto">
           <div className="py-8 px-6">

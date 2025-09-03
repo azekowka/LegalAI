@@ -99,7 +99,7 @@ class ApiClient {
     return this.request<Document[]>("/documents/")
   }
 
-  async getDocument(id: number) {
+  async getDocument(id: string) {
     return this.request<Document>(`/documents/${id}`)
   }
 
@@ -110,18 +110,18 @@ class ApiClient {
     })
   }
 
-  async updateDocument(id: number, title?: string, content?: string) {
+  async updateDocument(id: string, title?: string, content?: string) {
     return this.request<Document>(`/documents/${id}`, {
       method: "PUT",
       body: JSON.stringify({ title, content }),
     })
   }
 
-  async deleteDocument(id: number) {
+  async deleteDocument(id: string) {
     return this.request(`/documents/${id}`, { method: "DELETE" })
   }
 
-  async deleteDocuments(ids: number[]) {
+  async deleteDocuments(ids: string[]) {
     return this.request("/documents", {
       method: "DELETE",
       body: JSON.stringify({ ids }),
@@ -132,14 +132,14 @@ class ApiClient {
     return this.request<Document[]>("/documents/garbage")
   }
 
-  async restoreDocument(id: number) {
+  async restoreDocument(id: string) {
     return this.request("/documents/garbage", {
       method: "POST",
       body: JSON.stringify({ action: "restore", id }),
     })
   }
 
-  async permanentlyDeleteDocument(id: number) {
+  async permanentlyDeleteDocument(id: string) {
     return this.request("/documents/garbage", {
       method: "POST",
       body: JSON.stringify({ action: "permanent_delete", id }),
@@ -150,7 +150,7 @@ class ApiClient {
     return this.request("/documents/garbage", { method: "DELETE" })
   }
 
-  async toggleStarDocument(id: number) {
+  async toggleStarDocument(id: string) {
     return this.request<{ message: string, starred: boolean }>(`/documents/${id}/star`, { method: 'POST' })
   }
 
@@ -162,11 +162,11 @@ class ApiClient {
     return this.request<{ documents: Document[], count: number }>(`/documents/recent?limit=${limit}`)
   }
 
-  async updateLastAccessed(id: number) {
+  async updateLastAccessed(id: string) {
     return this.request(`/documents/${id}/access`, { method: 'POST' })
   }
 
-  async exportDocument(id: number, format: "pdf" | "docx" | "txt" = "pdf") {
+  async exportDocument(id: string, format: "pdf" | "docx" | "txt" = "pdf") {
     return this.request(`/documents/${id}/export?format=${format}`)
   }
 

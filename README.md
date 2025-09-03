@@ -47,3 +47,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see the w
 - `pnpm check-types`: Check TypeScript types across all apps
 - `pnpm dlx taze -r`: Update all dependencies
 - `pnpm next dev`: Next dev работает на Webpack, а next dev --turbo включает Turbopack.
+
+## API tests
+- http://localhost:3000/api/test-auth - Authorized user
+- http://localhost:3000/api/migrate-documents - All the documents in current DB

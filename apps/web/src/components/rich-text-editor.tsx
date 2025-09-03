@@ -755,7 +755,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
         }
       } catch {
         // Handle plain text
-        const textValue = [{ type: "paragraph", children: [{ text: value }] }]
+        const textValue: Descendant[] = [{ type: "paragraph", children: [{ text: value }] }]
         if (JSON.stringify(textValue) !== JSON.stringify(editorValue)) {
           console.log('RichTextEditor: Updating editor with plain text')
           setEditorValue(textValue)
@@ -787,6 +787,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
       
       // Don't call onChange if the content is just empty and we're not intentionally clearing
       const isEmpty = newValue.length === 1 && 
+                     SlateElement.isElement(newValue[0]) &&
                      newValue[0].type === "paragraph" && 
                      newValue[0].children.length === 1 && 
                      newValue[0].children[0].text === ""

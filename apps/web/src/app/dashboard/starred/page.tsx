@@ -39,7 +39,7 @@ export default function StarredPage() {
 
   const handleToggleStar = async (docId: number) => {
     try {
-      const response = await apiClient.toggleStarDocument(docId)
+      const response = await apiClient.toggleStarDocument(docId.toString())
       if (response.data) {
         // Удаляем документ из списка избранных
         setDocuments(prev => prev.filter(doc => doc.id !== docId))
@@ -58,7 +58,7 @@ export default function StarredPage() {
     }
 
     try {
-      const response = await apiClient.deleteDocument(docId)
+      const response = await apiClient.deleteDocument(docId.toString())
       if (response.data) {
         alert('Документ перемещен в корзину')
         loadStarredDocuments() // Перезагружаем список

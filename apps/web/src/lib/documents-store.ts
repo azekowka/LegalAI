@@ -326,6 +326,33 @@ export async function cleanupExpiredDocuments(userId: string): Promise<number> {
 }
 
 /**
+ * Cleanup expired documents for all users (permanently delete documents that have been in garbage for 7+ days)
+ * This function is intended for system-wide cleanup operations like cron jobs
+ */
+export async function cleanupAllExpiredDocuments(): Promise<number> {
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    
+    const { data, error } = await supabase
+      .from('documents')
+      .delete()
+      .not('deleted_at', 'is', null)
+      .lt('deleted_at', sevenDaysAgo.toISOString())
+      .select('id')
+
+    if (error) {
+      console.error('Error cleaning up all expired documents:', error)
+      throw new Error('Failed to cleanup all expired documents')
+    }
+
+    return data?.length || 0
+  } catch (error) {
+    console.error('Error in cleanupAllExpiredDocuments:', error)
+    return 0
+  }
+}
+
+/**
  * Create a new document
  */
 export async function createDocument(title: string, content: string, userId: string): Promise<Document> {

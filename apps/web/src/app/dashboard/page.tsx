@@ -167,7 +167,7 @@ export default function DashboardPage() {
     if (!newTitle || newTitle === currentTitle) return
 
     try {
-      const response = await apiClient.updateDocument(docId, newTitle)
+      const response = await apiClient.updateDocument(docId.toString(), newTitle)
       if (response.data) {
         alert('Документ переименован')
         loadData() // Reload documents
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
   const handleToggleStar = async (docId: number) => {
     try {
-      const response = await apiClient.toggleStarDocument(docId)
+      const response = await apiClient.toggleStarDocument(docId.toString())
       if (response.data) {
         // Обновляем статус избранного в локальном состоянии
         setDocuments(prev => prev.map(doc => 
@@ -256,7 +256,7 @@ export default function DashboardPage() {
   const handleDocumentAccess = async (docId: number) => {
     // Обновляем время последнего доступа при открытии документа
     try {
-      await apiClient.updateLastAccessed(docId)
+      await apiClient.updateLastAccessed(docId.toString())
     } catch (error) {
       console.error('Error updating last accessed:', error)
     }

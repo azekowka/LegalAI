@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
-import { cleanupExpiredDocuments } from '@/lib/documents-store'
+import { cleanupAllExpiredDocuments } from '@/lib/documents-store'
 
 // This endpoint can be called by a cron job or scheduled task
 // to automatically clean up documents that have been in garbage for more than 7 days
 export async function POST() {
   try {
-    const cleanedCount = cleanupExpiredDocuments()
+    const cleanedCount = await cleanupAllExpiredDocuments()
     
     console.log(`Cleanup completed: ${cleanedCount} expired documents permanently deleted`)
     

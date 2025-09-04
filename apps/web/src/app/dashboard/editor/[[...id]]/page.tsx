@@ -359,16 +359,16 @@ export default function EditorPage() {
                    </DropdownMenuTrigger>
                    <DropdownMenuContent>
                      <DropdownMenuItem onClick={() => handleExport('pdf')}>
-                       <FileText className="h-4 w-4 mr-2" />
+                       <img src="/pdf.png" alt="PDF icon" width={16} height={16} className="mr-2" />
                        PDF
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleExport('docx')}>
-                       <FileText className="h-4 w-4 mr-2" />
+                       <img src="/docx.svg" alt="DOCX icon" width={16} height={16} className="mr-2" />
                        DOCX
                      </DropdownMenuItem>
                      <DropdownMenuItem onClick={() => handleExport('txt')}>
                        <FileText className="h-4 w-4 mr-2" />
-                       TXT
+                       Поделиться через ссылку
                      </DropdownMenuItem>
                    </DropdownMenuContent>
                  </DropdownMenu>

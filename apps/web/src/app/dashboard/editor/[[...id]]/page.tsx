@@ -15,6 +15,7 @@ import {
   FileCode,
   Globe,
   ChevronDown,
+  Earth,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RichTextEditor } from "@/components/rich-text-editor"
@@ -366,9 +367,9 @@ export default function EditorPage() {
                        <img src="/docx.svg" alt="DOCX icon" width={16} height={16} className="mr-2" />
                        DOCX
                      </DropdownMenuItem>
-                     <DropdownMenuItem onClick={() => handleExport('txt')}>
-                       <FileText className="h-4 w-4 mr-2" />
-                       Поделиться через ссылку
+                     <DropdownMenuItem>
+                       <Earth className="h-4 w-4 mr-2" />
+                       Ссылка
                      </DropdownMenuItem>
                    </DropdownMenuContent>
                  </DropdownMenu>

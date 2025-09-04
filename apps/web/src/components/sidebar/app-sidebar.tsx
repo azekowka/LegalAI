@@ -60,6 +60,7 @@ const staticData = {
       title: "Шаблоны",
       url: "/dashboard/templates",
       icon: LayoutPanelTopIcon,
+      badge: "Beta",
     },
     {
       title: "Избранное",

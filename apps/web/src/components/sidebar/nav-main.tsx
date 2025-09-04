@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
 
 export function NavMain({
   items,
@@ -17,6 +18,7 @@ export function NavMain({
     url: string
     icon?: ComponentType<any>
     isActive?: boolean
+    badge?: string
   }[]
 }) {
   return (
@@ -29,6 +31,11 @@ export function NavMain({
               <a href={item.url}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
+                {item.badge && (
+                  <Badge variant="secondary" className="ml-auto text-xs">
+                    {item.badge}
+                  </Badge>
+                )}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

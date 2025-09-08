@@ -90,7 +90,7 @@ class ApiClient {
     deleteCookie("access_token")
   }
 
-  async getMe() {
+  async getMe(): Promise<ApiResponse<User>> {
     return this.request("/auth/users/me")
   }
 
@@ -235,12 +235,12 @@ class ApiClient {
 export const apiClient = new ApiClient()
 
 export interface Document {
-  id: number
-  user_id: number
-  title: string
-  content: string
-  created_at: string
-  updated_at: string
+  id: string
+  user_id: string
+  title?: string
+  content?: string | null
+  created_at?: string
+  updated_at?: string
   deleted_at?: string
   starred?: boolean
   last_accessed?: string
@@ -249,10 +249,9 @@ export interface Document {
 }
 
 export interface User {
-  id: number
+  id: string
   email: string
   name: string
-  type: string
-  created_at: string
-  image?: string | null; // Add this line
+  emailVerified: boolean
+  image?: string | null
 }

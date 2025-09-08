@@ -40,6 +40,8 @@ export type Database = {
           deleted_at: string | null;
           starred: boolean;
           last_accessed: string | null;
+          share_link_id: string | null;
+          is_public: boolean;
         };
         Insert: {
           id?: string;
@@ -51,6 +53,8 @@ export type Database = {
           deleted_at?: string | null;
           starred?: boolean;
           last_accessed?: string | null;
+          share_link_id?: string | null;
+          is_public?: boolean;
         };
         Update: {
           id?: string;
@@ -62,6 +66,8 @@ export type Database = {
           deleted_at?: string | null;
           starred?: boolean;
           last_accessed?: string | null;
+          share_link_id?: string | null;
+          is_public?: boolean;
         };
       };
     };

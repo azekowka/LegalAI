@@ -29,7 +29,7 @@ import { DocumentCreationModal } from "@/components/document-creation-modal";
 export default function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedDocuments, setSelectedDocuments] = useState<Set<number>>(new Set())
+  const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
   const [isDeleteMode, setIsDeleteMode] = useState(false)
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
@@ -79,7 +79,7 @@ export default function DashboardPage() {
     })
   }
 
-  const toggleDocumentSelection = (docId: number) => {
+  const toggleDocumentSelection = (docId: string) => {
     const newSelection = new Set(selectedDocuments)
     if (newSelection.has(docId)) {
       newSelection.delete(docId)
@@ -130,7 +130,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleDeleteSingle = async (docId: number, docTitle: string) => {
+  const handleDeleteSingle = async (docId: string, docTitle: string) => {
     const confirmed = confirm(`Вы уверены, что хотите удалить документ "${docTitle}"? Он будет перемещен в корзину.`)
     if (!confirmed) return
 
@@ -164,7 +164,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleRenameDocument = async (docId: number, currentTitle: string) => {
+  const handleRenameDocument = async (docId: string, currentTitle: string) => {
     const newTitle = prompt('Введите новое название документа:', currentTitle)
     if (!newTitle || newTitle === currentTitle) return
 
@@ -182,7 +182,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleCopyDocument = async (docId: number, docTitle: string) => {
+  const handleCopyDocument = async (docId: string, docTitle: string) => {
     try {
       const originalDoc = documents.find(doc => doc.id === docId)
       if (!originalDoc) {
@@ -192,7 +192,7 @@ export default function DashboardPage() {
 
       const response = await apiClient.createDocument(
         `Копия ${docTitle}`,
-        originalDoc.content
+        originalDoc.content || ""
       )
       
       if (response.data) {
@@ -207,7 +207,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleDownloadDocument = async (docId: number, docTitle: string) => {
+  const handleDownloadDocument = async (docId: string, docTitle: string) => {
     try {
       const doc = documents.find(d => d.id === docId)
       if (!doc) {
@@ -236,7 +236,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleToggleStar = async (docId: number) => {
+  const handleToggleStar = async (docId: string) => {
     try {
       const response = await apiClient.toggleStarDocument(docId.toString())
       if (response.data) {
@@ -255,7 +255,7 @@ export default function DashboardPage() {
     }
   }
 
-  const handleDocumentAccess = async (docId: number) => {
+  const handleDocumentAccess = async (docId: string) => {
     // Обновляем время последнего доступа при открытии документа
     try {
       await apiClient.updateLastAccessed(docId.toString())
@@ -319,7 +319,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {documents.length > 0 ? formatDate(documents[0].updated_at) : "Нет данных"}
+                {documents.length > 0 ? formatDate(documents[0].updated_at || "") : "Нет данных"}
               </div>
             </CardContent>
           </Card>
@@ -457,7 +457,7 @@ export default function DashboardPage() {
                           )}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Обновлено {formatDate(doc.updated_at)}
+                          Обновлено {formatDate(doc.updated_at || "")}
                         </p>
                       </Link>
                     </div>
@@ -470,7 +470,7 @@ export default function DashboardPage() {
                           size="sm"
                           onClick={(e) => {
                             e.preventDefault()
-                            handleDeleteSingle(doc.id, doc.title)
+                            handleDeleteSingle(doc.id, doc.title || "")
                           }}
                           className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
@@ -501,19 +501,19 @@ export default function DashboardPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem
-                              onClick={() => handleRenameDocument(doc.id, doc.title)}
+                              onClick={() => handleRenameDocument(doc.id, doc.title || "")}
                             >
                               <Edit className="mr-2 h-4 w-4" />
                               Переименовать
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleCopyDocument(doc.id, doc.title)}
+                              onClick={() => handleCopyDocument(doc.id, doc.title || "")}
                             >
                               <Copy className="mr-2 h-4 w-4" />
                               Создать копию
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleDownloadDocument(doc.id, doc.title)}
+                              onClick={() => handleDownloadDocument(doc.id, doc.title || "")}
                             >
                               <Download className="mr-2 h-4 w-4" />
                               Скачать
@@ -521,7 +521,7 @@ export default function DashboardPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               className="text-red-600 focus:text-red-600"
-                              onClick={() => handleDeleteSingle(doc.id, doc.title)}
+                              onClick={() => handleDeleteSingle(doc.id, doc.title || "")}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Удалить

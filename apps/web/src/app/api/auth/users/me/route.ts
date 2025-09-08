@@ -10,9 +10,7 @@ export async function GET(request: NextRequest) {
       id: user.id,
       email: user.email,
       name: user.name,
-      type: user.type, // Assuming type is available from Better Auth user object
-      created_at: user.created_at, // Assuming created_at is available
-      image: user.image || null, // Include image, with fallback
+      image: user.image || null,
     })
   } catch (error) {
     console.error('Error fetching user data:', error)

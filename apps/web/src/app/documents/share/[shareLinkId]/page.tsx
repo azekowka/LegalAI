@@ -74,7 +74,7 @@ export default function SharedDocumentPage() {
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-4">{document.title}</h1>
       <div className="border rounded-md p-4 bg-background">
-        <RichTextEditor value={document.content} readOnly={true} />
+        <RichTextEditor value={document.content} readOnly={true} onChange={() => {}} />
       </div>
     </div>
   )

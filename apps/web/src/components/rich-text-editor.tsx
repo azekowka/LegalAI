@@ -56,10 +56,18 @@ type CustomElement = {
     | "link"
     | "blockquote"
     | "code-block"
+    | "table"
+    | "table-row"
+    | "table-header-cell"
+    | "table-cell"
+    | "boxed-field"
+    | "table-head"
+    | "table-body"
   align?: "left" | "center" | "right" | "justify"
   url?: string
   indent?: number
   children: CustomText[]
+  fieldName?: string; // Add fieldName for boxed-field type
 }
 
 type CustomText = {
@@ -1096,6 +1104,48 @@ const Element = memo(({ attributes, children, element }: any) => {
         <li style={style} className="my-1" {...attributes}>
           {children}
         </li>
+      )
+    case "table":
+      return (
+        <table className="w-full border-collapse border border-gray-300 my-4" {...attributes}>
+          {children}
+        </table>
+      )
+    case "table-head": // New table head renderer
+      return (
+        <thead {...attributes}>
+          {children}
+        </thead>
+      )
+    case "table-body": // New table body renderer
+      return (
+        <tbody {...attributes}>
+          {children}
+        </tbody>
+      )
+    case "table-row":
+      return (
+        <tr className="border-b border-gray-300 last:border-b-0" {...attributes}>
+          {children}
+        </tr>
+      )
+    case "table-header-cell":
+      return (
+        <th className="border border-gray-300 p-2 text-left bg-gray-100 font-bold" {...attributes}>
+          {children}
+        </th>
+      )
+    case "table-cell":
+      return (
+        <td className="border border-gray-300 p-2 text-left" {...attributes}>
+          {children}
+        </td>
+      )
+    case "boxed-field":
+      return (
+        <span contentEditable={false} className="inline-block border border-gray-400 px-2 py-1 rounded bg-gray-50 text-gray-800 text-sm font-semibold whitespace-nowrap" {...attributes}>
+          {children}
+        </span>
       )
     case "heading-one":
       return (

@@ -5,6 +5,7 @@ import { Search, MoreHorizontal, FileText, ChevronDown, Trash2, RotateCcw, Plus 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation"; // Import useRouter
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,39 +27,41 @@ interface Template {
   documents: number;
   status: "Черновик" | "Опубликован";
   lastModified: string;
+  // filepath?: string; // Removed filepath property
 }
 
 const mockTemplates: Template[] = [
   {
-    id: "1",
+    id: "contract_for_services",
     name: "Договор оказания услуг",
     documents: 12,
     status: "Опубликован",
     lastModified: "15 дек 2023, 14:30",
   },
   {
-    id: "2",
+    id: "avr",
     name: "Акт выполненных работ",
     documents: 8,
     status: "Черновик",
     lastModified: "14 дек 2023, 16:15",
+    // filepath: "templates/avr.md", // Removed filepath
   },
   {
-    id: "3",
+    id: "commercial_offer",
     name: "Коммерческое предложение",
     documents: 15,
     status: "Опубликован",
     lastModified: "13 дек 2023, 10:45",
   },
   {
-    id: "4",
+    id: "invoice",
     name: "Счет на оплату",
     documents: 6,
     status: "Черновик",
     lastModified: "12 дек 2023, 15:20",
   },
   {
-    id: "5",
+    id: "nda",
     name: "Соглашение о конфиденциальности",
     documents: 9,
     status: "Опубликован",
@@ -72,6 +75,7 @@ export default function TemplatesDashboard() {
   const [activeTab, setActiveTab] = useState("all");
   const [templates, setTemplates] = useState<Template[]>(mockTemplates);
   const [deletedTemplates, setDeletedTemplates] = useState<Template[]>([]);
+  const router = useRouter(); // Initialize useRouter
 
   const moveToTrash = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
@@ -242,7 +246,11 @@ export default function TemplatesDashboard() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem>Редактировать</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              // if (template.filepath) {
+                              router.push(`/dashboard/editor?templateId=${template.id}&templateName=${encodeURIComponent(template.name)}`);
+                              // }
+                            }}>Редактировать</DropdownMenuItem>
                             <DropdownMenuItem>Дублировать</DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive"

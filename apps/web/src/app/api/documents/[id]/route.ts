@@ -21,8 +21,10 @@ export async function GET(
     }
 
     if (user) {
-      // If authenticated, try to find the document by ID for this user
+      console.log('Attempting to find document by ID and user ID...')
+      console.log('Searching for document with ID:', id, 'for user ID:', user.id)
       document = await findDocumentById(id, user.id)
+      console.log('Result of findDocumentById:', document ? 'Found' : 'Not Found')
     }
 
     if (!document && shareLinkId) {

@@ -1,41 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { findDocumentById, updateDocument, deleteDocument, updateLastAccessed } from '@/lib/documents-store'
+import { findDocumentById, updateDocument, deleteDocument, updateLastAccessed, findDocumentByShareLinkId } from '@/lib/documents-store'
 import { requireAuth } from '@/lib/auth-utils'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let user = null
+  let document = null
+  const { id } = await params
+  const searchParams = request.nextUrl.searchParams
+  const shareLinkId = searchParams.get('shareLinkId')
+
   try {
-    const user = await requireAuth(request)
-    const { id } = await params
-    
+    // First, try to authenticate the user
+    try {
+      user = await requireAuth(request)
+    } catch (authError) {
+      console.log("Authentication skipped, attempting public access.", authError)
+    }
+
+    if (user) {
+      // If authenticated, try to find the document by ID for this user
+      document = await findDocumentById(id, user.id)
+    }
+
+    if (!document && shareLinkId) {
+      // If not found by authenticated user OR no user, and shareLinkId is present, try public access
+      const publicDocument = await findDocumentByShareLinkId(shareLinkId)
+      if (publicDocument && publicDocument.id === id) {
+        document = publicDocument
+      } else if (publicDocument && publicDocument.id !== id) {
+        // Share link ID belongs to a different document
+        return NextResponse.json({ error: "Invalid share link ID for this document" }, { status: 400 })
+      }
+    }
+
     console.log('=== DOCUMENT GET DEBUG ===')
     console.log('Document ID from URL:', id, 'Type:', typeof id)
-    console.log('User ID:', user.id, 'Type:', typeof user.id)
-    
-    const document = await findDocumentById(id, user.id)
-    
-    console.log('Found document:', document?.id, 'Title:', document?.title)
-    console.log('Document content length:', document?.content?.length || 0)
-    console.log('Document content preview:', document?.content?.substring(0, 100) + '...')
-    
-    if (!document) {
-      return NextResponse.json({ error: "Document not found" }, { status: 404 })
+    if (user) {
+      console.log('User ID (authenticated):', user.id, 'Type:', typeof user.id)
+    } else {
+      console.log('No authenticated user for this request.')
     }
     
-    // Update last accessed timestamp
-    await updateLastAccessed(id, user.id)
+    if (!document) {
+      // If document still not found (either private or public access failed)
+      return NextResponse.json({ error: "Document not found or unauthorized" }, { status: 404 })
+    }
+
+    console.log('Found document:', document.id, 'Title:', document.title)
+    console.log('Document content length:', document.content?.length || 0)
+    console.log('Document content preview:', document.content?.substring(0, 100) + '...')
+    
+    // Update last accessed timestamp only if accessed by an authenticated user
+    if (user) {
+      await updateLastAccessed(id, user.id)
+    }
     
     return NextResponse.json(document)
   } catch (error) {
     console.error('Error fetching document:', error)
-    if (error instanceof Error && error.message === 'Authentication required') {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
+    // Generic error for unexpected issues
     return NextResponse.json(
       { error: "Failed to fetch document" },
       { status: 500 }

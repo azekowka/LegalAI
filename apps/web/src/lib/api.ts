@@ -103,6 +103,10 @@ class ApiClient {
     return this.request<Document>(`/documents/${id}`)
   }
 
+  async getSharedDocument(shareLinkId: string) {
+    return this.request<Document>(`/documents/share/${shareLinkId}`)
+  }
+
   async createDocument(title: string, content: string) {
     return this.request<Document>("/documents/", {
       method: "POST",
@@ -170,6 +174,16 @@ class ApiClient {
     return this.request(`/documents/${id}/export?format=${format}`)
   }
 
+  /**
+   * Generates or updates a document's share link and its public status.
+   */
+  async generateShareLink(id: string, isPublic: boolean) {
+    return this.request<{ shareUrl: string; isPublic: boolean }>(`/documents/${id}/share`, {
+      method: "POST",
+      body: JSON.stringify({ isPublic }),
+    })
+  }
+
   // Chat methods
   async chat(
     messages: Array<{ role: string; content: string }>, 
@@ -230,6 +244,8 @@ export interface Document {
   deleted_at?: string
   starred?: boolean
   last_accessed?: string
+  share_link_id?: string | null
+  is_public?: boolean
 }
 
 export interface User {
@@ -238,4 +254,5 @@ export interface User {
   name: string
   type: string
   created_at: string
+  image?: string | null; // Add this line
 }

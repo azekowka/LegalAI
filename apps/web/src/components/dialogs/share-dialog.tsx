@@ -65,9 +65,12 @@ export function ShareDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl p-0">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="flex items-center justify-between text-xl font-semibold">
-            <span>Поделиться "{documentTitle}"</span>
+        <DialogHeader className="p-6 pb-0 pr-8">
+          <DialogTitle className="flex items-center text-xl font-semibold">
+            <div className="flex items-center">
+              <span>Поделиться "{documentTitle}"</span>
+              <Badge variant="outline" className="ml-2">Beta</Badge>
+            </div>
             {/* Removed Settings and HelpCircle icons */}
           </DialogTitle>
           <DialogDescription className="sr-only">Настройки доступа к документу.</DialogDescription>
@@ -76,7 +79,10 @@ export function ShareDialog({
         <div className="p-6 pt-4 space-y-6">
           {/* People with access section */}
           <div className="space-y-4">
-            <Input placeholder="Добавить коллабораторов" />
+            <div className="flex items-center gap-2">
+              <Input placeholder="Добавить коллабораторов" disabled className="flex-grow" />
+              <span className="text-sm text-muted-foreground whitespace-nowrap">В разработке</span>
+            </div>
             <h3 className="text-md font-semibold">Люди с доступом</h3>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

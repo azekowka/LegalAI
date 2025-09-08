@@ -1,11 +1,7 @@
-export const avrTemplate = `Акт Выполненных Работ
-
-
-Приложение 50
+export const avrTemplate = `Приложение 50
 к приказу Министра финансов
 Республики Казахстан
 от 20 декабря 2012 года № 562
-
 Форма Р-1
 
 Заказчик
@@ -53,12 +49,6 @@ export const avrTemplate = `Акт Выполненных Работ
 [[box:document_number]]
 
 [[box:compilation_date]]
-
-
-
-АКТ ВЫПОЛНЕННЫХ РАБОТ
-
-
 
 №
 

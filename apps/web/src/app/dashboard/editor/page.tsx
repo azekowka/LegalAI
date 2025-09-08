@@ -102,7 +102,8 @@ export default function EditorPage() {
           setFormData(initialFormData);
 
           const convertedSlate = markdownToSlate(data);
-          setSlateContent(convertedSlate);
+          const aligned = alignHeaderRight(convertedSlate);
+          setSlateContent(aligned);
 
         } catch (err: any) {
           setError(err.message);
@@ -143,6 +144,31 @@ export default function EditorPage() {
     return updatedMd;
   };
 
+  // Align initial header block (until the line 'Заказчик') to the right without changing plain text
+  const alignHeaderRight = (nodes: Descendant[]): Descendant[] => {
+    try {
+      const result: Descendant[] = JSON.parse(JSON.stringify(nodes));
+      let reachedCustomer = false;
+      for (const node of result as any[]) {
+        if (reachedCustomer) break;
+        if (node.type === 'paragraph' && Array.isArray(node.children)) {
+          const textContent = node.children.map((c: any) => c.text ?? '').join('');
+          if (textContent.trim() === 'Заказчик') {
+            reachedCustomer = true;
+            break;
+          }
+          // Right-align non-empty header paragraphs
+          if (textContent.trim().length > 0) {
+            (node as any).align = 'right';
+          }
+        }
+      }
+      return result;
+    } catch {
+      return nodes;
+    }
+  };
+
   // Effect to update slateContent when formData, markdownContent or workRowsData changes
   useEffect(() => {
     if (markdownContent) {
@@ -150,7 +176,8 @@ export default function EditorPage() {
       console.log("Filled Markdown:", filledMarkdown); // Log the markdown after placeholders
       const convertedSlate = markdownToSlate(filledMarkdown);
       console.log("Converted Slate JSON:", JSON.stringify(convertedSlate, null, 2)); // Log the Slate JSON
-      setSlateContent(convertedSlate);
+      const aligned = alignHeaderRight(convertedSlate);
+      setSlateContent(aligned);
     }
   }, [formData, markdownContent, workRowsData]);
 

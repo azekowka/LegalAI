@@ -76,7 +76,7 @@ export function ShareDialog({
           <DialogDescription className="sr-only">Настройки доступа к документу.</DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 pt-4 space-y-6">
+        <div className="p-6 pt-2 space-y-6">
           {/* People with access section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">

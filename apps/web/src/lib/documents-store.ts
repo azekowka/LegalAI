@@ -443,7 +443,7 @@ export async function createDocument(title: string, content: string, userId: str
       .single()
 
     if (error) {
-      console.error('Error creating document:', error)
+      console.error('Supabase Error creating document:', JSON.stringify(error, null, 2)) // Stringify the error object
       throw new Error('Failed to create document')
     }
 
@@ -609,6 +609,77 @@ export async function getRecentDocuments(userId: string, limit: number = 10): Pr
     return documents
   } catch (error) {
     console.error('Error in getRecentDocuments:', error)
+    throw error
+  }
+}
+
+export async function updateDocumentShareStatus(
+  id: string,
+  userId: string,
+  shareLinkId: string,
+  isPublic: boolean
+): Promise<void> {
+  try {
+    console.log('=== DOCUMENTS STORE UPDATE SHARE STATUS ===')
+    console.log('Document ID:', id)
+    console.log('User ID:', userId)
+    console.log('Share Link ID:', shareLinkId)
+    console.log('Is Public:', isPublic)
+
+    const { error } = await supabase
+      .from('documents')
+      .update({ share_link_id: shareLinkId, is_public: isPublic })
+      .eq('id', id)
+      .eq('user_id', userId) // Ensure only owner can update
+
+    if (error) {
+      console.error('Error updating document share status:', error)
+      throw new Error('Failed to update document share status')
+    }
+
+    await deleteCached([
+      cacheKeys.userDocuments(userId),
+      cacheKeys.document(id),
+      cacheKeys.recentDocuments(userId),
+      cacheKeys.starredDocuments(userId),
+    ])
+
+    console.log('Document share status updated successfully')
+  } catch (error) {
+    console.error('Error in updateDocumentShareStatus:', error)
+    throw error
+  }
+}
+
+/**
+ * Find a document by share_link_id and ensure it is public
+ */
+export async function findDocumentByShareLinkId(shareLinkId: string): Promise<Document | null> {
+  try {
+    console.log('=== DOCUMENTS STORE FIND BY SHARE LINK ID ===')
+    console.log('Looking for share link ID:', shareLinkId)
+
+    const { data, error } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('share_link_id', shareLinkId)
+      .eq('is_public', true)
+      .is('deleted_at', null) // Ensure it's not a deleted document
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        console.log('Document not found by share link ID (PGRST116)')
+        return null
+      }
+      console.error('Error finding document by share link ID:', error)
+      throw new Error('Failed to find document by share link ID')
+    }
+
+    console.log('Found public document:', data.id, 'Title:', data.title)
+    return data
+  } catch (error) {
+    console.error('Error in findDocumentByShareLinkId:', error)
     throw error
   }
 }

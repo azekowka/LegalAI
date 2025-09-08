@@ -10,18 +10,20 @@ import {
   FileText,
   Save,
   Bot,
+  Link,
   Download,
   RefreshCw,
   FileCode,
   Globe,
   ChevronDown,
   Earth,
+  Share2,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { apiClient, type Document } from "@/lib/api"
 import { WordCountDialog } from "@/components/dialogs/word-count-dialog"
-import { LinkDialog } from "@/components/dialogs/link-dialog"
+import { ShareDialog } from "@/components/dialogs/share-dialog" // Renamed from LinkDialog
 import ChatBotDemo from '@/components/chatbot-demo'
 import {
   Breadcrumb,
@@ -33,6 +35,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import LinkIcon from "@/components/icons/link-icon"
 
 interface ChatMessage {
   role: "user" | "assistant"
@@ -72,15 +75,32 @@ export default function EditorPage() {
   const [documentsList, setDocumentsList] = useState<Document[]>([])
   const [user, setUser] = useState<any>(null)
   const [showWordCount, setShowWordCount] = useState(false)
-  const [showLinkDialog, setShowLinkDialog] = useState(false)
+  const [showShareDialog, setShowShareDialog] = useState(false) // Renamed from showLinkDialog
   const [sidebarWidth, setSidebarWidth] = useState(384) // default 24rem (w-96)
   const isResizingRef = useRef(false)
+
+  // Removed sharedLink and isSharedLinkPublic states
 
   // Available tools
   const availableTools = [
     { id: "web_search", name: "Web Search", icon: Globe, description: "Search the web for information" },
     { id: "file_analysis", name: "File Analysis", icon: FileCode, description: "Analyze document structure" },
   ]
+
+  // Load user data independently
+  useEffect(() => {
+    ;(async () => {
+      const userResponse = await apiClient.getMe()
+      console.log("Raw userResponse from apiClient.getMe():", JSON.stringify(userResponse, null, 2)) // Add this log
+      if (userResponse.data && userResponse.data.email && userResponse.data.name) { // Explicitly check for valid user data
+        setUser(userResponse.data)
+        console.log("User state after setUser:", userResponse.data)
+      } else {
+        console.log("User data from apiClient.getMe() is invalid or incomplete:", userResponse.data)
+        setUser(null) // Ensure user is null if data is invalid
+      }
+    })()
+  }, []) // Empty dependency array means this runs once on mount
 
   // Load stored conversation ID from localStorage
   useEffect(() => {
@@ -109,12 +129,6 @@ export default function EditorPage() {
 
     // Load user's documents for knowledge base selector
     ;(async () => {
-      // Load user data
-      const userResponse = await apiClient.getMe()
-      if (userResponse.data) {
-        setUser(userResponse.data)
-      }
-
       const res = await apiClient.getDocuments()
       if (res.data) {
         setDocumentsList(res.data)
@@ -158,6 +172,15 @@ export default function EditorPage() {
         setDocument(response.data)
         setTitle(response.data.title || "")
         
+        // Ensure share_link_id and is_public are set in document state
+        // The previous setDocument call already sets the entire document, so we can refine this.
+        setDocument(prevDoc => ({
+          ...prevDoc, // Keep existing properties
+          ...response.data, // Overlay with new data from response
+          share_link_id: response.data.share_link_id || null,
+          is_public: response.data.is_public || false,
+        }));
+
         // Handle content - if it's JSON (from Slate editor), use it as-is
         // If it's plain text, convert it to Slate format
         let loadedContent = response.data.content || ""
@@ -268,7 +291,13 @@ export default function EditorPage() {
           const newDocumentId = response.data.id
           console.log('New document created with ID:', newDocumentId)
           router.replace(`/dashboard/editor/${newDocumentId}`)
-          setDocument(response.data)
+          
+          // Ensure share_link_id and is_public are set for new documents
+          setDocument({
+            ...response.data,
+            share_link_id: response.data.share_link_id || null,
+            is_public: response.data.is_public || false,
+          });
         }
       }
 
@@ -301,6 +330,37 @@ export default function EditorPage() {
     } catch (error) {
       console.error('Export failed:', error)
       alert('Ошибка экспорта документа')
+    }
+  }
+
+  const handleOpenShareDialog = () => {
+    if (!documentId || !document) {
+      alert('Сначала сохраните документ')
+      return
+    }
+    setShowShareDialog(true)
+  }
+
+  const handleUpdateShareSettings = async (isPublic: boolean, role: 'viewer' | 'commenter' | 'editor') => {
+    if (!documentId) return
+    try {
+      const response = await apiClient.generateShareLink(documentId, isPublic) // This will also update is_public
+      if (response.data) {
+        // Update local document state to reflect new share settings
+        setDocument(prevDoc => {
+          if (prevDoc) {
+            return { ...prevDoc, is_public: response.data.isPublic, share_link_id: response.data.shareUrl.split('/').pop() };
+          }
+          return prevDoc;
+        });
+        console.log('Share settings updated successfully', response.data)
+        // Optionally, show a toast notification
+      } else if (response.error) {
+        alert(`Ошибка обновления настроек доступа: ${response.error}`)
+      }
+    } catch (error) {
+      console.error('Error updating share settings:', error)
+      alert('Произошла ошибка при обновлении настроек доступа')
     }
   }
 
@@ -367,8 +427,8 @@ export default function EditorPage() {
                        <img src="/docx.svg" alt="DOCX icon" width={16} height={16} className="mr-2" />
                        DOCX
                      </DropdownMenuItem>
-                     <DropdownMenuItem>
-                       <Earth className="h-4 w-4 mr-2" />
+                     <DropdownMenuItem onClick={handleOpenShareDialog}> {/* Single button for share dialog */}
+                       <LinkIcon className="h-4 w-4 mr-2" />
                        Ссылка
                      </DropdownMenuItem>
                    </DropdownMenuContent>
@@ -432,15 +492,21 @@ export default function EditorPage() {
         content={content}
       />
 
-      {/* Link Dialog */}
-      <LinkDialog
-        open={showLinkDialog}
-        onOpenChange={setShowLinkDialog}
-        onInsertLink={(url, text) => {
-          console.log("Insert link:", { url, text })
-          setShowLinkDialog(false)
-        }}
-      />
+      {/* Share Dialog */}
+      {console.log("User state before ShareDialog:", user)} {/* Add this log */}
+      {document && user && user.name && user.email && (
+        <ShareDialog
+          open={showShareDialog}
+          onOpenChange={setShowShareDialog}
+          documentTitle={document.title || "Без названия"} // Use a Russian default title
+          shareUrl={document.share_link_id ? `${window.location.origin}/documents/share/${document.share_link_id}` : null}
+          isShareLinkPublic={document.is_public || false}
+          onUpdateShareSettings={handleUpdateShareSettings}
+          currentUserEmail={user.email}
+          currentUserName={user.name}
+          currentUserImage={user.image}
+        />
+      )}
     </div>
   )
 }

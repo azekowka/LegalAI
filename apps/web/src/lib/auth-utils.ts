@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
   email: string
   name: string
   emailVerified: boolean
+  image?: string | null // Add this line
 }
 
 /**
@@ -32,7 +33,8 @@ export async function getCurrentUser(request: NextRequest): Promise<Authenticate
       id: session.user.id,
       email: session.user.email,
       name: session.user.name,
-      emailVerified: session.user.emailVerified
+      emailVerified: session.user.emailVerified,
+      image: session.user.image || null, // Include image, with fallback
     }
     
     console.log('Authenticated user:', user)

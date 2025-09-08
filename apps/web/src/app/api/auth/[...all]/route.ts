@@ -16,6 +16,7 @@ const getAllowedOrigins = (): string[] => {
 // Add CORS headers to the handler with proper security
 const addCorsHeaders = (request: Request, response: Response) => {
   const origin = request.headers.get('origin');
+  console.log('Request origin:', origin);
   
   if (process.env.NODE_ENV === 'development') {
     // В development разрешаем любой origin с credentials для удобства разработки

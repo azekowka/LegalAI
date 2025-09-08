@@ -37,7 +37,7 @@ export default function StarredPage() {
     loadStarredDocuments()
   }, [])
 
-  const handleToggleStar = async (docId: number) => {
+  const handleToggleStar = async (docId: string) => {
     try {
       const response = await apiClient.toggleStarDocument(docId.toString())
       if (response.data) {
@@ -52,7 +52,7 @@ export default function StarredPage() {
     }
   }
 
-  const handleDeleteSingle = async (docId: number, docTitle: string) => {
+  const handleDeleteSingle = async (docId: string, docTitle: string) => {
     if (!confirm(`Вы уверены, что хотите переместить документ "${docTitle}" в корзину?`)) {
       return
     }
@@ -71,7 +71,7 @@ export default function StarredPage() {
     }
   }
 
-  const handleCopyDocument = async (docId: number, docTitle: string) => {
+  const handleCopyDocument = async (docId: string, docTitle: string) => {
     try {
       const originalDoc = documents.find(doc => doc.id === docId)
       if (!originalDoc) {
@@ -81,7 +81,7 @@ export default function StarredPage() {
 
       const response = await apiClient.createDocument(
         `Копия ${docTitle}`,
-        originalDoc.content
+        originalDoc.content || ""
       )
       
       if (response.data) {
@@ -95,7 +95,7 @@ export default function StarredPage() {
     }
   }
 
-  const handleDownloadDocument = async (docId: number, docTitle: string) => {
+  const handleDownloadDocument = async (docId: string, docTitle: string) => {
     try {
       const doc = documents.find(d => d.id === docId)
       if (!doc) {
@@ -180,7 +180,7 @@ export default function StarredPage() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
-                      Обновлен {formatDate(doc.updated_at)}
+                      Обновлен {formatDate(doc.updated_at || "")}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
@@ -196,7 +196,7 @@ export default function StarredPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleToggleStar(doc.id)}
+                  onClick={() => handleToggleStar(doc.id.toString())}
                   className="text-orange-500 hover:text-orange-600"
                 >
                   <Flame className="h-4 w-4 fill-current" />
@@ -216,13 +216,13 @@ export default function StarredPage() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => handleCopyDocument(doc.id, doc.title)}
+                      onClick={() => handleCopyDocument(doc.id.toString(), doc.title || "")}
                     >
                       <Copy className="mr-2 h-4 w-4" />
                       Создать копию
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => handleDownloadDocument(doc.id, doc.title)}
+                      onClick={() => handleDownloadDocument(doc.id.toString(), doc.title || "")}
                     >
                       <Download className="mr-2 h-4 w-4" />
                       Скачать
@@ -230,7 +230,7 @@ export default function StarredPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-red-600 focus:text-red-600"
-                      onClick={() => handleDeleteSingle(doc.id, doc.title)}
+                      onClick={() => handleDeleteSingle(doc.id.toString(), doc.title || "")}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Переместить в корзину

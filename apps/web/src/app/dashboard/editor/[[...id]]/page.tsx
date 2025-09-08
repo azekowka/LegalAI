@@ -176,9 +176,12 @@ export default function EditorPage() {
         // The previous setDocument call already sets the entire document, so we can refine this.
         setDocument(prevDoc => ({
           ...prevDoc, // Keep existing properties
-          ...response.data, // Overlay with new data from response
-          share_link_id: response.data.share_link_id || null,
-          is_public: response.data.is_public || false,
+          ...(response.data ? response.data : {}),
+          id: response.data?.id || documentId || "", // Fallback to documentId or empty string
+          user_id: response.data?.user_id || prevDoc?.user_id || "", // Fallback to prevDoc user_id or empty string
+          title: response.data?.title || prevDoc?.title || "", // Fallback to prevDoc title or empty string
+          share_link_id: response.data?.share_link_id || null,
+          is_public: response.data?.is_public || false,
         }));
 
         // Handle content - if it's JSON (from Slate editor), use it as-is
@@ -349,7 +352,7 @@ export default function EditorPage() {
         // Update local document state to reflect new share settings
         setDocument(prevDoc => {
           if (prevDoc) {
-            return { ...prevDoc, is_public: response.data.isPublic, share_link_id: response.data.shareUrl.split('/').pop() };
+            return { ...prevDoc, is_public: response.data?.isPublic || false, share_link_id: response.data?.shareUrl.split('/').pop() || null };
           }
           return prevDoc;
         });

@@ -59,7 +59,7 @@ export default function GarbagePage() {
     return Math.max(0, daysLeft)
   }
 
-  const handleRestore = async (docId: number, docTitle: string) => {
+  const handleRestore = async (docId: string, docTitle: string) => {
     const confirmed = confirm(`Восстановить документ "${docTitle}"?`)
     if (!confirmed) return
 
@@ -88,7 +88,7 @@ export default function GarbagePage() {
     }
   }
 
-  const handlePermanentDelete = async (docId: number, docTitle: string) => {
+  const handlePermanentDelete = async (docId: string, docTitle: string) => {
     const confirmed = confirm(`ВНИМАНИЕ! Вы собираетесь навсегда удалить документ "${docTitle}". Это действие нельзя отменить. Продолжить?`)
     if (!confirmed) return
 
@@ -235,7 +235,7 @@ export default function GarbagePage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleRestore(doc.id, doc.title)}
+                        onClick={() => handleRestore(doc.id, doc.title || "")}
                         disabled={isProcessing}
                         className="flex items-center gap-1"
                       >
@@ -245,7 +245,7 @@ export default function GarbagePage() {
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handlePermanentDelete(doc.id, doc.title)}
+                        onClick={() => handlePermanentDelete(doc.id, doc.title || "")}
                         disabled={isProcessing}
                         className="flex items-center gap-1"
                       >

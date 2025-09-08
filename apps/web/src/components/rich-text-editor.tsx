@@ -92,6 +92,7 @@ interface RichTextEditorProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  readOnly?: boolean
 }
 
 // Helper functions
@@ -725,7 +726,7 @@ const Toolbar = memo(() => {
   )
 })
 
-export function RichTextEditor({ value, onChange, placeholder = "Start writing..." }: RichTextEditorProps) {
+export function RichTextEditor({ value, onChange, placeholder = "Start writing...", readOnly = false }: RichTextEditorProps) {
   const renderElement = useCallback((props: any) => <Element {...props} />, [])
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, [])
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
@@ -1016,6 +1017,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             placeholder={placeholder}
+            readOnly={readOnly}
             spellCheck
             autoFocus
                   onKeyDown={handleKeyDown}

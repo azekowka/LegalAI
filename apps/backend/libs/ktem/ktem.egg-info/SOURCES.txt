@@ -41,6 +41,7 @@ ktem/index/file/exceptions.py
 ktem/index/file/index.py
 ktem/index/file/pipelines.py
 ktem/index/file/ui.py
+ktem/index/file/ui.pyi
 ktem/index/file/utils.py
 ktem/index/file/graph/__init__.py
 ktem/index/file/graph/graph_index.py

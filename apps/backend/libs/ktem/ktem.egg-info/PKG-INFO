@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: ktem
-Version: 0.11.0
+Version: 0.0.1
 Summary: RAG-based Question and Answering Application
 Author-email: "@trducng" <john@cinnamon.is>, "@lone17" <ian@cinnamon.is>, "@taprosoft" <tadashi@cinnamon.is>, "@cin-albert" <albert@cinnamon.is>
 Classifier: Programming Language :: Python :: 3

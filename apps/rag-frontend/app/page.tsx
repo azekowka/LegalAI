@@ -448,6 +448,44 @@ export default function Home() {
           <h3 className="font-semibold text-gray-900">Information Panel</h3>
         </div>
         
+        {/* Mindmap - TOP POSITION when enabled */}
+        {useMindmap && (
+          <div className="p-4 border-b border-gray-100 bg-blue-50">
+            <h4 className="font-medium mb-2 text-gray-900">🧠 Mindmap</h4>
+            {mindmapData ? (
+              <div className="mindmap-container">
+                <div 
+                  className="bg-white p-4 rounded-md border-2 border-blue-200 shadow-sm"
+                  style={{
+                    minHeight: '300px',
+                    fontSize: '14px',
+                    color: '#1f2937',
+                    fontWeight: '500'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: mindmapData }}
+                />
+                <style jsx>{`
+                  .mindmap-container svg text {
+                    fill: #1f2937 !important;
+                    font-weight: 700 !important;
+                    font-size: 15px !important;
+                  }
+                  .mindmap-container svg .markmap-node > circle {
+                    stroke-width: 3px !important;
+                  }
+                  .mindmap-container svg .markmap-link {
+                    stroke-width: 2px !important;
+                  }
+                `}</style>
+              </div>
+            ) : (
+              <div className="text-sm text-blue-600 italic bg-white p-3 rounded-md border">
+                Mindmap will appear here after asking a question...
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Sources and References */}
         {infoPanel && (
           <div className="p-4 border-b border-gray-100">
@@ -456,26 +494,6 @@ export default function Home() {
               className="text-sm text-gray-700 prose prose-sm max-w-none bg-gray-50 p-3 rounded-md"
               dangerouslySetInnerHTML={{ __html: infoPanel }}
             />
-          </div>
-        )}
-
-        {/* Mindmap */}
-        {useMindmap && (
-          <div className="p-4 border-b border-gray-100">
-            <h4 className="font-medium mb-2 text-gray-900">Mindmap</h4>
-            {mindmapData ? (
-              <div className="mindmap-container">
-                <div 
-                  className="text-sm bg-white p-3 rounded-md border"
-                  dangerouslySetInnerHTML={{ __html: mindmapData }}
-                />
-                <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500 italic">
-                No mindmap data received yet. Enable mindmap and ask a question.
-              </div>
-            )}
           </div>
         )}
 

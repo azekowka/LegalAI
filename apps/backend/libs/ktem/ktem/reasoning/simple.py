@@ -147,21 +147,7 @@ class FullQAPipeline(BaseReasoning):
 
             plot_docs.extend(retriever_docs_plot)
 
-        info = [
-            Document(
-                channel="info",
-                content=Render.collapsible_with_header(doc, open_collapsible=True),
-            )
-            for doc in docs
-        ] + [
-            Document(
-                channel="plot",
-                content=doc.metadata.get("data", ""),
-            )
-            for doc in plot_docs
-        ]
-
-        return docs, info
+        return docs, plot_docs
 
     def prepare_mindmap(self, answer) -> Document | None:
         mindmap = answer.metadata["mindmap"]
@@ -222,8 +208,9 @@ class FullQAPipeline(BaseReasoning):
 
     def show_citations_and_addons(self, answer, docs, question):
         # show the evidence
+        fspath = self.retrievers[0].FSPath if self.retrievers else None
         with_citation, without_citation = self.answering_pipeline.prepare_citations(
-            answer, docs
+            answer, docs, fspath
         )
         mindmap_output = self.prepare_mindmap(answer)
         citation_plot_output = self.prepare_citation_viz(answer, question, docs)
@@ -288,9 +275,18 @@ class FullQAPipeline(BaseReasoning):
 
         print(f"Retrievers {self.retrievers}")
         # should populate the context
-        docs, infos = self.retrieve(message, history)
+        docs, plot_docs = self.retrieve(message, history)
         print(f"Got {len(docs)} retrieved documents")
-        yield from infos
+        
+        # Manually create the info docs here
+        info_docs = [
+            Document(
+                channel="plot",
+                content=doc.metadata.get("data", ""),
+            )
+            for doc in plot_docs
+        ]
+        yield from info_docs
 
         evidence_mode, evidence, images = self.evidence_pipeline(docs).content
 

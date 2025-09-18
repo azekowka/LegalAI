@@ -159,6 +159,7 @@ export default function Home() {
           for (const line of lines) {
             try {
               const data: ChatResponse = JSON.parse(line)
+              console.log('Received data:', data.type, data.data?.substring(0, 100))
               
               if (data.type === 'chat') {
                 assistantMessage += data.data
@@ -179,8 +180,9 @@ export default function Home() {
               } else if (data.type === 'info') {
                 currentInfoPanel += data.data
                 setInfoPanel(currentInfoPanel)
-              } else if (data.type === 'plot' && useMindmap) {
-                currentMindmap = data.data
+              } else if (data.type === 'plot') {
+                console.log('Received plot data for mindmap:', data.data)
+                currentMindmap += data.data
                 setMindmapData(currentMindmap)
               }
             } catch (error) {
@@ -206,7 +208,10 @@ export default function Home() {
 
         if (suggestResponse.ok) {
           const suggestData = await suggestResponse.json()
+          console.log('Suggested questions received:', suggestData.questions)
           setFollowUpQuestions(suggestData.questions || [])
+        } else {
+          console.error('Failed to get suggested questions:', suggestResponse.status)
         }
       }
 
@@ -321,23 +326,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Follow-up Questions */}
-        {followUpQuestions.length > 0 && (
-          <div className="p-4">
-            <h3 className="font-semibold mb-3 text-gray-900">Follow-up Questions</h3>
-            <div className="space-y-2">
-              {followUpQuestions.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleFollowUpClick(question)}
-                  className="w-full text-left p-3 text-sm bg-blue-50 hover:bg-blue-100 rounded-md border border-blue-200 text-gray-800 transition-colors"
-                >
-                  {question}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Main Chat Area */}
@@ -382,6 +370,31 @@ export default function Home() {
           <div ref={chatEndRef} />
         </div>
 
+        {/* Debug Info */}
+        <div className="bg-yellow-50 border-t border-yellow-200 p-2 text-xs text-gray-600">
+          Debug: Mindmap enabled: {useMindmap ? 'Yes' : 'No'} | 
+          Mindmap data length: {mindmapData.length} | 
+          Follow-up questions: {followUpQuestions.length}
+        </div>
+
+        {/* Suggested Questions */}
+        {followUpQuestions.length > 0 && (
+          <div className="bg-gray-50 border-t border-gray-200 p-4">
+            <h4 className="font-medium mb-2 text-gray-900">Suggested Questions:</h4>
+            <div className="flex flex-wrap gap-2">
+              {followUpQuestions.slice(0, 3).map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleFollowUpClick(question)}
+                  className="px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 rounded-md border border-blue-300 text-blue-800 transition-colors"
+                >
+                  {question.length > 60 ? question.substring(0, 60) + '...' : question}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Input Area */}
         <div className="bg-white border-t border-gray-200 p-4">
           <div className="flex space-x-3">
@@ -422,14 +435,19 @@ export default function Home() {
         )}
 
         {/* Mindmap */}
-        {mindmapData && useMindmap && (
+        {useMindmap && (
           <div className="p-4 border-b border-gray-100">
             <h4 className="font-medium mb-2 text-gray-900">Mindmap</h4>
-            <div className="text-sm">
-              <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded-md text-xs text-gray-800 border">
-                {mindmapData}
-              </pre>
-            </div>
+            {mindmapData ? (
+              <div 
+                className="text-sm bg-gray-100 p-3 rounded-md border mindmap-content"
+                dangerouslySetInnerHTML={{ __html: mindmapData }}
+              />
+            ) : (
+              <div className="text-sm text-gray-500 italic">
+                No mindmap data received yet. Enable mindmap and ask a question.
+              </div>
+            )}
           </div>
         )}
 

@@ -292,7 +292,7 @@ class ChatRequest(BaseModel):
     message: str
     conversation_id: Optional[str] = None
     history: List[List[str]] = []
-    reasoning_mode: str = "ktem.reasoning.simple.FullQAPipeline"
+    reasoning_mode: str = "simple"  # Use the ID instead of full class path
     selected_files: List[str] = []
     user_id: str = "default"  # Assuming a single user for now
     language: str = "en"
@@ -493,7 +493,7 @@ async def suggest_questions(request: SuggestRequest):
     suggested_resp = suggest_pipeline(request.history).text
     questions = []
     # The pipeline returns questions in a JSON-like string, e.g., '["q1", "q2"]'
-    if ques_res := re.search(r"\\[(.*?)\\]", re.sub("\\n", "", suggested_resp)):
+    if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
         ques_res_str = ques_res.group()
         try:
             questions = json.loads(ques_res_str)

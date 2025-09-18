@@ -76,9 +76,12 @@ class Render:
         html_content: str,
         doc: RetrievedDocument,
         highlight_text: str | None = None,
+        fspath: str | None = None,
     ) -> str:
-        text = doc.content
+        text = doc.text
         pdf_path = doc.metadata.get("file_path", "")
+        if fspath and not os.path.isabs(pdf_path):
+            pdf_path = os.path.join(fspath, pdf_path)
 
         if not os.path.isfile(pdf_path):
             print(f"pdf-path: {pdf_path} does not exist")
@@ -142,6 +145,7 @@ class Render:
     def collapsible_with_header(
         doc: RetrievedDocument,
         open_collapsible: bool = False,
+        fspath: str | None = None,
     ) -> str:
         header = f"<i>{get_header(doc)}</i>"
         if doc.metadata.get("type", "") == "image":
@@ -152,7 +156,7 @@ class Render:
             doc_content = Render.table(doc.text)
 
         return Render.collapsible(
-            header=Render.preview(header, doc),
+            header=Render.preview(header, doc, fspath=fspath),
             content=doc_content,
             open=open_collapsible,
         )
@@ -163,6 +167,7 @@ class Render:
         override_text: str | None = None,
         highlight_text: str | None = None,
         open_collapsible: bool = False,
+        fspath: str | None = None,
     ) -> str:
         """Format the retrieval score and the document"""
         # score from doc_store (Elasticsearch)
@@ -225,6 +230,7 @@ class Render:
             f" [score: {llm_reranking_score}]",
             doc,
             highlight_text=highlight_text,
+            fspath=fspath,
         )
         rendered_doc_content = (
             f"<div class='evidence-content'>{rendered_doc_content}</div>"

@@ -319,7 +319,7 @@ class AnswerWithContextPipeline(BaseComponent):
             # print("Matched citation:", quote, matched_excerpts),
         return spans
 
-    def prepare_citations(self, answer, docs) -> tuple[list[Document], list[Document]]:
+    def prepare_citations(self, answer, docs, fspath=None) -> tuple[list[Document], list[Document]]:
         """Prepare the citations to show on the UI"""
         with_citation, without_citation = [], []
         has_llm_score = any("llm_trulens_score" in doc.metadata for doc in docs)
@@ -372,6 +372,7 @@ class AnswerWithContextPipeline(BaseComponent):
                         override_text=text,
                         highlight_text=highlight_text,
                         open_collapsible=True,
+                        fspath=fspath,
                     ),
                 )
             )
@@ -396,7 +397,7 @@ class AnswerWithContextPipeline(BaseComponent):
                 Document(
                     channel="info",
                     content=Render.collapsible_with_header_score(
-                        doc, open_collapsible=is_open
+                        doc, open_collapsible=is_open, fspath=fspath
                     ),
                 )
             )

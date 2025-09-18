@@ -336,6 +336,7 @@ async def chat(request: ChatRequest):
             
         if request.use_mindmap:
             request_settings["reasoning.options.simple.create_mindmap"] = True
+            print(f"Mindmap enabled in settings: {request_settings['reasoning.options.simple.create_mindmap']}")
 
         # Get reasoning class from our map
         if request.reasoning_mode not in reasoning_map:
@@ -487,18 +488,38 @@ async def list_files(user_id: str = "default"):
 @app.post("/suggest-questions")
 async def suggest_questions(request: SuggestRequest):
     """Generate suggested follow-up questions based on the chat history."""
-    suggest_pipeline = SuggestFollowupQuesPipeline()
-    suggest_pipeline.lang = SUPPORTED_LANGUAGE_MAP.get(request.language, "English")
-    
-    suggested_resp = suggest_pipeline(request.history).text
-    questions = []
-    # The pipeline returns questions in a JSON-like string, e.g., '["q1", "q2"]'
-    if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
-        ques_res_str = ques_res.group()
-        try:
-            questions = json.loads(ques_res_str)
-        except Exception:
-            # Handle cases where the LLM output is not perfect JSON
-            pass
-    
-    return {"questions": questions}
+    try:
+        print(f"Generating suggestions for history: {request.history}")
+        suggest_pipeline = SuggestFollowupQuesPipeline()
+        suggest_pipeline.lang = SUPPORTED_LANGUAGE_MAP.get(request.language, "English")
+        
+        suggested_resp = suggest_pipeline(request.history).text
+        print(f"LLM suggested response: {suggested_resp}")
+        
+        questions = []
+        # The pipeline returns questions in a JSON-like string, e.g., '["q1", "q2"]'
+        if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
+            ques_res_str = ques_res.group()
+            print(f"Extracted JSON string: {ques_res_str}")
+            try:
+                questions = json.loads(ques_res_str)
+                print(f"Parsed questions: {questions}")
+            except Exception as e:
+                print(f"JSON parsing failed: {e}")
+                # Handle cases where the LLM output is not perfect JSON
+                pass
+        else:
+            print("No JSON array found in LLM response")
+            # Fallback: try to extract questions manually
+            lines = suggested_resp.split('\n')
+            for line in lines:
+                line = line.strip()
+                if line and not line.startswith('#') and '?' in line:
+                    questions.append(line)
+        
+        print(f"Final questions to return: {questions}")
+        return {"questions": questions[:3]}  # Limit to 3 questions
+        
+    except Exception as e:
+        print(f"Error in suggest_questions: {e}")
+        return {"questions": []}

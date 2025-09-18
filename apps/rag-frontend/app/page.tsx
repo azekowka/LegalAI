@@ -66,6 +66,18 @@ export default function Home() {
     loadFiles()
   }, [])
 
+  // Trigger markmap rendering when mindmap data changes
+  useEffect(() => {
+    if (mindmapData && useMindmap) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        if (typeof window !== 'undefined' && (window as any).markmap) {
+          (window as any).markmap.autoLoader.renderAll()
+        }
+      }, 100)
+    }
+  }, [mindmapData, useMindmap])
+
   const loadFiles = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/files')
@@ -178,10 +190,17 @@ export default function Home() {
                   return newMessages
                 })
               } else if (data.type === 'info') {
-                currentInfoPanel += data.data
-                setInfoPanel(currentInfoPanel)
+                // Check if this info contains mindmap data
+                if (data.data.includes('class="markmap"') && useMindmap) {
+                  console.log('Received mindmap data:', data.data.substring(0, 100))
+                  currentMindmap += data.data
+                  setMindmapData(currentMindmap)
+                } else {
+                  currentInfoPanel += data.data
+                  setInfoPanel(currentInfoPanel)
+                }
               } else if (data.type === 'plot') {
-                console.log('Received plot data for mindmap:', data.data)
+                console.log('Received plot data:', data.data)
                 currentMindmap += data.data
                 setMindmapData(currentMindmap)
               }
@@ -194,14 +213,20 @@ export default function Home() {
 
       // Get follow-up questions
       if (messages.length > 0) {
+        // Create proper history format for suggestion pipeline
+        const chatHistory = [...messages, { role: 'assistant', content: assistantMessage, timestamp: new Date() }]
+          .map(m => [m.role === 'user' ? m.content : '', m.role === 'assistant' ? m.content : ''])
+          .filter(([user, assistant]) => user || assistant)
+        
+        console.log('Sending chat history for suggestions:', chatHistory)
+        
         const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            history: [...messages, { role: 'assistant', content: assistantMessage, timestamp: new Date() }]
-              .map(m => [m.role === 'user' ? m.content : '', m.role === 'assistant' ? m.content : '']),
+            history: chatHistory,
             language: selectedLanguage
           })
         })
@@ -439,10 +464,13 @@ export default function Home() {
           <div className="p-4 border-b border-gray-100">
             <h4 className="font-medium mb-2 text-gray-900">Mindmap</h4>
             {mindmapData ? (
-              <div 
-                className="text-sm bg-gray-100 p-3 rounded-md border mindmap-content"
-                dangerouslySetInnerHTML={{ __html: mindmapData }}
-              />
+              <div className="mindmap-container">
+                <div 
+                  className="text-sm bg-white p-3 rounded-md border"
+                  dangerouslySetInnerHTML={{ __html: mindmapData }}
+                />
+                <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.16"></script>
+              </div>
             ) : (
               <div className="text-sm text-gray-500 italic">
                 No mindmap data received yet. Enable mindmap and ask a question.

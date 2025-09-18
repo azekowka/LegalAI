@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
@@ -33,10 +32,10 @@ const SUPPORTED_LANGUAGES = [
 ]
 
 const REASONING_MODES = [
-  { value: 'simple', name: 'Full QA Pipeline' },
-  { value: 'decompose', name: 'Decompose QA Pipeline' },
-  { value: 'react', name: 'React Agent Pipeline' },
-  { value: 'rewoo', name: 'Rewoo Agent Pipeline' }
+  { value: 'simple', name: 'Простые вопросы (Full QA Pipeline)' },
+  { value: 'decompose', name: 'Многосоставные вопросы (Decompose QA Pipeline)' },
+  { value: 'react', name: 'Исследовательские вопросы (React Agent Pipeline)' },
+  { value: 'rewoo', name: 'Пошаговые вопросы (Rewoo Agent Pipeline)' }
 ]
 
 export default function Home() {

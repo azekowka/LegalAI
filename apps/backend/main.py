@@ -490,6 +490,26 @@ async def suggest_questions(request: SuggestRequest):
     """Generate suggested follow-up questions based on the chat history."""
     try:
         print(f"Generating suggestions for history: {request.history}")
+        
+        # Check if this is an initial request (no real history)
+        is_initial_request = (
+            len(request.history) <= 1 and 
+            any("what can you tell me about" in str(h).lower() for h in request.history if h)
+        )
+        
+        if is_initial_request:
+            # Generate document-based questions
+            questions = [
+                "What is the main purpose of this document?",
+                "What are the key terms and conditions?", 
+                "Who are the parties involved?",
+                "What are the important dates or deadlines?",
+                "What are the main obligations or requirements?"
+            ]
+            print(f"Generated initial document questions: {questions}")
+            return {"questions": questions[:3]}
+        
+        # Regular follow-up questions based on chat history
         suggest_pipeline = SuggestFollowupQuesPipeline()
         suggest_pipeline.lang = SUPPORTED_LANGUAGE_MAP.get(request.language, "English")
         
@@ -497,25 +517,43 @@ async def suggest_questions(request: SuggestRequest):
         print(f"LLM suggested response: {suggested_resp}")
         
         questions = []
-        # The pipeline returns questions in a JSON-like string, e.g., '["q1", "q2"]'
-        if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
-            ques_res_str = ques_res.group()
-            print(f"Extracted JSON string: {ques_res_str}")
-            try:
-                questions = json.loads(ques_res_str)
-                print(f"Parsed questions: {questions}")
-            except Exception as e:
-                print(f"JSON parsing failed: {e}")
-                # Handle cases where the LLM output is not perfect JSON
-                pass
-        else:
-            print("No JSON array found in LLM response")
-            # Fallback: try to extract questions manually
+        
+        # First try to parse as complete JSON object
+        try:
+            # Look for JSON object with "questions" key
+            json_match = re.search(r'\{[^}]*"questions"[^}]*\}', suggested_resp, re.DOTALL)
+            if json_match:
+                json_str = json_match.group()
+                print(f"Found JSON object: {json_str}")
+                parsed_json = json.loads(json_str)
+                if "questions" in parsed_json:
+                    questions = parsed_json["questions"]
+                    print(f"Parsed questions from JSON: {questions}")
+        except Exception as e:
+            print(f"JSON object parsing failed: {e}")
+        
+        # Fallback: try to extract array format
+        if not questions:
+            if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
+                ques_res_str = ques_res.group()
+                print(f"Extracted array string: {ques_res_str}")
+                try:
+                    questions = json.loads(ques_res_str)
+                    print(f"Parsed questions from array: {questions}")
+                except Exception as e:
+                    print(f"Array parsing failed: {e}")
+        
+        # Final fallback: extract questions manually
+        if not questions:
+            print("Manual extraction fallback")
             lines = suggested_resp.split('\n')
             for line in lines:
                 line = line.strip()
                 if line and not line.startswith('#') and '?' in line:
-                    questions.append(line)
+                    # Clean up the line
+                    line = re.sub(r'^[\d\.\-\*\s]+', '', line).strip()
+                    if len(line) > 10:  # Only add substantial questions
+                        questions.append(line)
         
         print(f"Final questions to return: {questions}")
         return {"questions": questions[:3]}  # Limit to 3 questions

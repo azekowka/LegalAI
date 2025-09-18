@@ -78,6 +78,11 @@ export default function Home() {
     }
   }, [mindmapData, useMindmap])
 
+  // Generate initial questions when files are selected
+  useEffect(() => {
+    generateInitialQuestions()
+  }, [selectedFiles, selectedLanguage])
+
   const loadFiles = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/files')
@@ -134,7 +139,10 @@ export default function Home() {
     setInputMessage('')
     setIsLoading(true)
     setInfoPanel('')
-    setMindmapData('')
+    // Don't clear mindmap data - keep previous mindmap until new one arrives
+    if (!useMindmap) {
+      setMindmapData('')
+    }
 
     try {
       const response = await fetch('http://127.0.0.1:8000/chat', {
@@ -193,16 +201,19 @@ export default function Home() {
                 // Check if this info contains mindmap data
                 if (data.data.includes('class="markmap"') && useMindmap) {
                   console.log('Received mindmap data:', data.data.substring(0, 100))
-                  currentMindmap += data.data
-                  setMindmapData(currentMindmap)
+                  // Replace mindmap data completely, don't append
+                  setMindmapData(data.data)
+                } else if (data.data === null) {
+                  // Handle clear info panel command, but preserve mindmap
+                  setInfoPanel('')
                 } else {
                   currentInfoPanel += data.data
                   setInfoPanel(currentInfoPanel)
                 }
               } else if (data.type === 'plot') {
                 console.log('Received plot data:', data.data)
-                currentMindmap += data.data
-                setMindmapData(currentMindmap)
+                // Replace plot/mindmap data completely, don't append
+                setMindmapData(data.data)
               }
             } catch (error) {
               console.error('Error parsing streaming response:', error)
@@ -211,33 +222,38 @@ export default function Home() {
         }
       }
 
-      // Get follow-up questions
-      if (messages.length > 0) {
+      // Get follow-up questions ALWAYS after any response
+      try {
         // Create proper history format for suggestion pipeline
-        const chatHistory = [...messages, { role: 'assistant', content: assistantMessage, timestamp: new Date() }]
+        const allMessages = [...messages, { role: 'assistant', content: assistantMessage, timestamp: new Date() }]
+        const chatHistory = allMessages
           .map(m => [m.role === 'user' ? m.content : '', m.role === 'assistant' ? m.content : ''])
           .filter(([user, assistant]) => user || assistant)
         
         console.log('Sending chat history for suggestions:', chatHistory)
         
-        const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            history: chatHistory,
-            language: selectedLanguage
+        if (chatHistory.length > 0) {
+          const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              history: chatHistory,
+              language: selectedLanguage
+            })
           })
-        })
 
-        if (suggestResponse.ok) {
-          const suggestData = await suggestResponse.json()
-          console.log('Suggested questions received:', suggestData.questions)
-          setFollowUpQuestions(suggestData.questions || [])
-        } else {
-          console.error('Failed to get suggested questions:', suggestResponse.status)
+          if (suggestResponse.ok) {
+            const suggestData = await suggestResponse.json()
+            console.log('Suggested questions received:', suggestData.questions)
+            setFollowUpQuestions(suggestData.questions || [])
+          } else {
+            console.error('Failed to get suggested questions:', suggestResponse.status)
+          }
         }
+      } catch (error) {
+        console.error('Error getting suggested questions:', error)
       }
 
     } catch (error) {
@@ -254,6 +270,35 @@ export default function Home() {
 
   const handleFollowUpClick = (question: string) => {
     setInputMessage(question)
+  }
+
+  const generateInitialQuestions = async () => {
+    if (selectedFiles.length === 0) {
+      setFollowUpQuestions([])
+      return
+    }
+
+    try {
+      // Generate initial questions based on selected documents
+      const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          history: [['What can you tell me about this document?', '']],
+          language: selectedLanguage
+        })
+      })
+
+      if (suggestResponse.ok) {
+        const suggestData = await suggestResponse.json()
+        console.log('Initial suggested questions:', suggestData.questions)
+        setFollowUpQuestions(suggestData.questions || [])
+      }
+    } catch (error) {
+      console.error('Error generating initial questions:', error)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -400,12 +445,17 @@ export default function Home() {
           Debug: Mindmap enabled: {useMindmap ? 'Yes' : 'No'} | 
           Mindmap data length: {mindmapData.length} | 
           Follow-up questions: {followUpQuestions.length}
+          {followUpQuestions.length > 0 && (
+            <div className="mt-1">
+              Questions: {JSON.stringify(followUpQuestions.slice(0, 2))}
+            </div>
+          )}
         </div>
 
-        {/* Suggested Questions */}
-        {followUpQuestions.length > 0 && (
-          <div className="bg-gray-50 border-t border-gray-200 p-4">
-            <h4 className="font-medium mb-2 text-gray-900">Suggested Questions:</h4>
+        {/* Suggested Questions - ALWAYS TRY TO SHOW */}
+        <div className="bg-gray-50 border-t border-gray-200 p-4">
+          <h4 className="font-medium mb-2 text-gray-900">💡 Suggested Questions:</h4>
+          {followUpQuestions.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {followUpQuestions.slice(0, 3).map((question, index) => (
                 <button
@@ -413,12 +463,16 @@ export default function Home() {
                   onClick={() => handleFollowUpClick(question)}
                   className="px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 rounded-md border border-blue-300 text-blue-800 transition-colors"
                 >
-                  {question.length > 60 ? question.substring(0, 60) + '...' : question}
+                  {question.length > 80 ? question.substring(0, 80) + '...' : question}
                 </button>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="text-sm text-gray-500 italic">
+              Generating suggested questions...
+            </div>
+          )}
+        </div>
 
         {/* Input Area */}
         <div className="bg-white border-t border-gray-200 p-4">

@@ -360,10 +360,17 @@ async def chat(request: ChatRequest):
         if index_manager.indices:
             index = index_manager.indices[0]  # Use only the first index
             try:
-                # If no files selected, pass None to search all files
-                selected_files = request.selected_files if request.selected_files else None
+                # Mock the Gradio component format that get_selected_ids expects
+                # Format: [mode, selected_files, user_id]
+                if request.selected_files:
+                    # Select specific files
+                    mock_components = ["select", request.selected_files, request.user_id]
+                else:
+                    # Search all files
+                    mock_components = ["all", [], request.user_id]
+                
                 index_retrievers = index.get_retriever_pipelines(
-                    settings=request_settings, user_id=request.user_id, selected=selected_files
+                    settings=request_settings, user_id=request.user_id, selected=mock_components
                 )
                 retrievers.extend(index_retrievers)
                 print(f"Added {len(index_retrievers)} retrievers from index {index.id}")
@@ -373,6 +380,7 @@ async def chat(request: ChatRequest):
                 pass
 
         # Initialize the reasoning pipeline
+        print(f"Retrievers: {retrievers}")
         pipeline = reasoning_cls.get_pipeline(request_settings, {}, retrievers)
 
         # Stream the response
@@ -382,10 +390,10 @@ async def chat(request: ChatRequest):
                     request.message, request.conversation_id, request.history
                 ):
                     if response.channel and response.content:
-                        yield json.dumps({"type": response.channel, "data": response.content}) + "\\n"
+                        yield json.dumps({"type": response.channel, "data": response.content}) + "\n"
             except Exception as e:
                 print(f"Error in stream generator: {e}")
-                yield json.dumps({"type": "error", "data": str(e)}) + "\\n"
+                yield json.dumps({"type": "error", "data": str(e)}) + "\n"
 
         return StreamingResponse(stream_generator(), media_type="application/x-ndjson")
         

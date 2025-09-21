@@ -43,7 +43,7 @@ export default function ChatPage() {
   const [followUpQuestions, setFollowUpQuestions] = useState<string[]>([])
   const [selectedLanguage, setSelectedLanguage] = useState('en')
   const [selectedReasoning, setSelectedReasoning] = useState('simple')
-  const [useMindmap, setUseMindmap] = useState(false)
+  const [useMindmap, setUseMindmap] = useState(true)
   const [mindmapData, setMindmapData] = useState('')
   
   const fileInputRef = useRef<HTMLInputElement>(null)

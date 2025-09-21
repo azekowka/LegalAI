@@ -24,6 +24,7 @@ from ktem.utils.lang import SUPPORTED_LANGUAGE_MAP
 # We'll store our core application components in this dictionary
 # to be initialized at startup.
 app_state = {}
+models_ready = asyncio.Event()
 
 
 class Settings:
@@ -184,28 +185,8 @@ class Settings:
         return self.__dict__.get(name)
 
 
-app = FastAPI()
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=False,  # Set to False when using allow_origins=["*"]
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-    expose_headers=["*"],
-)
-
-
-@app.get("/healthz")
-def healthz():
-    """Health check endpoint."""
-    return {"status": "ok"}
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initializes the application's core components."""
+def load_models_and_settings_blocking():
+    """Initializes the application's core components (this is a slow, blocking function)."""
     settings_obj = Settings()
 
     # Store settings in a way that ktem can access
@@ -290,6 +271,46 @@ async def startup_event():
             print(f"  {key}: {flattened_settings[key]}")
     
     app_state["settings"] = flattened_settings
+    
+    # This is the final step. If this is printed, loading was
+    # a successful run in the background.
+    print("Background model loading and initialization complete.")
+    models_ready.set()
+
+
+async def background_loader():
+    """Runs the blocking loader function in a background thread."""
+    try:
+        # Run the blocking function in a separate thread
+        await asyncio.to_thread(load_models_and_settings_blocking)
+    except Exception as e:
+        print(f"FATAL: Background loading failed: {e}")
+
+
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+
+@app.get("/healthz")
+def healthz():
+    """Health check endpoint."""
+    return {"status": "ok"}
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Starts the server immediately and kicks off background loading."""
+    print("Application startup: Kicking off background tasks.")
+    asyncio.create_task(background_loader())
 
 
 # --- Pydantic Models for API ---
@@ -324,6 +345,7 @@ async def chat(request: ChatRequest):
     Main chat endpoint to get responses from the RAG system.
     This endpoint streams the response back to the client.
     """
+    await models_ready.wait()
     try:
         # This logic is adapted from `ChatPage.create_pipeline`
         index_manager = app_state["index_manager"]
@@ -413,6 +435,7 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
     """
     Endpoint to upload a file to the default 'File Collection' index.
     """
+    await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
         # Assuming the first index is our target File Collection
@@ -472,6 +495,7 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
 @app.get("/files")
 async def list_files(user_id: str = "default"):
     """List available files in the index."""
+    await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
         file_collection_index = index_manager.indices[0]
@@ -494,6 +518,7 @@ async def list_files(user_id: str = "default"):
 @app.post("/suggest-questions")
 async def suggest_questions(request: SuggestRequest):
     """Generate suggested follow-up questions based on the chat history."""
+    await models_ready.wait()
     try:
         print(f"Generating suggestions for history: {request.history}")
         

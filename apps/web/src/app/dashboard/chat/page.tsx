@@ -314,7 +314,7 @@ export default function ChatPage() {
       <div className="w-80 bg-white border-r border-gray-200 shadow-sm flex flex-col">
         {/* File Upload Section */}
         <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="font-semibold mb-3 text-gray-900">File Upload</h3>
+          <h3 className="font-semibold mb-3 text-gray-900">Загрузка документов</h3>
           <input
             ref={fileInputRef}
             type="file"
@@ -331,7 +331,7 @@ export default function ChatPage() {
 
         {/* File Selection */}
         <div className="p-4 border-b border-gray-200 flex-1 overflow-y-auto">
-          <h3 className="font-semibold mb-3 text-gray-900">Select Files</h3>
+          <h3 className="font-semibold mb-3 text-gray-900">Выбор документов</h3>
           <div className="space-y-2">
             {files.map((file) => (
               <label key={file.id} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded-md">
@@ -355,11 +355,11 @@ export default function ChatPage() {
 
         {/* Settings */}
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold mb-3 text-gray-900">Settings</h3>
+          <h3 className="font-semibold mb-3 text-gray-900">Настройки</h3>
           
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Language</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700">Язык</label>
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -372,7 +372,7 @@ export default function ChatPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Reasoning Mode</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700">Режим мышления</label>
               <select
                 value={selectedReasoning}
                 onChange={(e) => setSelectedReasoning(e.target.value)}
@@ -391,7 +391,7 @@ export default function ChatPage() {
                 onChange={(e) => setUseMindmap(e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-sm text-gray-700">Enable Mindmap</span>
+              <span className="text-sm text-gray-700">Включить карту мышления (Mindmap)</span>
             </label>
           </div>
         </div>
@@ -402,8 +402,8 @@ export default function ChatPage() {
       <div className="flex-1 flex flex-col bg-white">
         {/* Header */}
         <div className="bg-white shadow-sm p-4 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-900">RAG Chat Interface</h1>
-          <p className="text-sm text-gray-600">Ask questions about your documents</p>
+          <h1 className="text-xl font-semibold text-gray-900">ИИ-чат с юристом</h1>
+          <p className="text-sm text-gray-600">Задайте вопрос о ваших документах</p>
         </div>
 
         {/* Chat Messages */}
@@ -445,7 +445,7 @@ export default function ChatPage() {
               <div className="bg-white shadow-md border border-gray-200 p-4 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                  <span className="text-gray-700">Thinking...</span>
+                  <span className="text-gray-700">Мыслим...</span>
                 </div>
               </div>
             </div>
@@ -467,7 +467,7 @@ export default function ChatPage() {
 
         {/* Suggested Questions - ALWAYS TRY TO SHOW */}
         <div className="bg-gray-50 border-t border-gray-200 p-4">
-          <h4 className="font-medium mb-2 text-gray-900">💡 Suggested Questions:</h4>
+          <h4 className="font-medium mb-2 text-gray-900">💡 Рекомендуемые вопросы:</h4>
           {followUpQuestions.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {followUpQuestions.slice(0, 3).map((question, index) => (
@@ -482,7 +482,7 @@ export default function ChatPage() {
             </div>
           ) : (
             <div className="text-sm text-gray-500 italic">
-              Generating suggested questions...
+              Генерируем рекомендуемые вопросы...
             </div>
           )}
         </div>
@@ -494,7 +494,7 @@ export default function ChatPage() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask a question about your documents..."
+              placeholder="Задайте вопрос о ваших документах..."
               className="flex-1 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               rows={3}
             />
@@ -503,7 +503,7 @@ export default function ChatPage() {
               disabled={isLoading || !inputMessage.trim()}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              Send
+              Отправить
             </button>
           </div>
         </div>
@@ -512,7 +512,7 @@ export default function ChatPage() {
       {/* Information Panel */}
       <div className="w-96 bg-white border-l border-gray-200 overflow-y-auto">
         <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="font-semibold text-gray-900">Information Panel</h3>
+          <h3 className="font-semibold text-gray-900">Информационная панель</h3>
         </div>
         
         {/* Mindmap - TOP POSITION when enabled */}
@@ -547,7 +547,7 @@ export default function ChatPage() {
               </div>
             ) : (
               <div className="text-sm text-blue-600 italic bg-white p-3 rounded-md border">
-                Mindmap will appear here after asking a question...
+                Карта мышления появится здесь после задания вопроса...
               </div>
             )}
           </div>
@@ -556,7 +556,7 @@ export default function ChatPage() {
         {/* Sources and References */}
         {infoPanel && (
           <div className="p-4 border-b border-gray-100">
-            <h4 className="font-medium mb-2 text-gray-900">Sources & References</h4>
+            <h4 className="font-medium mb-2 text-gray-900">Источники и ссылки</h4>
             <div 
               className="text-sm text-gray-700 prose prose-sm max-w-none bg-gray-50 p-3 rounded-md"
               dangerouslySetInnerHTML={{ __html: infoPanel }}
@@ -567,7 +567,7 @@ export default function ChatPage() {
         {/* Selected Files Info */}
         {selectedFiles.length > 0 && (
           <div className="p-4">
-            <h4 className="font-medium mb-2 text-gray-900">Selected Files ({selectedFiles.length})</h4>
+            <h4 className="font-medium mb-2 text-gray-900">Выбранные файлы ({selectedFiles.length})</h4>
             <div className="space-y-2">
               {selectedFiles.map(fileId => {
                 const file = files.find(f => f.id === fileId)

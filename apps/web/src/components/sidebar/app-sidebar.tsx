@@ -35,7 +35,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PanelLeft } from "lucide-react"
 import { useAuthSession } from "@/components/auth-provider"
-
+import { MessageCircleMoreIcon } from "@/components/icons/message-circle-more"
 // Static data that doesn't depend on user
 const staticData = {
   teams: [
@@ -55,6 +55,11 @@ const staticData = {
       title: "Мои документы",
       url: "/dashboard",
       icon: FileTextIcon,
+    },
+    {
+      title: "ИИ-чат с юристом",
+      url: "/dashboard/chat",
+      icon: MessageCircleMoreIcon,
     },
     {
       title: "Шаблоны",

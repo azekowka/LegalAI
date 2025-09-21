@@ -302,12 +302,12 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-black">
       {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 shadow-sm flex flex-col">
+      <div className="w-80 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 shadow-sm flex flex-col">
         {/* File Upload Section */}
-        <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="font-semibold mb-3 text-gray-900">Загрузка документов</h3>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-black">
+          <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Загрузка документов</h3>
           <input
             ref={fileInputRef}
             type="file"
@@ -316,18 +316,18 @@ export default function ChatPage() {
             className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700 file:font-medium"
           />
           {uploadStatus && (
-            <p className={`text-sm mt-2 font-medium ${uploadStatus.includes('Success') ? 'text-green-700' : 'text-red-700'}`}>
+            <p className={`text-sm mt-2 font-medium ${uploadStatus.includes('Success') ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
               {uploadStatus}
             </p>
           )}
         </div>
 
         {/* File Selection */}
-        <div className="p-4 border-b border-gray-200 flex-1 overflow-y-auto">
-          <h3 className="font-semibold mb-3 text-gray-900">Выбор документов</h3>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-1 overflow-y-auto">
+          <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Выбор документов</h3>
           <div className="space-y-2">
             {files.map((file) => (
-              <label key={file.id} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded-md">
+              <label key={file.id} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-md">
                 <input
                   type="checkbox"
                   checked={selectedFiles.includes(file.id)}
@@ -340,23 +340,23 @@ export default function ChatPage() {
                   }}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
               </label>
             ))}
           </div>
         </div>
 
         {/* Settings */}
-        <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold mb-3 text-gray-900">Настройки</h3>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
+          <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Настройки</h3>
           
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Язык</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Язык</label>
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-black focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {SUPPORTED_LANGUAGES.map(lang => (
                   <option key={lang.code} value={lang.code}>{lang.name}</option>
@@ -365,11 +365,11 @@ export default function ChatPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Режим мышления</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Режим мышления</label>
               <select
                 value={selectedReasoning}
                 onChange={(e) => setSelectedReasoning(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-black focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {REASONING_MODES.map(mode => (
                   <option key={mode.value} value={mode.value}>{mode.name}</option>
@@ -384,7 +384,7 @@ export default function ChatPage() {
                 onChange={(e) => setUseMindmap(e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-sm text-gray-700">Включить карту мышления (Mindmap)</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Включить карту мышления (Mindmap)</span>
             </label>
           </div>
         </div>
@@ -392,15 +392,15 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className="flex-1 flex flex-col bg-white dark:bg-black">
         {/* Header */}
-        <div className="bg-white shadow-sm p-4 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-900">ИИ-чат с юристом</h1>
-          <p className="text-sm text-gray-600">Задайте вопрос о ваших документах</p>
+        <div className="bg-white dark:bg-black shadow-sm p-4 border-b border-gray-200 dark:border-gray-700">
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">ИИ-чат с юристом</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Задайте вопрос о ваших документах</p>
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-black">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -410,15 +410,15 @@ export default function ChatPage() {
                 className={`max-w-3xl p-4 rounded-lg ${
                   message.role === 'user'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white shadow-md border border-gray-200'
+                    : 'bg-white dark:bg-black shadow-md border border-gray-200 dark:border-gray-700'
                 }`}
               >
                 {message.role === 'assistant' ? (
-                  <div className="text-gray-800">
+                  <div className="text-gray-800 dark:text-gray-200">
                     <ChatResponse className="min-h-0">
                       {message.content}
                     </ChatResponse>
-                    <div className="text-xs mt-2 text-gray-500">
+                    <div className="text-xs mt-2 text-gray-500 dark:text-gray-400">
                       {message.timestamp.toLocaleTimeString()}
                     </div>
                   </div>
@@ -435,10 +435,10 @@ export default function ChatPage() {
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white shadow-md border border-gray-200 p-4 rounded-lg">
+              <div className="bg-white dark:bg-black shadow-md border border-gray-200 dark:border-gray-700 p-4 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                  <span className="text-gray-700">Мыслим...</span>
+                  <span className="text-gray-700 dark:text-gray-300">Мыслим...</span>
                 </div>
               </div>
             </div>
@@ -459,8 +459,8 @@ export default function ChatPage() {
         </div> */}
 
         {/* Suggested Questions - ALWAYS TRY TO SHOW */}
-        <div className="bg-gray-50 border-t border-gray-200 p-4">
-          <h4 className="font-medium mb-2 text-gray-900">💡 Рекомендуемые вопросы:</h4>
+        <div className="bg-gray-50 dark:bg-black border-t border-gray-200 dark:border-gray-700 p-4">
+          <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">💡 Рекомендуемые вопросы:</h4>
           {followUpQuestions.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {followUpQuestions.slice(0, 3).map((question, index) => (
@@ -474,21 +474,21 @@ export default function ChatPage() {
               ))}
             </div>
           ) : (
-            <div className="text-sm text-gray-500 italic">
+            <div className="text-sm text-gray-500 dark:text-gray-400 italic">
               Генерируем рекомендуемые вопросы...
             </div>
           )}
         </div>
 
         {/* Input Area */}
-        <div className="bg-white border-t border-gray-200 p-4">
+        <div className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700 p-4">
           <div className="flex space-x-3">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Задайте вопрос о ваших документах..."
-              className="flex-1 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+              className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-black placeholder-gray-500 dark:placeholder-gray-400"
               rows={3}
             />
             <button
@@ -503,19 +503,19 @@ export default function ChatPage() {
       </div>
 
       {/* Information Panel */}
-      <div className="w-96 bg-white border-l border-gray-200 overflow-y-auto">
-        <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="font-semibold text-gray-900">Информационная панель</h3>
+      <div className="w-96 bg-white dark:bg-black border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-black">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100">Информационная панель</h3>
         </div>
         
         {/* Mindmap - TOP POSITION when enabled */}
         {useMindmap && (
-          <div className="p-4 border-b border-gray-100 bg-blue-50">
-            <h4 className="font-medium mb-2 text-gray-900">🧠 Mindmap</h4>
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-blue-50 dark:bg-black">
+            <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">🧠 Mindmap</h4>
             {mindmapData ? (
               <div className="mindmap-container">
                 <div 
-                  className="bg-white p-4 rounded-md border-2 border-blue-200 shadow-sm"
+                  className="bg-white dark:bg-black p-4 rounded-md border-2 border-blue-200 dark:border-gray-600 shadow-sm"
                   style={{
                     minHeight: '300px',
                     fontSize: '14px',
@@ -539,7 +539,7 @@ export default function ChatPage() {
                 `}</style>
               </div>
             ) : (
-              <div className="text-sm text-blue-600 italic bg-white p-3 rounded-md border">
+              <div className="text-sm text-blue-600 dark:text-blue-400 italic bg-white dark:bg-black p-3 rounded-md border dark:border-gray-600">
                 Карта мышления появится здесь после задания вопроса...
               </div>
             )}
@@ -548,10 +548,10 @@ export default function ChatPage() {
 
         {/* Sources and References */}
         {infoPanel && (
-          <div className="p-4 border-b border-gray-100">
-            <h4 className="font-medium mb-2 text-gray-900">Источники и ссылки</h4>
+          <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+            <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Источники и ссылки</h4>
             <div 
-              className="text-sm text-gray-700 prose prose-sm max-w-none bg-gray-50 p-3 rounded-md"
+              className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm max-w-none bg-gray-50 dark:bg-black p-3 rounded-md"
               dangerouslySetInnerHTML={{ __html: infoPanel }}
             />
           </div>
@@ -560,12 +560,12 @@ export default function ChatPage() {
         {/* Selected Files Info */}
         {selectedFiles.length > 0 && (
           <div className="p-4">
-            <h4 className="font-medium mb-2 text-gray-900">Выбранные файлы ({selectedFiles.length})</h4>
+            <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Выбранные файлы ({selectedFiles.length})</h4>
             <div className="space-y-2">
               {selectedFiles.map(fileId => {
                 const file = files.find(f => f.id === fileId)
                 return file ? (
-                  <div key={fileId} className="text-sm text-gray-700 truncate bg-gray-50 p-2 rounded-md border">
+                  <div key={fileId} className="text-sm text-gray-700 dark:text-gray-300 truncate bg-gray-50 dark:bg-black p-2 rounded-md border dark:border-gray-600">
                     📄 {file.name}
                   </div>
                 ) : null

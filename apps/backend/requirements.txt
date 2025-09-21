@@ -1,0 +1,5 @@
+-e libs/kotaemon[all]
+-e libs/ktem
+fastapi
+uvicorn[standard]
+python-decouple

@@ -14,6 +14,15 @@ importers:
 
   apps/rag-frontend:
     dependencies:
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.487.0
+        version: 0.487.0(react@19.1.0)
       next:
         specifier: 15.5.3
         version: 15.5.3(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -23,6 +32,15 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      shiki:
+        specifier: ^3.12.2
+        version: 3.12.2
+      streamdown:
+        specifier: ^1.3.0
+        version: 1.3.0(@types/react@19.1.11)(react@19.1.0)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -48,6 +66,9 @@ importers:
       tailwindcss:
         specifier: ^4
         version: 4.1.12
+      tw-animate-css:
+        specifier: ^1.3.7
+        version: 1.3.7
       typescript:
         specifier: ^5
         version: 5.9.2
@@ -7642,6 +7663,11 @@ snapshots:
       react: 19.1.1
       react-markdown: 10.1.0(@types/react@19.1.11)(react@19.1.1)
 
+  harden-react-markdown@1.0.5(react-markdown@10.1.0(@types/react@19.1.11)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-markdown: 10.1.0(@types/react@19.1.11)(react@19.1.0)
+
   harden-react-markdown@1.0.5(react-markdown@10.1.0(@types/react@19.1.11)(react@19.1.1))(react@19.1.1):
     dependencies:
       react: 19.1.1
@@ -8164,9 +8190,17 @@ snapshots:
       fault: 1.0.4
       highlight.js: 10.7.3
 
+  lucide-react@0.487.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+
   lucide-react@0.487.0(react@19.1.1):
     dependencies:
       react: 19.1.1
+
+  lucide-react@0.542.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   lucide-react@0.542.0(react@19.1.1):
     dependencies:
@@ -9052,6 +9086,24 @@ snapshots:
 
   react-is@16.13.1: {}
 
+  react-markdown@10.1.0(@types/react@19.1.11)(react@19.1.0):
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@types/react': 19.1.11
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.0
+      react: 19.1.0
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.2
+      unified: 11.0.5
+      unist-util-visit: 5.0.0
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
   react-markdown@10.1.0(@types/react@19.1.11)(react@19.1.1):
     dependencies:
       '@types/hast': 3.0.4
@@ -9445,6 +9497,26 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       internal-slot: 1.1.0
+
+  streamdown@1.3.0(@types/react@19.1.11)(react@19.1.0):
+    dependencies:
+      clsx: 2.1.1
+      harden-react-markdown: 1.0.5(react-markdown@10.1.0(@types/react@19.1.11)(react@19.1.0))(react@19.1.0)
+      katex: 0.16.22
+      lucide-react: 0.542.0(react@19.1.0)
+      marked: 16.3.0
+      mermaid: 11.11.0
+      react: 19.1.0
+      react-markdown: 10.1.0(@types/react@19.1.11)(react@19.1.0)
+      rehype-katex: 7.0.1
+      rehype-raw: 7.0.0
+      remark-gfm: 4.0.1
+      remark-math: 6.0.0
+      shiki: 3.12.2
+      tailwind-merge: 3.3.1
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
 
   streamdown@1.3.0(@types/react@19.1.11)(react@19.1.1):
     dependencies:

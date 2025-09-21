@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { Response } from '@/components/ai-elements/response'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -419,10 +420,23 @@ export default function Home() {
                     : 'bg-white shadow-md border border-gray-200'
                 }`}
               >
-                <div className={`whitespace-pre-wrap ${message.role === 'assistant' ? 'text-gray-800' : ''}`}>{message.content}</div>
-                <div className={`text-xs mt-2 ${message.role === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
-                  {message.timestamp.toLocaleTimeString()}
-                </div>
+                {message.role === 'assistant' ? (
+                  <div className="text-gray-800">
+                    <Response className="min-h-0">
+                      {message.content}
+                    </Response>
+                    <div className="text-xs mt-2 text-gray-500">
+                      {message.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="whitespace-pre-wrap">{message.content}</div>
+                    <div className="text-xs mt-2 text-blue-100">
+                      {message.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}

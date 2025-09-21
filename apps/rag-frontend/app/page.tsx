@@ -454,7 +454,7 @@ export default function Home() {
         </div>
 
         {/* Debug Info */}
-        <div className="bg-yellow-50 border-t border-yellow-200 p-2 text-xs text-gray-600">
+        {/* <div className="bg-yellow-50 border-t border-yellow-200 p-2 text-xs text-gray-600">
           Debug: Mindmap enabled: {useMindmap ? 'Yes' : 'No'} | 
           Mindmap data length: {mindmapData.length} | 
           Follow-up questions: {followUpQuestions.length}
@@ -463,7 +463,7 @@ export default function Home() {
               Questions: {JSON.stringify(followUpQuestions.slice(0, 2))}
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Suggested Questions - ALWAYS TRY TO SHOW */}
         <div className="bg-gray-50 border-t border-gray-200 p-4">

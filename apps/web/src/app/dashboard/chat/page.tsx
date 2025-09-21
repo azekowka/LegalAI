@@ -78,7 +78,7 @@ export default function ChatPage() {
 
   const loadFiles = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/files')
+      const response = await fetch('https://legalai-backend-8jqq.onrender.com/files')
       const data = await response.json()
       setFiles(data.files || [])
     } catch (error) {
@@ -95,7 +95,7 @@ export default function ChatPage() {
 
     setUploadStatus('Uploading...')
     try {
-      const response = await fetch('http://127.0.0.1:8000/upload', {
+      const response = await fetch('https://legalai-backend-8jqq.onrender.com/upload', {
         method: 'POST',
         body: formData
       })
@@ -138,7 +138,7 @@ export default function ChatPage() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/chat', {
+      const response = await fetch('https://legalai-backend-8jqq.onrender.com/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -226,7 +226,7 @@ export default function ChatPage() {
         console.log('Sending chat history for suggestions:', chatHistory)
         
         if (chatHistory.length > 0) {
-          const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
+          const suggestResponse = await fetch('https://legalai-backend-8jqq.onrender.com/suggest-questions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -273,7 +273,7 @@ export default function ChatPage() {
 
     try {
       // Generate initial questions based on selected documents
-      const suggestResponse = await fetch('http://127.0.0.1:8000/suggest-questions', {
+      const suggestResponse = await fetch('https://legalai-backend-8jqq.onrender.com/suggest-questions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

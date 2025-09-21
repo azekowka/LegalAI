@@ -88,18 +88,18 @@ class Settings:
                 },
                 "default": True,
             }
-        VOYAGE_API_KEY = config("VOYAGE_API_KEY", default="")
-        if VOYAGE_API_KEY:
-            self.KH_EMBEDDINGS["voyageai"] = {
-                "spec": {
-                    "__type__": "kotaemon.embeddings.VoyageAIEmbeddings",
-                    "api_key": VOYAGE_API_KEY,
-                    "model": config(
-                        "VOYAGE_EMBEDDINGS_MODEL", default="voyage-large-2-instruct"
-                    ),
-                },
-                "default": False,
-            }
+        # VOYAGE_API_KEY = config("VOYAGE_API_KEY", default="")
+        # if VOYAGE_API_KEY:
+        #     self.KH_EMBEDDINGS["voyageai"] = {
+        #         "spec": {
+        #             "__type__": "kotaemon.embeddings.VoyageAIEmbeddings",
+        #             "api_key": VOYAGE_API_KEY,
+        #             "model": config(
+        #                 "VOYAGE_EMBEDDINGS_MODEL", default="voyage-large-2-instruct"
+        #             ),
+        #         },
+        #         "default": False,
+        #     }
         
         # from ktem.embeddings.manager import embedding_models_manager
         # embedding_models_manager.load_from_settings(self)
@@ -107,15 +107,15 @@ class Settings:
 
         # --- Rerankings (filtered for VoyageAI) ---
         self.KH_RERANKINGS = {}
-        if VOYAGE_API_KEY:
-            self.KH_RERANKINGS["voyageai"] = {
-                "spec": {
-                    "__type__": "kotaemon.rerankings.VoyageAIReranking",
-                    "api_key": VOYAGE_API_KEY,
-                    "model": "rerank-lite-1",
-                },
-                "default": False,
-            }
+        # if VOYAGE_API_KEY:
+        #     self.KH_RERANKINGS["voyageai"] = {
+        #         "spec": {
+        #             "__type__": "kotaemon.rerankings.VoyageAIReranking",
+        #             "api_key": VOYAGE_API_KEY,
+        #             "model": "rerank-lite-1",
+        #         },
+        #         "default": False,
+        #     }
         
         # from ktem.rerankings.manager import reranking_models_manager
         # reranking_models_manager.load_from_settings(self)

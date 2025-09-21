@@ -197,6 +197,12 @@ app.add_middleware(
 )
 
 
+@app.get("/healthz")
+def healthz():
+    """Health check endpoint."""
+    return {"status": "ok"}
+
+
 @app.on_event("startup")
 async def startup_event():
     """Initializes the application's core components."""

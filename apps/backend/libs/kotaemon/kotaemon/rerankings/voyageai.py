@@ -3,19 +3,22 @@ from __future__ import annotations
 import importlib
 
 from decouple import config
+from theflow import Param
 
-from kotaemon.base import Document, Param
+from kotaemon.base.schema import Document
 
 from .base import BaseReranking
 
-vo = None
-
 
 def _import_voyageai():
-    global vo
-    if not vo:
-        vo = importlib.import_module("voyageai")
-    return vo
+    try:
+        import voyageai
+    except ImportError:
+        raise ImportError(
+            "Could not import voyageai python package. "
+            "Please install it with `pip install voyageai`."
+        )
+    return voyageai
 
 
 class VoyageAIReranking(BaseReranking):
@@ -36,7 +39,10 @@ class VoyageAIReranking(BaseReranking):
     )
 
     def __init__(self, *args, **kwargs):
+        if "model" in kwargs and "model_name" not in kwargs:
+            kwargs["model_name"] = kwargs.pop("model")
         super().__init__(*args, **kwargs)
+
         if not self.api_key:
             raise ValueError("API key must be provided for VoyageAIEmbeddings.")
 

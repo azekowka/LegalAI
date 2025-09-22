@@ -1,0 +1,68 @@
+// types/template.ts
+export interface TemplateVariable {
+    id: string;
+    name: string;
+    type: 'text' | 'number' | 'date' | 'select' | 'email' | 'phone';
+    required: boolean;
+    defaultValue?: string;
+    options?: string[];
+    placeholder?: string;
+    description?: string;
+  }
+  
+  export interface TableRow {
+    id: string;
+    [key: string]: string | number;
+  }
+  
+  export interface TableColumn {
+    id: string;
+    name: string;
+    type: 'text' | 'number' | 'currency';
+    editable?: boolean;
+    formula?: string; // для вычисляемых столбцов
+  }
+  
+  export interface TemplateSection {
+    id: string;
+    type: 'text' | 'table' | 'signature' | 'variables' | 'header' | 'contacts';
+    content: string;
+    variables?: TemplateVariable[];
+    tableColumns?: TableColumn[];
+    tableRows?: TableRow[];
+    style?: {
+      fontSize?: string;
+      fontWeight?: string;
+      textAlign?: 'left' | 'center' | 'right';
+      margin?: string;
+      padding?: string;
+    };
+  }
+  
+  export interface DocumentTemplate {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    sections: TemplateSection[];
+    variables: TemplateVariable[]; // глобальные переменные для всего документа
+    createdAt: Date;
+    updatedAt: Date;
+  }
+  
+  // Дополнительные типы для работы с документами
+  export interface DocumentData {
+    templateId: string;
+    variables: Record<string, string | number>;
+    tableData?: Record<string, TableRow[]>;
+  }
+  
+  export interface GeneratedDocument {
+    id: string;
+    templateId: string;
+    title: string;
+    content: string;
+    htmlContent: string;
+    data: DocumentData;
+    createdAt: Date;
+  }

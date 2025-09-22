@@ -56,6 +56,9 @@ type CustomElement = {
     | "link"
     | "blockquote"
     | "code-block"
+    | "table"
+    | "table-row"
+    | "table-cell"
   align?: "left" | "center" | "right" | "justify"
   url?: string
   indent?: number
@@ -1004,15 +1007,15 @@ export function RichTextEditor({ value, onChange, placeholder = "Start writing..
           <div className="py-8 px-6">
             <div className="max-w-none flex flex-col items-center space-y-6">
               {/* Main content page */}
-              <div
-                className="bg-card shadow-lg flex-shrink-0 relative border"
-                style={{
-                  width: '8.5in',
-                  minHeight: '11in',
-                  padding: '1in',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                }}
-              >
+                <div
+                  className="bg-card shadow-lg flex-shrink-0 relative border exact-document-layout"
+                  style={{
+                    width: '8.5in',
+                    minHeight: '11in',
+                    padding: '1in',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  }}
+                >
           <Editable
             renderElement={renderElement}
             renderLeaf={renderLeaf}
@@ -1151,6 +1154,40 @@ const Element = memo(({ attributes, children, element }: any) => {
           {children}
         </a>
       )
+    case "table":
+      return (
+        <table 
+          {...attributes} 
+          className="w-full border-collapse my-4"
+          style={{
+            border: '2px solid #000',
+            ...style
+          }}
+        >
+          <tbody>{children}</tbody>
+        </table>
+      )
+    case "table-row":
+      return (
+        <tr {...attributes} style={{ border: '1px solid #000' }}>
+          {children}
+        </tr>
+      )
+    case "table-cell":
+      return (
+        <td 
+          {...attributes} 
+          className="text-left align-top"
+          style={{
+            border: '1px solid #000',
+            padding: '8px 12px',
+            minHeight: '40px',
+            ...style
+          }}
+        >
+          {children}
+        </td>
+      )
     default:
       return (
         <p style={style} className="my-2" {...attributes}>
@@ -1169,9 +1206,11 @@ const Leaf = memo(({ attributes, children, leaf }: any) => {
   }
   if (leaf.backgroundColor) {
     style.backgroundColor = leaf.backgroundColor
+    style.padding = '2px 4px'
+    style.borderRadius = '3px'
   }
   if (leaf.fontSize) {
-    style.fontSize = `${leaf.fontSize}px`
+    style.fontSize = typeof leaf.fontSize === 'string' ? leaf.fontSize : `${leaf.fontSize}px`
   }
   if (leaf.fontFamily) {
     style.fontFamily = leaf.fontFamily

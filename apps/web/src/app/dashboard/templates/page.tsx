@@ -201,6 +201,11 @@ export default function TemplatesDashboard() {
                       className={`border-t border-border hover:bg-muted/20 transition-colors cursor-pointer ${
                         index === filteredTemplates.length - 1 ? "" : ""
                       }`}
+                      onClick={() => {
+                        if (template.name === "Коммерческое предложение") {
+                          window.location.href = `/dashboard/templates/3`;
+                        }
+                      }}
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
@@ -242,11 +247,23 @@ export default function TemplatesDashboard() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40">
-                            <DropdownMenuItem>Редактировать</DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (template.name === "Коммерческое предложение") {
+                                  window.location.href = `/dashboard/templates/3`;
+                                }
+                              }}
+                            >
+                              Редактировать
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Дублировать</DropdownMenuItem>
                             <DropdownMenuItem 
                               className="text-destructive"
-                              onClick={() => moveToTrash(template.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveToTrash(template.id);
+                              }}
                             >
                               <Trash2 className="w-4 h-4 mr-2" />
                               Удалить

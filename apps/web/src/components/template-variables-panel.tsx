@@ -6,7 +6,6 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
-import { ScrollArea } from './ui/scroll-area';
 import { 
   Search, 
   Variable, 
@@ -146,84 +145,82 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
           </div>
         </div> */}
 
-        <ScrollArea className="h-96">
-          <div className="space-y-4">
-            {/* Глобальные переменные */}
-            {filteredGlobalVariables.length > 0 && (
-              <Collapsible open={globalVariablesOpen} onOpenChange={setGlobalVariablesOpen}>
+        <div className="space-y-4">
+          {/* Глобальные переменные */}
+          {filteredGlobalVariables.length > 0 && (
+            <Collapsible open={globalVariablesOpen} onOpenChange={setGlobalVariablesOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                  <div className="flex items-center space-x-2">
+                    {globalVariablesOpen ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
+                    <span className="font-medium">
+                      Основные данные ({filteredGlobalVariables.length})
+                    </span>
+                  </div>
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-2 mt-3">
+                {filteredGlobalVariables.map(renderVariable)}
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+
+          {/* Переменные секций */}
+          {filteredSectionVariables.length > 0 && (
+            <>
+              {filteredGlobalVariables.length > 0 && <Separator />}
+              <Collapsible open={sectionVariablesOpen} onOpenChange={setSectionVariablesOpen}>
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" className="w-full justify-between p-0 h-auto">
                     <div className="flex items-center space-x-2">
-                      {globalVariablesOpen ? (
+                      {sectionVariablesOpen ? (
                         <ChevronDown className="w-4 h-4" />
                       ) : (
                         <ChevronRight className="w-4 h-4" />
                       )}
                       <span className="font-medium">
-                        Основные данные ({filteredGlobalVariables.length})
+                        Дополнительные данные ({filteredSectionVariables.length})
                       </span>
                     </div>
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-2 mt-3">
-                  {filteredGlobalVariables.map(renderVariable)}
+                  {filteredSectionVariables.map(renderVariable)}
                 </CollapsibleContent>
               </Collapsible>
-            )}
+            </>
+          )}
 
-            {/* Переменные секций */}
-            {filteredSectionVariables.length > 0 && (
-              <>
-                {filteredGlobalVariables.length > 0 && <Separator />}
-                <Collapsible open={sectionVariablesOpen} onOpenChange={setSectionVariablesOpen}>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                      <div className="flex items-center space-x-2">
-                        {sectionVariablesOpen ? (
-                          <ChevronDown className="w-4 h-4" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4" />
-                        )}
-                        <span className="font-medium">
-                          Дополнительные данные ({filteredSectionVariables.length})
-                        </span>
-                      </div>
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-2 mt-3">
-                    {filteredSectionVariables.map(renderVariable)}
-                  </CollapsibleContent>
-                </Collapsible>
-              </>
-            )}
+          {/* Сообщение об отсутствии результатов */}
+          {searchTerm && filteredGlobalVariables.length === 0 && filteredSectionVariables.length === 0 && (
+            <div className="text-center py-8">
+              <Variable className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">
+                Переменные не найдены
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Попробуйте изменить поисковый запрос
+              </p>
+            </div>
+          )}
 
-            {/* Сообщение об отсутствии результатов */}
-            {searchTerm && filteredGlobalVariables.length === 0 && filteredSectionVariables.length === 0 && (
-              <div className="text-center py-8">
-                <Variable className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">
-                  Переменные не найдены
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Попробуйте изменить поисковый запрос
-                </p>
-              </div>
-            )}
-
-            {/* Сообщение об отсутствии переменных */}
-            {!searchTerm && globalVariables.length === 0 && sectionVariables.length === 0 && (
-              <div className="text-center py-8">
-                <Variable className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">
-                  В шаблоне нет переменных
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Переменные позволяют создавать динамические документы
-                </p>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+          {/* Сообщение об отсутствии переменных */}
+          {!searchTerm && globalVariables.length === 0 && sectionVariables.length === 0 && (
+            <div className="text-center py-8">
+              <Variable className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">
+                В шаблоне нет переменных
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Переменные позволяют создавать динамические документы
+              </p>
+            </div>
+          )}
+        </div>
 
         {/* Статистика */}
         <div className="border-t pt-3">

@@ -5,17 +5,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { ScrollArea } from './ui/scroll-area';
 import { 
   Search, 
   Variable, 
-  Copy, 
   ChevronDown, 
   ChevronRight,
-  Info,
-  Plus
+  Info
 } from 'lucide-react';
 import { DocumentTemplate, TemplateVariable } from '../types/template';
 import TemplateProcessor from '../lib/template-processor';
@@ -57,7 +54,7 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
     variable.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Вставка переменной
+  // Вставка переменной (больше не используется напрямую, но сохранена как заглушка)
   const handleVariableClick = useCallback((variableId: string) => {
     if (onVariableInsert) {
       onVariableInsert(variableId);
@@ -68,14 +65,6 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
       toast.success(`Переменная ${variableText} скопирована в буфер обмена`);
     }
   }, [onVariableInsert]);
-
-  // Копирование переменной в буфер обмена
-  const handleCopyVariable = useCallback((variableId: string, event: React.MouseEvent) => {
-    event.stopPropagation();
-    const variableText = `{{${variableId}}}`;
-    navigator.clipboard.writeText(variableText);
-    toast.success(`Скопировано: ${variableText}`);
-  }, []);
 
   // Рендер переменной с полем ввода
   const renderVariable = (variable: TemplateVariable & { scope?: string }) => (
@@ -92,24 +81,8 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
                 <span className="text-red-500 ml-1">*</span>
               )}
             </span>
-            <Badge variant="outline" className="text-xs">
-              {variable.type}
-            </Badge>
-          </div>
-          
-          <div className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded mb-2">
-            {'{{' + variable.id + '}}'}
           </div>
         </div>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          className="ml-2"
-          onClick={(e) => handleCopyVariable(variable.id, e)}
-        >
-          <Copy className="w-3 h-3" />
-        </Button>
       </div>
       
       {/* Поле ввода */}

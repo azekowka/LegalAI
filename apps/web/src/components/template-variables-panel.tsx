@@ -135,19 +135,16 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
         </div>
 
         {/* Информационное сообщение */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        {/*<div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <div className="flex items-start space-x-2">
             <Info className="w-4 h-4 text-blue-600 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-blue-900">
                 Заполните обязательные поля
               </p>
-              <p className="text-xs text-blue-800 mt-1">
-                Вводите данные в поля ниже - они сразу появятся в документе. <span className="text-red-500">*</span> - обязательные поля.
-              </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <ScrollArea className="h-96">
           <div className="space-y-4">

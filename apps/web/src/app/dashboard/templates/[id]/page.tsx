@@ -528,7 +528,12 @@ export default function TemplateEditorPage() {
               template={template}
               onVariableInsert={handleVariableInsert}
               onVariableChange={handleVariableChange}
-              variableValues={templateData.variables}
+              variableValues={Object.fromEntries(
+                Object.entries(templateData.variables).map(([key, value]) => [
+                  key,
+                  typeof value === 'number' ? String(value) : value
+                ])
+              ) as Record<string, string>}
               className="h-full border-none"
             />
           </div>

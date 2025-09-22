@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Separator } from './ui/separator';
 import { 
@@ -11,7 +10,6 @@ import {
   Variable, 
   ChevronDown, 
   ChevronRight,
-  Info
 } from 'lucide-react';
 import { DocumentTemplate, TemplateVariable } from '../types/template';
 import TemplateProcessor from '../lib/template-processor';

@@ -154,7 +154,7 @@ export default function CreateDocumentPage() {
           <div className="lg:col-span-2">
             <TemplateForm
               template={selectedTemplate!}
-              initialData={documentData}
+              initialData={documentData ?? undefined}
               onSave={handleSaveDocument}
               onPreview={handlePreview}
             />

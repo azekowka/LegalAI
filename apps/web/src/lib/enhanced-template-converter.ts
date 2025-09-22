@@ -14,54 +14,51 @@ export class EnhancedTemplateConverter {
   private static remarkProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkToSlate, {
-      // Настройки для конвертации
-      overrides: {
-        // Настройка для таблиц
-        table: {
-          type: 'table',
-          children: []
-        },
-        tableRow: {
-          type: 'table-row',
-          children: []
-        },
-        tableCell: {
-          type: 'table-cell',
-          children: []
-        },
-        // Настройка для заголовков
-        heading: (node: any, next: any) => ({
-          type: `heading-${node.depth}`,
-          children: next(node.children)
-        }),
-        // Настройка для списков
-        list: (node: any, next: any) => ({
-          type: node.ordered ? 'numbered-list' : 'bulleted-list',
-          children: next(node.children)
-        }),
-        listItem: {
-          type: 'list-item',
-          children: []
-        },
-        // Настройка для ссылок
-        link: (node: any, next: any) => ({
-          type: 'link',
-          url: node.url,
-          children: next(node.children)
-        }),
-        // Настройка для кода
-        code: {
-          type: 'code-block',
-          children: []
-        },
-        // Настройка для цитат
-        blockquote: {
-          type: 'blockquote',
-          children: []
-        }
+    .use(remarkToSlate as any, {
+      // Настройка для таблиц
+      table: {
+        type: 'table',
+        children: []
+      },
+      tableRow: {
+        type: 'table-row',
+        children: []
+      },
+      tableCell: {
+        type: 'table-cell',
+        children: []
+      },
+      // Настройка для заголовков
+      heading: (node: any, next: any) => ({
+        type: `heading-${node.depth}`,
+        children: next(node.children)
+      }),
+      // Настройка для списков
+      list: (node: any, next: any) => ({
+        type: node.ordered ? 'numbered-list' : 'bulleted-list',
+        children: next(node.children)
+      }),
+      listItem: {
+        type: 'list-item',
+        children: []
+      },
+      // Настройка для ссылок
+      link: (node: any, next: any) => ({
+        type: 'link',
+        url: node.url,
+        children: next(node.children)
+      }),
+      // Настройка для кода
+      code: {
+        type: 'code-block',
+        children: []
+      },
+      // Настройка для цитат
+      blockquote: {
+        type: 'blockquote',
+        children: []
       }
-    });
+    } as any);
 
   /**
    * Конвертирует шаблон документа в Slate формат с использованием remark
@@ -94,7 +91,7 @@ export class EnhancedTemplateConverter {
     template.sections.forEach(section => {
       const sectionMarkdown = this.sectionToMarkdown(section, data);
       if (sectionMarkdown.trim()) {
-        markdown += sectionMarkdown + '\n\n';
+        markdown += sectionMarkdown + '\\n\\n';
       }
     });
     
@@ -113,8 +110,8 @@ export class EnhancedTemplateConverter {
         
       case 'contacts':
         // Преобразуем контакты в список
-        const contactLines = content.split('\n').filter(line => line.trim());
-        return contactLines.map(line => `- ${line.trim()}`).join('\n');
+        const contactLines = content.split('\\n').filter(line => line.trim());
+        return contactLines.map(line => `- ${line.trim()}`).join('\\n');
         
       case 'text':
         // Проверяем на специальные случаи
@@ -155,16 +152,16 @@ export class EnhancedTemplateConverter {
     
     // Заголовок таблицы
     if (section.content && section.content.trim()) {
-      markdown += `### ${section.content}\n\n`;
+      markdown += `### ${section.content}\\n\\n`;
     }
     
     // Заголовки столбцов
     const headers = section.tableColumns.map(col => col.name);
-    markdown += `| ${headers.join(' | ')} |\n`;
+    markdown += `| ${headers.join(' | ')} |\\n`;
     
     // Разделитель
     const separator = section.tableColumns.map(() => '---');
-    markdown += `| ${separator.join(' | ')} |\n`;
+    markdown += `| ${separator.join(' | ')} |\\n`;
     
     // Строки данных
     tableData.forEach(row => {
@@ -175,7 +172,7 @@ export class EnhancedTemplateConverter {
         }
         return String(value || '');
       });
-      markdown += `| ${rowData.join(' | ')} |\n`;
+      markdown += `| ${rowData.join(' | ')} |\\n`;
     });
     
     return markdown;
@@ -286,7 +283,7 @@ export class EnhancedTemplateConverter {
    * Конвертирует Slate обратно в Markdown
    */
   static slateToMarkdown(nodes: Descendant[]): string {
-    return nodes.map(node => this.nodeToMarkdown(node)).join('\n\n');
+    return nodes.map(node => this.nodeToMarkdown(node)).join('\\n\\n');
   }
 
   /**
@@ -313,13 +310,13 @@ export class EnhancedTemplateConverter {
     if (node.type === 'bulleted-list') {
       return node.children.map((item: any) => 
         `- ${this.nodeToMarkdown(item)}`
-      ).join('\n');
+      ).join('\\n');
     }
     
     if (node.type === 'numbered-list') {
       return node.children.map((item: any, index: number) => 
         `${index + 1}. ${this.nodeToMarkdown(item)}`
-      ).join('\n');
+      ).join('\\n');
     }
     
     if (node.type === 'list-item') {
@@ -333,7 +330,7 @@ export class EnhancedTemplateConverter {
           cell.children.map((child: any) => child.text || '').join('')
         );
         return `| ${cells.join(' | ')} |`;
-      }).join('\n');
+      }).join('\\n');
     }
     
     if (node.type === 'blockquote') {
@@ -343,7 +340,7 @@ export class EnhancedTemplateConverter {
     
     if (node.type === 'code-block') {
       const text = node.children.map((child: any) => child.text || '').join('');
-      return `\`\`\`\n${text}\n\`\`\``;
+      return `\`\`\`\\n${text}\\n\`\`\``;
     }
     
     // По умолчанию

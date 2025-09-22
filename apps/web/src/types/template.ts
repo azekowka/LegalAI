@@ -66,3 +66,27 @@ export interface TemplateVariable {
     data: DocumentData;
     createdAt: Date;
   }
+
+export type CustomText = {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  color?: string;
+  backgroundColor?: string;
+  fontSize?: string;
+  fontFamily?: string;
+};
+
+export type CustomElement = {
+  type: string;
+  children: (CustomElement | CustomText)[];
+  [key: string]: any; // Allow other properties like align, url, etc.
+};
+
+declare module 'slate' {
+  interface CustomTypes {
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}

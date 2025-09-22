@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState, useEffect, useRef, memo } from "react"
 import { createEditor, type Descendant, Editor, Transforms, Element as SlateElement, Range, Point, Path } from "slate"
 import { Slate, Editable, withReact, useSlateStatic, type ReactEditor } from "slate-react"
 import { withHistory, type HistoryEditor } from "slate-history"
+import { CustomElement, CustomText } from "../types/template";
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -39,45 +40,6 @@ import {
   MoreHorizontal,
 } from "lucide-react"
 import type { KeyboardEvent } from "react"
-
-// Define custom types for Slate
-type CustomElement = {
-  type:
-    | "paragraph"
-    | "heading-one"
-    | "heading-two"
-    | "heading-three"
-    | "heading-four"
-    | "heading-five"
-    | "heading-six"
-    | "list-item"
-    | "numbered-list"
-    | "bulleted-list"
-    | "link"
-    | "blockquote"
-    | "code-block"
-    | "table"
-    | "table-row"
-    | "table-cell"
-  align?: "left" | "center" | "right" | "justify"
-  url?: string
-  indent?: number
-  children: CustomText[]
-}
-
-type CustomText = {
-  text: string
-  bold?: boolean
-  italic?: boolean
-  underline?: boolean
-  strikethrough?: boolean
-  superscript?: boolean
-  subscript?: boolean
-  color?: string
-  backgroundColor?: string
-  fontSize?: string
-  fontFamily?: string
-}
 
 declare module "slate" {
   interface CustomTypes {
@@ -408,7 +370,7 @@ const ColorButton = memo(() => {
 
 const FontFamilySelect = memo(() => {
   const editor = useSlateStatic()
-  const marks = Editor.marks(editor) || {}
+  const marks = Editor.marks(editor) as CustomText || {}
   const currentFont = (marks.fontFamily as string) || "Arial"
 
   const handleFontChange = useCallback((value: string) => {
@@ -437,8 +399,8 @@ const FontFamilySelect = memo(() => {
 
 const FontSizeSelect = memo(() => {
   const editor = useSlateStatic()
-  const marks = Editor.marks(editor) || {}
-  const currentSize = (marks.fontSize as string) || "14"
+  const marks = Editor.marks(editor) as CustomText || {}
+  const currentSize = (marks?.fontSize as string) || "14"
 
   const handleSizeChange = useCallback((value: string) => {
     toggleMark(editor, "fontSize", value)

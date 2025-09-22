@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
@@ -24,12 +25,16 @@ import { toast } from 'sonner';
 interface TemplateVariablesPanelProps {
   template: DocumentTemplate;
   onVariableInsert?: (variableId: string) => void;
+  onVariableChange?: (variableId: string, value: string) => void;
+  variableValues?: Record<string, string>;
   className?: string;
 }
 
 export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
   template,
   onVariableInsert,
+  onVariableChange,
+  variableValues = {},
   className = ''
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -72,12 +77,11 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
     toast.success(`Скопировано: ${variableText}`);
   }, []);
 
-  // Рендер переменной
+  // Рендер переменной с полем ввода
   const renderVariable = (variable: TemplateVariable & { scope?: string }) => (
     <div
       key={variable.id}
-      className="p-3 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors group"
-      onClick={() => handleVariableClick(variable.id)}
+      className="p-3 border border-border rounded-lg space-y-3"
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
@@ -96,28 +100,37 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
           <div className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded mb-2">
             {'{{' + variable.id + '}}'}
           </div>
-          
-          {variable.description && (
-            <p className="text-xs text-muted-foreground">
-              {variable.description}
-            </p>
-          )}
-          
-          {variable.placeholder && (
-            <p className="text-xs text-muted-foreground italic mt-1">
-              Пример: {variable.placeholder}
-            </p>
-          )}
         </div>
         
         <Button
           variant="ghost"
           size="sm"
-          className="opacity-0 group-hover:opacity-100 transition-opacity ml-2"
+          className="ml-2"
           onClick={(e) => handleCopyVariable(variable.id, e)}
         >
           <Copy className="w-3 h-3" />
         </Button>
+      </div>
+      
+      {/* Поле ввода */}
+      <div className="space-y-1">
+        <Input
+          type={variable.type === 'email' ? 'email' : variable.type === 'phone' ? 'tel' : variable.type === 'number' ? 'number' : variable.type === 'date' ? 'date' : 'text'}
+          placeholder={variable.placeholder || `Введите ${variable.name.toLowerCase()}`}
+          value={variableValues[variable.id] || variable.defaultValue || ''}
+          onChange={(e) => {
+            if (onVariableChange) {
+              onVariableChange(variable.id, e.target.value);
+            }
+          }}
+          className="text-sm"
+        />
+        
+        {variable.description && (
+          <p className="text-xs text-muted-foreground">
+            {variable.description}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -128,9 +141,9 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
         <div className="flex items-center space-x-2">
           <Variable className="w-5 h-5" />
           <div className="flex-1">
-            <CardTitle className="text-base">Переменные шаблона</CardTitle>
+            <CardTitle className="text-base">Переменные данные</CardTitle>
             <CardDescription>
-              Нажмите на переменную для вставки в редактор
+              Заполните обязательные поля перед отправкой документа
             </CardDescription>
           </div>
         </div>
@@ -154,10 +167,10 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
             <Info className="w-4 h-4 text-blue-600 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-blue-900">
-                Как использовать
+                Заполните обязательные поля
               </p>
               <p className="text-xs text-blue-800 mt-1">
-                Нажмите на переменную для вставки в редактор. <span className="text-red-500">*</span> - обязательные поля.
+                Вводите данные в поля ниже - они сразу появятся в документе. <span className="text-red-500">*</span> - обязательные поля.
               </p>
             </div>
           </div>
@@ -177,7 +190,7 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
                         <ChevronRight className="w-4 h-4" />
                       )}
                       <span className="font-medium">
-                        Основные переменные ({filteredGlobalVariables.length})
+                        Основные данные ({filteredGlobalVariables.length})
                       </span>
                     </div>
                   </Button>
@@ -202,7 +215,7 @@ export const TemplateVariablesPanel: React.FC<TemplateVariablesPanelProps> = ({
                           <ChevronRight className="w-4 h-4" />
                         )}
                         <span className="font-medium">
-                          Дополнительные переменные ({filteredSectionVariables.length})
+                          Дополнительные данные ({filteredSectionVariables.length})
                         </span>
                       </div>
                     </Button>

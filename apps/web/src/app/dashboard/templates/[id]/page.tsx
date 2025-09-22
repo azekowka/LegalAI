@@ -185,16 +185,29 @@ export default function TemplateEditorPage() {
     }
   }, [template, templateData]);
 
-  // Обновление переменной шаблона
+  // Обновление переменной шаблона с автоматическим обновлением документа
   const handleVariableChange = useCallback((variableId: string, value: string) => {
-    setTemplateData(prev => ({
-      ...prev,
+    const newTemplateData = {
+      ...templateData,
       variables: {
-        ...prev.variables,
+        ...templateData.variables,
         [variableId]: value
       }
-    }));
-  }, []);
+    };
+    
+    setTemplateData(newTemplateData);
+    
+    // Автоматически обновляем документ с новыми данными
+    if (template) {
+      try {
+        const slateContent = ExactDocumentConverter.convertWithData(template, newTemplateData);
+        const slateString = JSON.stringify(slateContent);
+        setEditorContent(slateString);
+      } catch (error) {
+        console.error('Ошибка автоматического обновления:', error);
+      }
+    }
+  }, [template, templateData]);
 
   // Обновление содержимого с переменными
   const handleRefreshWithVariables = useCallback(() => {
@@ -387,7 +400,7 @@ export default function TemplateEditorPage() {
                           <Input
                             type={variable.type === 'email' ? 'email' : variable.type === 'phone' ? 'tel' : variable.type === 'number' ? 'number' : variable.type === 'date' ? 'date' : 'text'}
                             placeholder={variable.placeholder || `Введите ${variable.name.toLowerCase()}`}
-                            value={templateData.variables[variable.id] || ''}
+                            value={templateData.variables[variable.id] || variable.defaultValue || ''}
                             onChange={(e) => handleVariableChange(variable.id, e.target.value)}
                           />
                           {variable.description && (
@@ -424,7 +437,7 @@ export default function TemplateEditorPage() {
                           <Input
                             type={variable.type === 'email' ? 'email' : variable.type === 'phone' ? 'tel' : variable.type === 'number' ? 'number' : variable.type === 'date' ? 'date' : 'text'}
                             placeholder={variable.placeholder || `Введите ${variable.name.toLowerCase()}`}
-                            value={templateData.variables[variable.id] || ''}
+                            value={templateData.variables[variable.id] || variable.defaultValue || ''}
                             onChange={(e) => handleVariableChange(variable.id, e.target.value)}
                           />
                           {variable.description && (
@@ -514,6 +527,8 @@ export default function TemplateEditorPage() {
             <TemplateVariablesPanel
               template={template}
               onVariableInsert={handleVariableInsert}
+              onVariableChange={handleVariableChange}
+              variableValues={templateData.variables}
               className="h-full border-none"
             />
           </div>

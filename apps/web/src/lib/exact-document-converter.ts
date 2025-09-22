@@ -285,9 +285,9 @@ export class ExactDocumentConverter {
     nodes.push({
       type: 'paragraph',
       children: [
-        { text: variables.companyName || 'Название компании' },
+        { text: variables.companyName || 'Название компании', color: variables.companyName ? '#000' : '#0066cc', underline: !variables.companyName },
         { text: ' ' },
-        { text: variables.companyCity || 'Город компании' }
+        { text: variables.companyCity || 'Город компании', color: variables.companyCity ? '#000' : '#0066cc', underline: !variables.companyCity }
       ]
     });
     
@@ -302,9 +302,9 @@ export class ExactDocumentConverter {
       type: 'paragraph',
       children: [
         { text: 'Телефон: ' },
-        { text: variables.companyPhone || 'Телефон компании' },
+        { text: variables.companyPhone || 'Телефон компании', color: variables.companyPhone ? '#000' : '#0066cc', underline: !variables.companyPhone },
         { text: ' Адрес: ' },
-        { text: variables.companyAddress || 'Адрес компании' }
+        { text: variables.companyAddress || 'Адрес компании', color: variables.companyAddress ? '#000' : '#0066cc', underline: !variables.companyAddress }
       ]
     });
     
@@ -319,9 +319,9 @@ export class ExactDocumentConverter {
       type: 'paragraph',
       children: [
         { text: 'E-Mail: ' },
-        { text: variables.companyEmail || 'E-Mail компании' },
+        { text: variables.companyEmail || 'E-Mail компании', color: variables.companyEmail ? '#000' : '#0066cc', underline: !variables.companyEmail },
         { text: ' БИН: ' },
-        { text: variables.companyBIN || 'БИН компании' }
+        { text: variables.companyBIN || 'БИН компании', color: variables.companyBIN ? '#000' : '#0066cc', underline: !variables.companyBIN }
       ]
     });
     
@@ -358,7 +358,9 @@ export class ExactDocumentConverter {
       align: 'center',
       children: [{
         text: variables.clientCompanyName || 'Название компании для КП',
-        bold: true
+        bold: true,
+        color: variables.clientCompanyName ? '#000' : '#0066cc',
+        underline: !variables.clientCompanyName
       }]
     });
     
@@ -384,9 +386,9 @@ export class ExactDocumentConverter {
       children: [
         { text: variables.companyName || 'Название компании' },
         { text: ' имеет обширный опыт по ' },
-        { text: variables.serviceDescription || 'описанию услуг' },
+        { text: variables.serviceDescription || 'Описание услуг компании', color: variables.serviceDescription ? '#000' : '#0066cc', underline: !variables.serviceDescription },
         { text: '. Наша компания предлагает услуги по ' },
-        { text: variables.serviceType || 'типу услуг' }
+        { text: variables.serviceType || 'Тип предлагаемых услуг', color: variables.serviceType ? '#000' : '#0066cc', underline: !variables.serviceType }
       ]
     });
     
@@ -454,7 +456,11 @@ export class ExactDocumentConverter {
             },
             {
               type: 'table-cell',
-              children: [{ text: variables.totalAmount || 'Итоговая сумма' }]
+              children: [{ 
+                text: variables.totalAmount || 'Итоговая сумма',
+                color: variables.totalAmount ? '#000' : '#0066cc',
+                underline: !variables.totalAmount
+              }]
             }
           ]
         }
@@ -479,11 +485,11 @@ export class ExactDocumentConverter {
     nodes.push({
       type: 'paragraph',
       children: [
-        { text: variables.authorPosition || 'Должность автора КП' },
+        { text: variables.authorPosition || 'Должность автора КП', color: variables.authorPosition ? '#000' : '#0066cc', underline: !variables.authorPosition },
         { text: ' ' },
-        { text: variables.companyName || 'Название компании' },
+        { text: variables.companyName || 'Название компании', color: variables.companyName ? '#000' : '#0066cc', underline: !variables.companyName },
         { text: ' ' },
-        { text: variables.authorName || 'ФИО автора КП' }
+        { text: variables.authorName || 'ФИО автора КП', color: variables.authorName ? '#000' : '#0066cc', underline: !variables.authorName }
       ]
     });
     
@@ -497,7 +503,9 @@ export class ExactDocumentConverter {
     nodes.push({
       type: 'paragraph',
       children: [{
-        text: variables.offerDate || 'Дата КП'
+        text: variables.offerDate || 'Дата КП',
+        color: variables.offerDate ? '#000' : '#0066cc',
+        underline: !variables.offerDate
       }]
     });
     

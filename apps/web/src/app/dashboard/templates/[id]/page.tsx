@@ -31,6 +31,7 @@ import ExactDocumentConverter from '@/lib/exact-document-converter';
 import TemplateProcessor from '@/lib/template-processor';
 import commercialOfferTemplate from '@/templates/template1';
 import { toast } from 'sonner';
+import { debounce } from 'lodash';
 
 // Моковые данные шаблонов
 const mockTemplates: Record<string, DocumentTemplate> = {
@@ -185,6 +186,27 @@ export default function TemplateEditorPage() {
     }
   }, [template, templateData]);
 
+  // Создаем debounced функцию для обновления документа
+  const debouncedUpdateDocument = useMemo(
+    () => debounce((template: DocumentTemplate, newTemplateData: DocumentData) => {
+      try {
+        const slateContent = ExactDocumentConverter.convertWithData(template, newTemplateData);
+        const slateString = JSON.stringify(slateContent);
+        setEditorContent(slateString);
+      } catch (error) {
+        console.error('Ошибка автоматического обновления:', error);
+      }
+    }, 500), // Задержка в 500мс
+    []
+  );
+
+  // Очистка debounced функции при размонтировании
+  useEffect(() => {
+    return () => {
+      debouncedUpdateDocument.cancel();
+    };
+  }, [debouncedUpdateDocument]);
+
   // Обновление переменной шаблона с автоматическим обновлением документа
   const handleVariableChange = useCallback((variableId: string, value: string) => {
     const newTemplateData = {
@@ -195,19 +217,14 @@ export default function TemplateEditorPage() {
       }
     };
     
+    // Сначала обновляем состояние переменных (для мгновенного отображения в полях)
     setTemplateData(newTemplateData);
     
-    // Автоматически обновляем документ с новыми данными
+    // Затем отложенно обновляем документ
     if (template) {
-      try {
-        const slateContent = ExactDocumentConverter.convertWithData(template, newTemplateData);
-        const slateString = JSON.stringify(slateContent);
-        setEditorContent(slateString);
-      } catch (error) {
-        console.error('Ошибка автоматического обновления:', error);
-      }
+      debouncedUpdateDocument(template, newTemplateData);
     }
-  }, [template, templateData]);
+  }, [template, templateData, debouncedUpdateDocument]);
 
   // Обновление содержимого с переменными
   const handleRefreshWithVariables = useCallback(() => {

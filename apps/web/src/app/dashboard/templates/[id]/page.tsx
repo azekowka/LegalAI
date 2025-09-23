@@ -364,28 +364,13 @@ export default function TemplateEditorPage() {
                     Обновить редактор
                   </Button>
                 </div>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-start space-x-2">
-                    <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-blue-900">
-                        Как использовать переменные
-                      </p>
-                      <p className="text-sm text-blue-800 mt-1">
-                        Используйте переменные в редакторе в формате <code className="bg-blue-100 px-1 rounded">{'{{имя_переменной}}'}</code>. 
-                        Заполните значения ниже для предпросмотра.
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
                 {globalVariables.length > 0 && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-base">Основные переменные</CardTitle>
                       <CardDescription>
-                        Глобальные переменные для всего документа
+                        Заполните пустые поля для редактирования документа
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -408,9 +393,9 @@ export default function TemplateEditorPage() {
                               {variable.description}
                             </p>
                           )}
-                          <div className="text-xs text-muted-foreground font-mono">
+                          {/*<div className="text-xs text-muted-foreground font-mono">
                             {'{{' + variable.id + '}}'}
-                          </div>
+                          </div>*/}
                         </div>
                       ))}
                     </CardContent>
@@ -445,9 +430,9 @@ export default function TemplateEditorPage() {
                               {variable.description}
                             </p>
                           )}
-                          <div className="text-xs text-muted-foreground font-mono">
+                          {/*<div className="text-xs text-muted-foreground font-mono">
                             {'{{' + variable.id + '}}'}
-                          </div>
+                          </div>*/}
                         </div>
                       ))}
                     </CardContent>

@@ -30,13 +30,15 @@ import EnhancedTemplateConverter from '@/lib/enhanced-template-converter';
 import ExactDocumentConverter from '@/lib/exact-document-converter';
 import TemplateProcessor from '@/lib/template-processor';
 import commercialOfferTemplate from '@/templates/template1';
+import confidentialityAgreementTemplate from '@/templates/confidentiality-agreement';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
 
 // Моковые данные шаблонов
 const mockTemplates: Record<string, DocumentTemplate> = {
   '3': commercialOfferTemplate,
-  'commercial-offer-kz': commercialOfferTemplate
+  'commercial-offer-kz': commercialOfferTemplate,
+  'confidentiality-agreement': confidentialityAgreementTemplate
 };
 
 export default function TemplateEditorPage() {

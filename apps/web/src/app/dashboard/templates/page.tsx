@@ -64,6 +64,19 @@ const mockTemplates: Template[] = [
     status: "Опубликован",
     lastModified: "11 дек 2023, 13:10",
   },
+  {
+    id: "6",
+    name: "Соглашение о Конфиденциальности",
+    documents: 0,
+    status: "Черновик",
+    lastModified: new Date().toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  },
 ];
 
 export default function TemplatesDashboard() {
@@ -204,6 +217,8 @@ export default function TemplatesDashboard() {
                       onClick={() => {
                         if (template.name === "Коммерческое предложение") {
                           window.location.href = `/dashboard/templates/3`;
+                        } else if (template.name === "Соглашение о Конфиденциальности") {
+                          window.location.href = `/dashboard/templates/confidentiality-agreement`;
                         }
                       }}
                     >
@@ -252,6 +267,8 @@ export default function TemplatesDashboard() {
                                 e.stopPropagation();
                                 if (template.name === "Коммерческое предложение") {
                                   window.location.href = `/dashboard/templates/3`;
+                                } else if (template.name === "Соглашение о Конфиденциальности") {
+                                  window.location.href = `/dashboard/templates/confidentiality-agreement`;
                                 }
                               }}
                             >

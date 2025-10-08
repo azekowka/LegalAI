@@ -62,6 +62,19 @@ const mockTemplates: Template[] = [
       minute: "2-digit",
     }),
   },
+  {
+    id: "8",
+    name: "Счет на оплату",
+    documents: 0,
+    status: "Черновик",
+    lastModified: new Date().toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  },
 ];
 
 export default function TemplatesDashboard() {
@@ -206,6 +219,8 @@ export default function TemplatesDashboard() {
                           window.location.href = `/dashboard/templates/confidentiality-agreement`;
                         } else if (template.name === "Договор возмездного оказания услуг") {
                           window.location.href = `/dashboard/templates/service-agreement`;
+                        } else if (template.name === "Счет на оплату") {
+                          window.location.href = `/dashboard/templates/invoice`;
                         }
                       }}
                     >
@@ -258,6 +273,8 @@ export default function TemplatesDashboard() {
                                   window.location.href = `/dashboard/templates/confidentiality-agreement`;
                                 } else if (template.name === "Договор возмездного оказания услуг") {
                                   window.location.href = `/dashboard/templates/service-agreement`;
+                                } else if (template.name === "Счет на оплату") {
+                                  window.location.href = `/dashboard/templates/invoice`;
                                 }
                               }}
                             >

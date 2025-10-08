@@ -4,7 +4,6 @@ export const invoiceTemplate: DocumentTemplate = {
   id: 'invoice',
   name: 'Счет на оплату',
   description: 'Шаблон счета на оплату',
-  category: 'financial',
   createdAt: new Date(),
   updatedAt: new Date(),
   variables: [
@@ -213,13 +212,13 @@ export const invoiceTemplate: DocumentTemplate = {
       id: 'supplier-details',
       type: 'text',
       content: 'Поставщик: БИН / ИИН {{beneficiaryBIN}}\n({{beneficiaryName}})\n{{supplierAddress}}\nтел.: {{supplierPhone}}',
-      style: { marginBottom: '10px' }
+      style: { marginBottom: '20px' }
     },
     {
       id: 'buyer-details',
       type: 'text',
       content: 'Покупатель: БИН / ИИН {{buyerBIN}}\n({{buyerName}})\n{{buyerAddress}}\nтел.: {{buyerPhone}}',
-      style: { marginBottom: '10px' }
+      style: { marginBottom: '20px' }
     },
     {
       id: 'contract-details',
@@ -250,7 +249,7 @@ export const invoiceTemplate: DocumentTemplate = {
           amount: 100000,
         },
       ],
-      style: { marginBottom: '10px' }
+      style: { marginBottom: '15px' }
     },
     {
       id: 'total-summary',

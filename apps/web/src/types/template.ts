@@ -21,6 +21,7 @@ export interface TemplateVariable {
     type: 'text' | 'number' | 'currency';
     editable?: boolean;
     formula?: string; // для вычисляемых столбцов
+    style?: DocumentTextStyle; // Добавлено свойство style
   }
   
   export interface TemplateSection {
@@ -86,6 +87,7 @@ interface DocumentTextStyle {
   marginBottom?: string;
   marginLeft?: string;
   fontStyle?: string;
+  marginTop?: string;
 }
 
 interface DocumentTableColumn {

@@ -20,6 +20,7 @@ export default function BgAngels({ className, alt }: BgAngelsProps) {
 				height={718}
 				loading="eager"
 				className={cn(className, "hidden dark:block")}
+				style={{ width: "auto" }}
 				priority
 			/>
 			<Image
@@ -29,6 +30,7 @@ export default function BgAngels({ className, alt }: BgAngelsProps) {
 				height={718}
 				loading="eager"
 				className={cn(className, "block dark:hidden")}
+				style={{ width: "auto" }}
 				priority
 			/>
 		</>

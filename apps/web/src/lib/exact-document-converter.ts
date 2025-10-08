@@ -36,7 +36,7 @@ export class ExactDocumentConverter {
         const fontSize = section.style?.fontSize ? parseInt(section.style.fontSize) : 0;
         const headerType = fontSize > 20 ? 'heading-one' : 'paragraph'; // Adjust threshold as needed
 
-        nodes.push({
+    nodes.push({
           type: headerType,
           align: section.style?.textAlign || 'left',
           children: children.length > 0 ? children : [{ text: '' }],
@@ -88,8 +88,8 @@ export class ExactDocumentConverter {
           } else if (part === '\n') {
             // For contacts, treat newlines as separate paragraph breaks for better formatting
             if (children.length > 0) {
-              nodes.push({
-                type: 'paragraph',
+    nodes.push({
+      type: 'paragraph',
                 align: section.style?.textAlign || 'left',
                 children: children,
                 style: section.style
@@ -103,8 +103,8 @@ export class ExactDocumentConverter {
 
         // Push any remaining children as a paragraph
         if (children.length > 0) {
-          nodes.push({
-            type: 'paragraph',
+    nodes.push({
+      type: 'paragraph',
             align: section.style?.textAlign || 'left',
             children: children,
             style: section.style
@@ -128,8 +128,8 @@ export class ExactDocumentConverter {
           } else if (part === '\n') {
             // For signature, treat newlines as separate paragraph breaks for better formatting
             if (children.length > 0) {
-              nodes.push({
-                type: 'paragraph',
+    nodes.push({
+      type: 'paragraph',
                 align: section.style?.textAlign || 'left',
                 children: children,
                 style: section.style
@@ -143,8 +143,8 @@ export class ExactDocumentConverter {
 
         // Push any remaining children as a paragraph
         if (children.length > 0) {
-          nodes.push({
-            type: 'paragraph',
+    nodes.push({
+      type: 'paragraph',
             align: section.style?.textAlign || 'left',
             children: children,
             style: section.style
@@ -221,10 +221,10 @@ export class ExactDocumentConverter {
               };
             }) || []
           })) : [])
-        ];
-
+    ];
+    
     nodes.push({
-          type: 'table',
+      type: 'table',
           children: rows
         });
       }

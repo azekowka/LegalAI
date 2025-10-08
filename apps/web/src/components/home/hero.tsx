@@ -7,7 +7,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Header from "@/components/home/header";
 import { type Variants } from "framer-motion";
 import Image from "next/image";
-import Footer from "./footer";
 
 const transitionVariants: { item: Variants } = {
 	item: {
@@ -104,7 +103,6 @@ export default function Hero() {
 					/>
 				</div>
 			</AnimatedGroup>
-			<Footer />
 		</div>
 	);
 }

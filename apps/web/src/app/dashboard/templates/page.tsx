@@ -75,6 +75,19 @@ const mockTemplates: Template[] = [
       minute: "2-digit",
     }),
   },
+  {
+    id: "9",
+    name: "Акт Выполненных Работ",
+    documents: 0,
+    status: "Черновик",
+    lastModified: new Date().toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  },
 ];
 
 export default function TemplatesDashboard() {
@@ -221,6 +234,8 @@ export default function TemplatesDashboard() {
                           window.location.href = `/dashboard/templates/service-agreement`;
                         } else if (template.name === "Счет на оплату") {
                           window.location.href = `/dashboard/templates/invoice`;
+                        } else if (template.name === "Акт Выполненных Работ") {
+                          window.location.href = `/dashboard/templates/act-of-completed-works`;
                         }
                       }}
                     >
@@ -275,6 +290,8 @@ export default function TemplatesDashboard() {
                                   window.location.href = `/dashboard/templates/service-agreement`;
                                 } else if (template.name === "Счет на оплату") {
                                   window.location.href = `/dashboard/templates/invoice`;
+                                } else if (template.name === "Акт Выполненных Работ") {
+                                  window.location.href = `/dashboard/templates/act-of-completed-works`;
                                 }
                               }}
                             >

@@ -33,6 +33,7 @@ import commercialOfferTemplate from '@/templates/template1';
 import confidentialityAgreementTemplate from '@/templates/confidentiality-agreement';
 import serviceAgreementTemplate from '@/templates/service-agreement';
 import invoiceTemplate from '@/templates/invoice-template';
+import actOfCompletedWorksTemplate from '@/templates/act-of-completed-works';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
 
@@ -42,7 +43,8 @@ const mockTemplates: Record<string, DocumentTemplate> = {
   'commercial-offer-kz': commercialOfferTemplate,
   'confidentiality-agreement': confidentialityAgreementTemplate,
   'service-agreement': serviceAgreementTemplate,
-  'invoice': invoiceTemplate
+  'invoice': invoiceTemplate,
+  'act-of-completed-works': actOfCompletedWorksTemplate
 };
 
 export default function TemplateEditorPage() {

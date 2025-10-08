@@ -78,7 +78,7 @@ export type CustomElement = {
   [key: string]: any; // Allow other properties like align, url, etc.
 };
 
-interface DocumentTextStyle {
+export interface DocumentTextStyle {
   fontSize?: string;
   fontWeight?: string;
   textAlign?: 'left' | 'center' | 'right';
@@ -88,7 +88,7 @@ interface DocumentTextStyle {
   marginLeft?: string;
   fontStyle?: string;
   marginTop?: string;
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 interface DocumentTableColumn {

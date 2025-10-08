@@ -1,4 +1,4 @@
-import { DocumentTemplate, TemplateSection, DocumentData, TableRow } from '../types/template';
+import { DocumentTemplate, TemplateSection, DocumentData, TableRow, DocumentTextStyle } from '../types/template';
 
 /**
  * Процессор шаблонов для замены переменных и генерации документов
@@ -188,10 +188,11 @@ export class TemplateProcessor {
   /**
    * Генерация атрибута style из объекта стилей
    */
-  private static generateStyleAttribute(style?: Record<string, string>): string {
+  private static generateStyleAttribute(style?: DocumentTextStyle): string {
     if (!style) return '';
     
     const styleString = Object.entries(style)
+      .filter(([, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${this.camelToKebab(key)}: ${value}`)
       .join('; ');
     

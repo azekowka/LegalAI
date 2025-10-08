@@ -34,12 +34,11 @@ export class ExactDocumentConverter {
               text: data && value !== undefined && value !== '' ? String(value) : templateVar?.name || varId,
               color: data && value !== undefined && value !== '' ? '#000' : '#0066cc',
               underline: data && value !== undefined && value !== '' ? false : true,
-              bold: section.style?.fontWeight === 'bold'
             });
           } else if (part === '\n') {
             children.push({ text: '' }); // Handle newlines if present in content string directly
           } else {
-            children.push({ text: part, bold: section.style?.fontWeight === 'bold' });
+            children.push({ text: part });
           }
         });
 

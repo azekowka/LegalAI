@@ -91,6 +91,139 @@ export const actOfCompletedWorksTemplate: DocumentTemplate = {
       required: true,
       defaultValue: new Date().toISOString().split('T')[0]
     },
+    {
+      id: 'workName',
+      name: 'Наименование работ',
+      type: 'text',
+      required: true,
+      placeholder: 'Разработка ПО'
+    },
+    {
+      id: 'workCompletionDate',
+      name: 'Дата выполнения работ',
+      type: 'date',
+      required: true,
+      defaultValue: new Date().toISOString().split('T')[0]
+    },
+    {
+      id: 'reportDetails',
+      name: 'Сведения об отчете',
+      type: 'text',
+      required: false,
+      placeholder: 'Отчет №1 от 01.01.2023'
+    },
+    {
+      id: 'unitOfMeasurement',
+      name: 'Ед. измерения',
+      type: 'text',
+      required: true,
+      placeholder: 'шт.'
+    },
+    {
+      id: 'quantityCompleted',
+      name: 'Кол-во выполнено работ',
+      type: 'number',
+      required: true,
+      placeholder: '10'
+    },
+    {
+      id: 'pricePerUnit',
+      name: 'Цена за ед.',
+      type: 'currency',
+      required: true,
+      placeholder: '10000'
+    },
+    {
+      id: 'costWithoutVAT',
+      name: 'Стоимость без НДС',
+      type: 'currency',
+      required: true,
+      placeholder: '100000'
+    },
+    {
+      id: 'vatAmountKZT',
+      name: 'НДС в KZT',
+      type: 'currency',
+      required: true,
+      placeholder: '12000'
+    },
+    {
+      id: 'totalQuantity',
+      name: 'Итого Кол-во',
+      type: 'number',
+      required: true,
+      placeholder: '10'
+    },
+    {
+      id: 'totalCost',
+      name: 'Итого Стоимость',
+      type: 'currency',
+      required: true,
+      placeholder: '100000',
+    },
+    {
+      id: 'totalVAT',
+      name: 'Итого НДС, в KZT',
+      type: 'currency',
+      required: true,
+      placeholder: '12000',
+    },
+    {
+      id: 'inventoryDetails',
+      name: 'Наименование, количество, стоимость запасов',
+      type: 'text',
+      required: false,
+      placeholder: 'Компьютеры (5 шт) - 500000 KZT'
+    },
+    {
+      id: 'attachmentPageCount',
+      name: 'Кол-во страниц в приложении',
+      type: 'number',
+      required: true,
+      placeholder: '5'
+    },
+    {
+      id: 'attachmentDocuments',
+      name: 'Перечень документов в приложении',
+      type: 'text',
+      required: false,
+      placeholder: 'Отчеты, графики'
+    },
+    {
+      id: 'executorPosition',
+      name: 'Исполнитель - должность',
+      type: 'text',
+      required: true,
+      placeholder: 'Директор'
+    },
+    {
+      id: 'executorFullNameSignature',
+      name: 'Исполнитель - ФИО',
+      type: 'text',
+      required: true,
+      placeholder: 'Петров П.П.'
+    },
+    {
+      id: 'customerPositionSignature',
+      name: 'Заказчик - должность',
+      type: 'text',
+      required: true,
+      placeholder: 'Директор'
+    },
+    {
+      id: 'customerFullNameSignature',
+      name: 'Заказчик - ФИО',
+      type: 'text',
+      required: true,
+      placeholder: 'Иванов И.И.'
+    },
+    {
+      id: 'signingDate',
+      name: 'Дата подписания (принятия) работ (услуг)',
+      type: 'date',
+      required: true,
+      defaultValue: new Date().toISOString().split('T')[0]
+    },
   ],
   sections: [
     {
@@ -167,6 +300,84 @@ export const actOfCompletedWorksTemplate: DocumentTemplate = {
       type: 'header',
       content: 'АКТ ВЫПОЛНЕННЫХ РАБОТ',
       style: { textAlign: 'center', fontWeight: 'bold', fontSize: '16px', marginTop: '50px', textTransform: 'uppercase' }
+    },
+    {
+      id: 'work-details-table',
+      type: 'table',
+      content: '',
+      tableColumns: [
+        { id: 'col1', name: '№', type: 'text', editable: false, style: { fontWeight: 'bold', width: '3%' } },
+        { id: 'col2', name: 'Наименование работ', type: 'text', editable: true, style: { fontWeight: 'bold', width: '25%' } },
+        { id: 'col3', name: 'Дата выполнения работ', type: 'text', editable: true, style: { fontWeight: 'bold', width: '12%' } },
+        { id: 'col4', name: 'Сведения об отчете', type: 'text', editable: true, style: { fontWeight: 'bold', width: '12%' } },
+        { id: 'col5', name: 'Ед. измерения', type: 'text', editable: true, style: { fontWeight: 'bold', width: '8%' } },
+        { id: 'col6', name: 'Выполнено работ\nкол-во', type: 'number', editable: true, style: { fontWeight: 'bold', width: '8%' } },
+        { id: 'col7', name: 'Выполнено работ\nцена за ед.', type: 'currency', editable: true, style: { fontWeight: 'bold', width: '12%' } },
+        { id: 'col8', name: 'Выполнено работ\nстоимость', type: 'currency', editable: true, style: { fontWeight: 'bold', width: '10%' } },
+        { id: 'col9', name: 'Выполнено работ\nв том числе НДС в KZT', type: 'currency', editable: true, style: { fontWeight: 'bold', width: '10%' } },
+      ],
+      tableRows: [
+        {
+          id: 'work-row-1',
+          col1: '1',
+          col2: '{{workName}}',
+          col3: '{{workCompletionDate}}',
+          col4: '{{reportDetails}}',
+          col5: '{{unitOfMeasurement}}',
+          col6: '{{quantityCompleted}}',
+          col7: '{{pricePerUnit}}',
+          col8: '{{costWithoutVAT}}',
+          col9: '{{vatAmountKZT}}',
+        },
+        {
+          id: 'work-row-total',
+          col1: 'Итого',
+          col2: '',
+          col3: '',
+          col4: '',
+          col5: '',
+          col6: '{{totalQuantity}}',
+          col7: 'x',
+          col8: '{{totalCost}}',
+          col9: '{{totalVAT}}',
+        },
+      ],
+      style: { marginBottom: '20px' }
+    },
+    {
+      id: 'inventory-usage',
+      type: 'text',
+      content: 'Сведения об использовании запасов, полученных от заказчика\n{{inventoryDetails}}',
+      style: { marginBottom: '20px' }
+    },
+    {
+      id: 'attachments',
+      type: 'text',
+      content: 'Приложение: Перечень документации, в том числе отчет(ы) о маркетинговых, научных исследованиях, консультационных и прочих услугах (обязательны при его (их) наличии) на {{attachmentPageCount}} страниц {{attachmentDocuments}}',
+      style: { marginBottom: '30px' }
+    },
+    {
+      id: 'signatures-table',
+      type: 'table',
+      content: '',
+      tableColumns: [
+        { id: 'providerLabel', name: 'Сдал (Исполнитель)', type: 'text', editable: false, style: { fontWeight: 'bold' } },
+        { id: 'customerLabel', name: 'Принял (Заказчик)', type: 'text', editable: false, style: { fontWeight: 'bold' } }
+      ],
+      tableRows: [
+        {
+          id: 'signature-row-1',
+          providerLabel: '{{executorPosition}}\n{{executorFullNameSignature}}',
+          customerLabel: '{{customerPositionSignature}}\n{{customerFullNameSignature}}'
+        }
+      ],
+      style: { marginBottom: '20px' }
+    },
+    {
+      id: 'signing-date',
+      type: 'text',
+      content: 'Дата подписания (принятия) работ (услуг)\n{{signingDate}}',
+      style: { textAlign: 'right' }
     }
   ],
 };

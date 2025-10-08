@@ -102,13 +102,13 @@ export class ExactDocumentConverter {
               });
 
               return {
-                type: 'table-cell',
+              type: 'table-cell',
                 children: cellChildren.length > 0 ? cellChildren : [{ text: '' }],
               };
             }) || []
           })),
           ...(tableData.length > 0 ? tableData.map((row: any) => ({
-            type: 'table-row',
+          type: 'table-row',
             children: section.tableColumns?.map(col => {
               const cellContent = String(row[col.id] || '');
               const cellChildren: any[] = [];

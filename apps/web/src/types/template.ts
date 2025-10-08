@@ -30,15 +30,7 @@ export interface TemplateVariable {
     variables?: TemplateVariable[];
     tableColumns?: TableColumn[];
     tableRows?: TableRow[];
-    style?: {
-      fontSize?: string;
-      fontWeight?: string;
-      textAlign?: 'left' | 'center' | 'right';
-      margin?: string;
-      padding?: string;
-      marginBottom?: string;
-      marginLeft?: string;
-    };
+    style?: DocumentTextStyle;
   }
   
   export interface DocumentTemplate {
@@ -85,6 +77,25 @@ export type CustomElement = {
   children: (CustomElement | CustomText)[];
   [key: string]: any; // Allow other properties like align, url, etc.
 };
+
+interface DocumentTextStyle {
+  fontSize?: string;
+  fontWeight?: string;
+  textAlign?: 'left' | 'center' | 'right';
+  margin?: string;
+  padding?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  fontStyle?: string;
+}
+
+interface DocumentTableColumn {
+    id: string;
+    name: string;
+    type: 'text' | 'number' | 'currency';
+    editable?: boolean;
+    formula?: string; // для вычисляемых столбцов
+  }
 
 declare module 'slate' {
   interface CustomTypes {

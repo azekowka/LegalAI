@@ -23,6 +23,13 @@ export const serviceAgreementTemplate: DocumentTemplate = {
       defaultValue: new Date().toISOString().split('T')[0]
     },
     {
+      id: 'placeOfAgreement',
+      name: 'Место составления договора',
+      type: 'text',
+      required: true,
+      placeholder: 'г. Алматы'
+    },
+    {
       id: 'customerCompany',
       name: 'Наименование Заказчика (компания)',
       type: 'text',
@@ -361,9 +368,21 @@ export const serviceAgreementTemplate: DocumentTemplate = {
   ],
   sections: [
     {
-      id: 'header',
+      id: 'agreement-title',
       type: 'text',
-      content: 'Договор возмездного оказания услуг № {{agreementNumber}}\n«{{agreementDate}}» года\n\n{{customerCompany}}, которое представляет {{customerRepresentativePosition}} {{customerRepresentativeName}}, действующего на основании {{customerRepresentativeBasis}}, БИН {{customerBIN}}, именуемое в дальнейшем «Заказчик» с одной стороны и {{serviceProviderCompany}}, которое представляет {{serviceProviderRepresentativePosition}} {{serviceProviderRepresentativeName}}, действующего на основании {{serviceProviderRepresentativeBasis}}, БИН {{serviceProviderBIN}}, именуемое в дальнейшем «Исполнитель» с другой стороны, далее совместно именуемые «Стороны», заключили настоящий договор (далее - «Договор») о нижеследующем:'
+      content: 'Договор возмездного оказания услуг № {{agreementNumber}}',
+      style: { textAlign: 'center', fontWeight: 'bold', fontSize: '14px', marginBottom: '5px' }
+    },
+    {
+      id: 'agreement-date-place',
+      type: 'text',
+      content: '{{placeOfAgreement}} «{{agreementDate}}» года',
+      style: { textAlign: 'center', fontSize: '14px', marginBottom: '20px' }
+    },
+    {
+      id: 'parties-intro',
+      type: 'text',
+      content: '{{customerCompany}}, которое представляет {{customerRepresentativePosition}} {{customerRepresentativeName}}, действующего на основании {{customerRepresentativeBasis}}, БИН {{customerBIN}}, именуемое в дальнейшем «Заказчик» с одной стороны и {{serviceProviderCompany}}, которое представляет {{serviceProviderRepresentativePosition}} {{serviceProviderRepresentativeName}}, действующего на основании {{serviceProviderRepresentativeBasis}}, БИН {{serviceProviderBIN}}, именуемое в дальнейшем «Исполнитель» с другой стороны, далее совместно именуемые «Стороны», заключили настоящий договор (далее - «Договор») о нижеследующем:'
     },
     {
       id: 'subject-title',
@@ -790,6 +809,7 @@ export const serviceAgreementTemplate: DocumentTemplate = {
     {
       id: 'requisites-table',
       type: 'table',
+      content: '',
       tableColumns: [
         { id: 'customer', name: 'Заказчик:', type: 'text', editable: false },
         { id: 'serviceProvider', name: 'Исполнитель:', type: 'text', editable: false }

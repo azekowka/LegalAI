@@ -2,7 +2,7 @@
 export interface TemplateVariable {
     id: string;
     name: string;
-    type: 'text' | 'number' | 'date' | 'select' | 'email' | 'phone';
+    type: 'text' | 'number' | 'date' | 'select' | 'email' | 'phone' | 'currency';
     required: boolean;
     defaultValue?: string;
     options?: string[];

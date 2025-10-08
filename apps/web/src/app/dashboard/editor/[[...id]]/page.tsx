@@ -25,6 +25,7 @@ import { apiClient, type Document } from "@/lib/api"
 import { WordCountDialog } from "@/components/dialogs/word-count-dialog"
 import { ShareDialog } from "@/components/dialogs/share-dialog" // Renamed from LinkDialog
 import ChatBotDemo from '@/components/chatbot-demo'
+import { useToast } from "@/components/ui/use-toast"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -58,6 +59,7 @@ interface Conversation {
 export default function EditorPage() {
   const params = useParams()
   const router = useRouter()
+  const { toast } = useToast()
   const documentId = params.id ? params.id[0] : null
 
   const [document, setDocument] = useState<Document | null>(null)
@@ -217,10 +219,12 @@ export default function EditorPage() {
         console.log('Content type:', typeof loadedContent, 'Length:', loadedContent.length)
       } else {
         console.error('No document data received, redirecting to dashboard')
+        toast.error('Документ не найден, перенаправление на дэшборд')
         router.push("/dashboard")
       }
     } catch (error) {
       console.error('Failed to load document:', error)
+      toast.error('Ошибка загрузки документа. Возможно, документ был удален или не существует.')
       // Don't redirect on error - stay in editor for new document creation
       setTitle("Untitled Document")
       setContent(JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]))
@@ -320,7 +324,7 @@ export default function EditorPage() {
 
   const handleExport = async (format: 'pdf' | 'docx' | 'txt') => {
     if (!documentId) {
-      alert('Сначала сохраните документ')
+      toast.error('Сначала сохраните документ')
       return
     }
 
@@ -329,16 +333,17 @@ export default function EditorPage() {
       if (response.data) {
         // Handle export response
         console.log('Export successful:', format)
+        toast.success(`Документ успешно экспортирован в формат ${format.toUpperCase()}!`)
       }
     } catch (error) {
       console.error('Export failed:', error)
-      alert('Ошибка экспорта документа')
+      toast.error('Ошибка экспорта документа')
     }
   }
 
   const handleOpenShareDialog = () => {
     if (!documentId || !document) {
-      alert('Сначала сохраните документ')
+      toast.error('Сначала сохраните документ')
       return
     }
     setShowShareDialog(true)
@@ -358,12 +363,13 @@ export default function EditorPage() {
         });
         console.log('Share settings updated successfully', response.data)
         // Optionally, show a toast notification
+        toast.success('Настройки доступа обновлены успешно!')
       } else if (response.error) {
-        alert(`Ошибка обновления настроек доступа: ${response.error}`)
+        toast.error(`Ошибка обновления настроек доступа: ${response.error}`)
       }
     } catch (error) {
       console.error('Error updating share settings:', error)
-      alert('Произошла ошибка при обновлении настроек доступа')
+      toast.error('Произошла ошибка при обновлении настроек доступа')
     }
   }
 

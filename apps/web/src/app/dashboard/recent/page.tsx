@@ -12,10 +12,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function RecentPage() {
   const [documents, setDocuments] = useState<Document[]>([])
   const [loading, setLoading] = useState(true)
+  const { toast } = useToast()
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; title: string } | null>(null)
 
   const loadRecentDocuments = async () => {
     try {
@@ -48,30 +63,36 @@ export default function RecentPage() {
             : doc
         ))
       } else {
-        alert(`Ошибка: ${response.error}`)
+        toast.error(`Ошибка: ${response.error}`)
       }
     } catch (error) {
       console.error('Error toggling star:', error)
-      alert('Произошла ошибка при изменении статуса избранного')
+      toast.error('Произошла ошибка при изменении статуса избранного')
     }
   }
 
   const handleDeleteSingle = async (docId: string, docTitle: string) => {
-    if (!confirm(`Вы уверены, что хотите переместить документ "${docTitle}" в корзину?`)) {
-      return
-    }
+    setDocumentToDelete({ id: docId, title: docTitle })
+    setShowDeleteConfirm(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!documentToDelete) return
 
     try {
-      const response = await apiClient.deleteDocument(docId.toString())
+      const response = await apiClient.deleteDocument(documentToDelete.id.toString())
       if (response.data) {
-        alert('Документ перемещен в корзину')
+        toast.success('Документ перемещен в корзину')
         loadRecentDocuments() // Перезагружаем список
       } else {
-        alert(`Ошибка удаления: ${response.error}`)
+        toast.error(`Ошибка удаления: ${response.error}`)
       }
     } catch (error) {
       console.error('Error deleting document:', error)
-      alert('Произошла ошибка при удалении документа')
+      toast.error('Произошла ошибка при удалении документа')
+    } finally {
+      setDocumentToDelete(null)
+      setShowDeleteConfirm(false)
     }
   }
 
@@ -79,7 +100,7 @@ export default function RecentPage() {
     try {
       const originalDoc = documents.find(doc => doc.id === docId)
       if (!originalDoc) {
-        alert('Документ не найден')
+        toast.error('Документ не найден')
         return
       }
 
@@ -89,13 +110,13 @@ export default function RecentPage() {
       )
       
       if (response.data) {
-        alert('Копия документа создана')
+        toast.success('Копия документа создана')
       } else {
-        alert(`Ошибка создания копии: ${response.error}`)
+        toast.error(`Ошибка создания копии: ${response.error}`)
       }
     } catch (error) {
       console.error('Error copying document:', error)
-      alert('Произошла ошибка при создании копии документа')
+      toast.error('Произошла ошибка при создании копии документа')
     }
   }
 
@@ -103,7 +124,7 @@ export default function RecentPage() {
     try {
       const doc = documents.find(d => d.id === docId)
       if (!doc) {
-        alert('Документ не найден')
+        toast.error('Документ не найден')
         return
       }
 
@@ -119,10 +140,10 @@ export default function RecentPage() {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
       
-      alert('Документ скачан')
+      toast.success('Документ скачан')
     } catch (error) {
       console.error('Error downloading document:', error)
-      alert('Произошла ошибка при скачивании документа')
+      toast.error('Произошла ошибка при скачивании документа')
     }
   }
 
@@ -267,6 +288,21 @@ export default function RecentPage() {
           ))}
         </div>
       )}
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Переместить документ в корзину?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите переместить документ &quot;{documentToDelete?.title}&quot; в корзину?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Переместить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { Badge } from './ui/badge';
 import { Download, Printer, Share, Eye } from 'lucide-react';
 import { DocumentTemplate, DocumentData } from '../types/template';
 import TemplateProcessor from '../lib/template-processor';
+import { useToast } from './ui/use-toast';
 
 interface PDFGeneratorProps {
   template: DocumentTemplate;
@@ -21,6 +22,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
 
   // Генерация HTML контента для PDF
   const generateHTMLContent = (): string => {
@@ -197,12 +199,12 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
         
         // Инструкция для пользователя
         setTimeout(() => {
-          alert('Для сохранения в PDF:\n1. Нажмите Ctrl+P (Cmd+P на Mac)\n2. Выберите "Сохранить как PDF"\n3. Нажмите "Сохранить"');
+          toast.info('Для сохранения в PDF:\n1. Нажмите Ctrl+P (Cmd+P на Mac)\n2. Выберите "Сохранить как PDF"\n3. Нажмите "Сохранить"');
         }, 500);
       }
     } catch (error) {
       console.error('Ошибка при генерации PDF:', error);
-      alert('Произошла ошибка при генерации PDF');
+      toast.error('Произошла ошибка при генерации PDF');
     } finally {
       setIsGenerating(false);
     }
@@ -229,10 +231,10 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
     try {
       const textContent = generateTextContent();
       await navigator.clipboard.writeText(textContent);
-      alert('Текст документа скопирован в буфер обмена');
+      toast.success('Текст документа скопирован в буфер обмена');
     } catch (error) {
       console.error('Ошибка при копировании:', error);
-      alert('Не удалось скопировать текст');
+      toast.error('Не удалось скопировать текст');
     }
   };
 

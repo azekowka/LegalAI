@@ -14,11 +14,31 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trash2, RotateCcw, Loader2, AlertTriangle } from "lucide-react"
 import { type Document } from "@/lib/api"
+import { useToast } from "@/components/ui/use-toast"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function GarbagePage() {
   const [deletedDocuments, setDeletedDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
+  const { toast } = useToast()
+
+  const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
+  const [documentToRestore, setDocumentToRestore] = useState<{ id: string; title: string } | null>(null)
+
+  const [showPermanentDeleteConfirm, setShowPermanentDeleteConfirm] = useState(false)
+  const [documentToPermanentDelete, setDocumentToPermanentDelete] = useState<{ id: string; title: string } | null>(null)
+
+  const [showCleanupConfirm, setShowCleanupConfirm] = useState(false)
 
   const loadDeletedDocuments = async () => {
     setIsLoading(true)
@@ -60,8 +80,12 @@ export default function GarbagePage() {
   }
 
   const handleRestore = async (docId: string, docTitle: string) => {
-    const confirmed = confirm(`Восстановить документ "${docTitle}"?`)
-    if (!confirmed) return
+    setDocumentToRestore({ id: docId, title: docTitle })
+    setShowRestoreConfirm(true)
+  }
+
+  const confirmRestore = async () => {
+    if (!documentToRestore) return
 
     setIsProcessing(true)
     try {
@@ -70,27 +94,33 @@ export default function GarbagePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action: 'restore', id: docId }),
+        body: JSON.stringify({ action: 'restore', id: documentToRestore.id }),
       })
 
       if (response.ok) {
-        alert('Документ восстановлен')
+        toast.success('Документ восстановлен')
         loadDeletedDocuments()
       } else {
         const error = await response.json()
-        alert(`Ошибка восстановления: ${error.error}`)
+        toast.error(`Ошибка восстановления: ${error.error}`)
       }
     } catch (error) {
       console.error('Error restoring document:', error)
-      alert('Произошла ошибка при восстановлении документа')
+      toast.error('Произошла ошибка при восстановлении документа')
     } finally {
       setIsProcessing(false)
+      setDocumentToRestore(null)
+      setShowRestoreConfirm(false)
     }
   }
 
   const handlePermanentDelete = async (docId: string, docTitle: string) => {
-    const confirmed = confirm(`ВНИМАНИЕ! Вы собираетесь навсегда удалить документ "${docTitle}". Это действие нельзя отменить. Продолжить?`)
-    if (!confirmed) return
+    setDocumentToPermanentDelete({ id: docId, title: docTitle })
+    setShowPermanentDeleteConfirm(true)
+  }
+
+  const confirmPermanentDelete = async () => {
+    if (!documentToPermanentDelete) return
 
     setIsProcessing(true)
     try {
@@ -99,28 +129,31 @@ export default function GarbagePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action: 'permanent_delete', id: docId }),
+        body: JSON.stringify({ action: 'permanent_delete', id: documentToPermanentDelete.id }),
       })
 
       if (response.ok) {
-        alert('Документ навсегда удален')
+        toast.success('Документ навсегда удален')
         loadDeletedDocuments()
       } else {
         const error = await response.json()
-        alert(`Ошибка удаления: ${error.error}`)
+        toast.error(`Ошибка удаления: ${error.error}`)
       }
     } catch (error) {
       console.error('Error permanently deleting document:', error)
-      alert('Произошла ошибка при удалении документа')
+      toast.error('Произошла ошибка при удалении документа')
     } finally {
       setIsProcessing(false)
+      setDocumentToPermanentDelete(null)
+      setShowPermanentDeleteConfirm(false)
     }
   }
 
   const handleCleanupExpired = async () => {
-    const confirmed = confirm('Удалить все просроченные документы навсегда? Это действие нельзя отменить.')
-    if (!confirmed) return
+    setShowCleanupConfirm(true)
+  }
 
+  const confirmCleanupExpired = async () => {
     setIsProcessing(true)
     try {
       const response = await fetch('/api/documents/garbage', {
@@ -129,17 +162,18 @@ export default function GarbagePage() {
 
       if (response.ok) {
         const result = await response.json()
-        alert(`${result.cleanedCount} просроченных документов удалено навсегда`)
+        toast.success(`${result.cleanedCount} просроченных документов удалено навсегда`)
         loadDeletedDocuments()
       } else {
         const error = await response.json()
-        alert(`Ошибка очистки: ${error.error}`)
+        toast.error(`Ошибка очистки: ${error.error}`)
       }
     } catch (error) {
       console.error('Error cleaning up expired documents:', error)
-      alert('Произошла ошибка при очистке просроченных документов')
+      toast.error('Произошла ошибка при очистке просроченных документов')
     } finally {
       setIsProcessing(false)
+      setShowCleanupConfirm(false)
     }
   }
 
@@ -271,6 +305,53 @@ export default function GarbagePage() {
           </div>
         )}
       </div>
+
+      <AlertDialog open={showRestoreConfirm} onOpenChange={setShowRestoreConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Восстановить документ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите восстановить документ &quot;{documentToRestore?.title}&quot;?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRestore}>Восстановить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showPermanentDeleteConfirm} onOpenChange={setShowPermanentDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить документ навсегда?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ВНИМАНИЕ! Вы собираетесь навсегда удалить документ &quot;{documentToPermanentDelete?.title}&quot;.
+              Это действие нельзя отменить. Продолжить?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmPermanentDelete}>Удалить навсегда</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showCleanupConfirm} onOpenChange={setShowCleanupConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Очистить корзину?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите удалить все просроченные документы навсегда?
+              Это действие нельзя отменить.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmCleanupExpired}>Очистить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

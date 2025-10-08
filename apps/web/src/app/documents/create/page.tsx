@@ -12,6 +12,7 @@ import TemplateForm from '../../../components/template-form';
 import PDFGenerator from '../../../components/pdf-generator';
 import { DocumentTemplate, DocumentData, GeneratedDocument } from '../../../types/template';
 import commercialOfferTemplate from '../../../templates/template1';
+import { useToast } from '../../../components/ui/use-toast';
 
 // Моковые данные шаблонов (в реальном проекте будут загружаться с сервера)
 const availableTemplates: DocumentTemplate[] = [
@@ -21,6 +22,7 @@ const availableTemplates: DocumentTemplate[] = [
 
 export default function CreateDocumentPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
   const [documentData, setDocumentData] = useState<DocumentData | null>(null);
   const [generatedDocument, setGeneratedDocument] = useState<GeneratedDocument | null>(null);
@@ -51,7 +53,7 @@ export default function CreateDocumentPage() {
     console.log('Документ сохранен:', newDocument);
     
     // Показать уведомление об успешном сохранении
-    alert('Документ успешно создан!');
+    toast.success('Документ успешно создан!');
   }, [selectedTemplate]);
 
   const handlePreview = useCallback((html: string) => {

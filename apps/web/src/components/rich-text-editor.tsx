@@ -12,6 +12,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
+import {
   Bold,
   Italic,
   Underline,
@@ -464,31 +475,72 @@ const HeadingSelect = memo(() => {
 
 const LinkButton = memo(() => {
   const editor = useSlateStatic()
-  
+  const [showLinkDialog, setShowLinkDialog] = useState(false)
+  const [linkInput, setLinkInput] = useState("")
+
   const handleLinkClick = useCallback((event: React.MouseEvent) => {
     event.preventDefault()
-    const url = window.prompt("Enter the URL of the link:")
-    if (url && !isLinkActive(editor)) {
-      wrapLink(editor, url)
+    // Only show dialog if no link is currently active
+    if (!isLinkActive(editor)) {
+      setShowLinkDialog(true)
     }
   }, [editor])
 
+  const confirmLink = useCallback(() => {
+    if (linkInput && !isLinkActive(editor)) {
+      wrapLink(editor, linkInput)
+    }
+    setLinkInput("")
+    setShowLinkDialog(false)
+  }, [editor, linkInput])
+  
+  const cancelLink = useCallback(() => {
+    setLinkInput("")
+    setShowLinkDialog(false)
+  }, [])
+
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onMouseDown={handleLinkClick}
-        >
-          <Link className="h-4 w-4" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>Insert link (⌘K)</p>
-      </TooltipContent>
-    </Tooltip>
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onMouseDown={handleLinkClick}
+          >
+            <Link className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Insert link (⌘K)</p>
+        </TooltipContent>
+      </Tooltip>
+
+      <AlertDialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Вставить ссылку</AlertDialogTitle>
+            <AlertDialogDescription>
+              Введите URL для ссылки:
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid gap-4 py-4">
+            <Input
+              id="link-url"
+              value={linkInput}
+              onChange={(e) => setLinkInput(e.target.value)}
+              placeholder="https://example.com"
+              className="col-span-3"
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelLink}>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmLink}>Вставить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 })
 

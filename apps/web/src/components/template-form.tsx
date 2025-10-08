@@ -14,6 +14,7 @@ import { Separator } from './ui/separator';
 import { Plus, Trash2, Save, FileText, Eye } from 'lucide-react';
 import { DocumentTemplate, TemplateVariable, DocumentData, TableRow } from '../types/template';
 import TemplateProcessor from '../lib/template-processor';
+import { useToast } from './ui/use-toast';
 
 interface TemplateFormProps {
   template: DocumentTemplate;
@@ -32,6 +33,7 @@ export const TemplateForm: React.FC<TemplateFormProps> = ({
   const [tableData, setTableData] = useState<Record<string, TableRow[]>>(
     initialData?.tableData || {}
   );
+  const { toast } = useToast();
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
     defaultValues: initialData?.variables || {}
@@ -54,12 +56,12 @@ export const TemplateForm: React.FC<TemplateFormProps> = ({
     // Валидация
     const errors = TemplateProcessor.validateTemplateData(template, documentData);
     if (errors.length > 0) {
-      alert('Ошибки валидации:\n' + errors.join('\n'));
+      toast.error('Ошибки валидации:\n' + errors.join('\n'));
       return;
     }
 
     onSave(documentData);
-  }, [template, tableData, onSave]);
+  }, [template, tableData, onSave, toast]);
 
   const handlePreview = useCallback(() => {
     const documentData: DocumentData = {

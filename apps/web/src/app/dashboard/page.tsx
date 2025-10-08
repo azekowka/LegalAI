@@ -25,6 +25,18 @@ import { FileText, Plus, Calendar, User, Loader2, Trash2, CheckSquare, Square, M
 import { apiClient, type Document, type User as UserType } from "@/lib/api"
 import { useAuthSession } from "@/components/auth-provider"
 import { DocumentCreationModal } from "@/components/document-creation-modal";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../../components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
 
 export default function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([])
@@ -35,6 +47,15 @@ export default function DashboardPage() {
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
   const router = useRouter()
   const { user } = useAuthSession()
+  const { toast } = useToast()
+
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
+  const [showSingleDeleteConfirm, setShowSingleDeleteConfirm] = useState(false)
+  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; title: string } | null>(null)
+
+  const [showRenameDialog, setShowRenameDialog] = useState(false)
+  const [documentToRename, setDocumentToRename] = useState<{ id: string; currentTitle: string } | null>(null)
+  const [newTitleInput, setNewTitleInput] = useState("")
 
   const loadData = async () => {
     setIsLoading(true)
@@ -63,11 +84,11 @@ export default function DashboardPage() {
         router.push(`/dashboard/editor/${response.data.id}`)
       } else if (response.error) {
         console.error("Error creating document:", response.error)
-        alert(`Ошибка создания документа: ${response.error}`)
+        toast.error(`Ошибка создания документа: ${response.error}`)
       }
     } catch (error) {
       console.error("Exception creating document:", error)
-      alert("Произошла ошибка при создании документа")
+      toast.error("Произошла ошибка при создании документа")
     }
   }
 
@@ -99,10 +120,11 @@ export default function DashboardPage() {
 
   const handleDeleteSelected = async () => {
     if (selectedDocuments.size === 0) return
-    
-    const confirmed = confirm(`Вы уверены, что хотите удалить ${selectedDocuments.size} документ(ов)? Они будут перемещены в корзину.`)
-    if (!confirmed) return
 
+    setShowBulkDeleteConfirm(true)
+  }
+
+  const confirmBulkDelete = async () => {
     setIsDeleting(true)
     try {
       const response = await fetch('/api/documents', {
@@ -115,24 +137,29 @@ export default function DashboardPage() {
 
       if (response.ok) {
         const result = await response.json()
-        alert(`${result.deletedCount} документ(ов) перемещено в корзину`)
+        toast.success(`${result.deletedCount} документ(ов) перемещено в корзину`)
         setSelectedDocuments(new Set())
         loadData() // Reload documents
       } else {
         const error = await response.json()
-        alert(`Ошибка удаления: ${error.error}`)
+        toast.error(`Ошибка удаления: ${error.error}`)
       }
     } catch (error) {
       console.error('Error deleting documents:', error)
-      alert('Произошла ошибка при удалении документов')
+      toast.error('Произошла ошибка при удалении документов')
     } finally {
       setIsDeleting(false)
+      setShowBulkDeleteConfirm(false)
     }
   }
 
   const handleDeleteSingle = async (docId: string, docTitle: string) => {
-    const confirmed = confirm(`Вы уверены, что хотите удалить документ "${docTitle}"? Он будет перемещен в корзину.`)
-    if (!confirmed) return
+    setDocumentToDelete({ id: docId, title: docTitle })
+    setShowSingleDeleteConfirm(true)
+  }
+
+  const confirmSingleDelete = async () => {
+    if (!documentToDelete) return
 
     try {
       const response = await fetch('/api/documents', {
@@ -140,19 +167,22 @@ export default function DashboardPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ids: [docId] }),
+        body: JSON.stringify({ ids: [documentToDelete.id] }),
       })
 
       if (response.ok) {
-        alert('Документ перемещен в корзину')
+        toast.success('Документ перемещен в корзину')
         loadData() // Reload documents
       } else {
         const error = await response.json()
-        alert(`Ошибка удаления: ${error.error}`)
+        toast.error(`Ошибка удаления: ${error.error}`)
       }
     } catch (error) {
       console.error('Error deleting document:', error)
-      alert('Произошла ошибка при удалении документа')
+      toast.error('Произошла ошибка при удалении документа')
+    } finally {
+      setDocumentToDelete(null)
+      setShowSingleDeleteConfirm(false)
     }
   }
 
@@ -165,20 +195,32 @@ export default function DashboardPage() {
   }
 
   const handleRenameDocument = async (docId: string, currentTitle: string) => {
-    const newTitle = prompt('Введите новое название документа:', currentTitle)
-    if (!newTitle || newTitle === currentTitle) return
+    setDocumentToRename({ id: docId, currentTitle: currentTitle })
+    setNewTitleInput(currentTitle) // Initialize input with current title
+    setShowRenameDialog(true)
+  }
+
+  const confirmRename = async () => {
+    if (!documentToRename || !newTitleInput || newTitleInput === documentToRename.currentTitle) {
+      setShowRenameDialog(false)
+      return
+    }
 
     try {
-      const response = await apiClient.updateDocument(docId.toString(), newTitle)
+      const response = await apiClient.updateDocument(documentToRename.id.toString(), newTitleInput)
       if (response.data) {
-        alert('Документ переименован')
+        toast.success('Документ переименован')
         loadData() // Reload documents
       } else {
-        alert(`Ошибка переименования: ${response.error}`)
+        toast.error(`Ошибка переименования: ${response.error}`)
       }
     } catch (error) {
       console.error('Error renaming document:', error)
-      alert('Произошла ошибка при переименовании документа')
+      toast.error('Произошла ошибка при переименовании документа')
+    } finally {
+      setDocumentToRename(null)
+      setNewTitleInput("")
+      setShowRenameDialog(false)
     }
   }
 
@@ -186,7 +228,7 @@ export default function DashboardPage() {
     try {
       const originalDoc = documents.find(doc => doc.id === docId)
       if (!originalDoc) {
-        alert('Документ не найден')
+        toast.error('Документ не найден')
         return
       }
 
@@ -196,14 +238,14 @@ export default function DashboardPage() {
       )
       
       if (response.data) {
-        alert('Копия документа создана')
+        toast.success('Копия документа создана')
         loadData() // Reload documents
       } else {
-        alert(`Ошибка создания копии: ${response.error}`)
+        toast.error(`Ошибка создания копии: ${response.error}`)
       }
     } catch (error) {
       console.error('Error copying document:', error)
-      alert('Произошла ошибка при создании копии документа')
+      toast.error('Произошла ошибка при создании копии документа')
     }
   }
 
@@ -211,7 +253,7 @@ export default function DashboardPage() {
     try {
       const doc = documents.find(d => d.id === docId)
       if (!doc) {
-        alert('Документ не найден')
+        toast.error('Документ не найден')
         return
       }
 
@@ -229,10 +271,10 @@ export default function DashboardPage() {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
       
-      alert('Документ скачан')
+      toast.success('Документ скачан')
     } catch (error) {
       console.error('Error downloading document:', error)
-      alert('Произошла ошибка при скачивании документа')
+      toast.error('Произошла ошибка при скачивании документа')
     }
   }
 
@@ -247,11 +289,11 @@ export default function DashboardPage() {
             : doc
         ))
       } else {
-        alert(`Ошибка: ${response.error}`)
+        toast.error(`Ошибка: ${response.error}`)
       }
     } catch (error) {
       console.error('Error toggling star:', error)
-      alert('Произошла ошибка при изменении статуса избранного')
+      toast.error('Произошла ошибка при изменении статуса избранного')
     }
   }
 
@@ -542,6 +584,61 @@ export default function DashboardPage() {
         isOpen={isDocumentModalOpen}
         onClose={() => setIsDocumentModalOpen(false)}
       />
+
+      <AlertDialog open={showBulkDeleteConfirm} onOpenChange={setShowBulkDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить выбранные документы?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите удалить {selectedDocuments.size} документ(ов)?
+              Они будут перемещены в корзину.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmBulkDelete}>Удалить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showSingleDeleteConfirm} onOpenChange={setShowSingleDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить документ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Вы уверены, что хотите удалить документ &quot;{documentToDelete?.title}&quot;?
+              Он будет перемещен в корзину.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmSingleDelete}>Удалить</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showRenameDialog} onOpenChange={setShowRenameDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Переименовать документ</AlertDialogTitle>
+            <AlertDialogDescription>
+              Введите новое название для документа &quot;{documentToRename?.currentTitle}&quot;.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid gap-4 py-4">
+            <Input
+              id="new-title"
+              value={newTitleInput}
+              onChange={(e) => setNewTitleInput(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRename}>Переименовать</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

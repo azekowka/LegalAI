@@ -161,6 +161,12 @@ export const actOfCompletedWorksTemplate: DocumentTemplate = {
         }
       ],
       style: { marginBottom: '20px' }
+    },
+    {
+      id: 'main-title-after-table',
+      type: 'header',
+      content: 'АКТ ВЫПОЛНЕННЫХ РАБОТ',
+      style: { textAlign: 'center', fontWeight: 'bold', fontSize: '16px', marginTop: '50px', textTransform: 'uppercase' }
     }
   ],
 };

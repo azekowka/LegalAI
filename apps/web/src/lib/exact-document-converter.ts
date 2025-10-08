@@ -33,8 +33,11 @@ export class ExactDocumentConverter {
           }
         });
 
-    nodes.push({
-          type: 'heading-one',
+        const fontSize = section.style?.fontSize ? parseInt(section.style.fontSize) : 0;
+        const headerType = fontSize > 20 ? 'heading-one' : 'paragraph'; // Adjust threshold as needed
+
+        nodes.push({
+          type: headerType,
           align: section.style?.textAlign || 'left',
           children: children.length > 0 ? children : [{ text: '' }],
           style: section.style
@@ -67,6 +70,86 @@ export class ExactDocumentConverter {
           children: children.length > 0 ? children : [{ text: '' }], // Ensure at least one child
           style: section.style // Pass through styles from template
         });
+      } else if (section.type === 'contacts') {
+        const children: any[] = [];
+        const parts = section.content.split(/({{.*?}})/g);
+
+        parts.forEach(part => {
+          if (part.startsWith('{{') && part.endsWith('}}')) {
+            const varId = part.slice(2, -2);
+            const templateVar = template.variables.find(v => v.id === varId);
+            const value = variables[varId];
+
+            children.push({
+              text: data && value !== undefined && value !== '' ? String(value) : templateVar?.name || varId,
+              color: data && value !== undefined && value !== '' ? '#000' : '#0066cc',
+              underline: data && value !== undefined && value !== '' ? false : true,
+            });
+          } else if (part === '\n') {
+            // For contacts, treat newlines as separate paragraph breaks for better formatting
+            if (children.length > 0) {
+              nodes.push({
+                type: 'paragraph',
+                align: section.style?.textAlign || 'left',
+                children: children,
+                style: section.style
+              });
+              children.length = 0; // Clear children for the next paragraph
+            }
+          } else {
+            children.push({ text: part, color: '#000', underline: false });
+          }
+        });
+
+        // Push any remaining children as a paragraph
+        if (children.length > 0) {
+          nodes.push({
+            type: 'paragraph',
+            align: section.style?.textAlign || 'left',
+            children: children,
+            style: section.style
+          });
+        }
+      } else if (section.type === 'signature') {
+        const children: any[] = [];
+        const parts = section.content.split(/({{.*?}})/g);
+
+        parts.forEach(part => {
+          if (part.startsWith('{{') && part.endsWith('}}')) {
+            const varId = part.slice(2, -2);
+            const templateVar = template.variables.find(v => v.id === varId);
+            const value = variables[varId];
+
+            children.push({
+              text: data && value !== undefined && value !== '' ? String(value) : templateVar?.name || varId,
+              color: data && value !== undefined && value !== '' ? '#000' : '#0066cc',
+              underline: data && value !== undefined && value !== '' ? false : true,
+            });
+          } else if (part === '\n') {
+            // For signature, treat newlines as separate paragraph breaks for better formatting
+            if (children.length > 0) {
+              nodes.push({
+                type: 'paragraph',
+                align: section.style?.textAlign || 'left',
+                children: children,
+                style: section.style
+              });
+              children.length = 0; // Clear children for the next paragraph
+            }
+          } else {
+            children.push({ text: part, color: '#000', underline: false });
+          }
+        });
+
+        // Push any remaining children as a paragraph
+        if (children.length > 0) {
+          nodes.push({
+            type: 'paragraph',
+            align: section.style?.textAlign || 'left',
+            children: children,
+            style: section.style
+          });
+        }
       } else if (section.type === 'table') {
         const tableData = data?.tableData?.[section.id] || [];
         const headerCells = section.tableColumns?.map(col => ({

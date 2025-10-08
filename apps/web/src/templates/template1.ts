@@ -87,6 +87,29 @@ export const commercialOfferTemplate: DocumentTemplate = {
       required: true,
       defaultValue: new Date().toISOString().split('T')[0],
       description: 'Дата составления коммерческого предложения'
+    },
+    {
+      id: 'serviceDescription',
+      name: 'Описание услуг компании',
+      type: 'text',
+      required: true,
+      placeholder: 'разработке программного обеспечения',
+      description: 'Краткое описание основной деятельности'
+    },
+    {
+      id: 'serviceType',
+      name: 'Тип предлагаемых услуг',
+      type: 'text',
+      required: true,
+      placeholder: 'созданию веб-приложений и мобильных решений',
+      description: 'Конкретные услуги, которые вы предлагаете'
+    },
+    {
+      id: 'totalAmount',
+      name: 'Итоговая сумма',
+      type: 'number',
+      required: false,
+      description: 'Автоматически рассчитывается из таблицы услуг'
     }
   ],
   sections: [
@@ -149,24 +172,6 @@ E-Mail: {{companyEmail}} БИН: {{companyBIN}}`,
       id: 'offer-intro',
       type: 'text',
       content: '{{companyName}} имеет обширный опыт по {{serviceDescription}}. Наша компания предлагает услуги по {{serviceType}}',
-      variables: [
-        {
-          id: 'serviceDescription',
-          name: 'Описание услуг компании',
-          type: 'text',
-          required: true,
-          placeholder: 'разработке программного обеспечения',
-          description: 'Краткое описание основной деятельности'
-        },
-        {
-          id: 'serviceType',
-          name: 'Тип предлагаемых услуг',
-          type: 'text',
-          required: true,
-          placeholder: 'созданию веб-приложений и мобильных решений',
-          description: 'Конкретные услуги, которые вы предлагаете'
-        }
-      ]
     },
     {
       id: 'services-table',
@@ -230,15 +235,6 @@ E-Mail: {{companyEmail}} БИН: {{companyBIN}}`,
           total: '{{totalAmount}}'
         }
       ],
-      variables: [
-        {
-          id: 'totalAmount',
-          name: 'Итоговая сумма',
-          type: 'number',
-          required: false,
-          description: 'Автоматически рассчитывается из таблицы услуг'
-        }
-      ]
     },
     {
       id: 'closing-text',

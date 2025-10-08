@@ -32,9 +32,15 @@ const mockTemplates: Template[] = [
   {
     id: "3",
     name: "Коммерческое предложение",
-    documents: 15,
-    status: "Опубликован",
-    lastModified: "13 дек 2023, 10:45",
+    documents: 0,
+    status: "Черновик",
+    lastModified: new Date().toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   },
   {
     id: "6",

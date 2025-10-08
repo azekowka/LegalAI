@@ -88,6 +88,7 @@ interface DocumentTextStyle {
   marginLeft?: string;
   fontStyle?: string;
   marginTop?: string;
+  [key: string]: string | undefined;
 }
 
 interface DocumentTableColumn {

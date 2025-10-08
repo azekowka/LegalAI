@@ -2,6 +2,7 @@
 
 import Hero from "@/components/home/hero";
 import Pricing from "@/components/home/pricing";
+import FAQ from "@/components/home/faq";
 import Footer from "@/components/home/footer";
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
 		<>
 			<Hero />
 			<Pricing />
+			<FAQ />
 			<Footer />
 		</>
 	);

@@ -201,7 +201,13 @@ export const invoiceTemplate: DocumentTemplate = {
       id: 'invoice-title',
       type: 'text',
       content: 'Счет на оплату № {{invoiceNumber}} от {{invoiceDate}}',
-      style: { fontSize: '14px', fontWeight: 'bold', marginBottom: '20px' }
+      style: { fontSize: '14px', fontWeight: 'bold', marginBottom: '5px' }
+    },
+    {
+      id: 'invoice-line-separator',
+      type: 'text',
+      content: '____________________________________________________________________',
+      style: { marginBottom: '20px' }
     },
     {
       id: 'supplier-details',
@@ -256,13 +262,13 @@ export const invoiceTemplate: DocumentTemplate = {
       id: 'total-in-words',
       type: 'text',
       content: 'Всего наименований 1 на сумму {{totalAmount}} KZT\nВсего к оплате: {{totalAmountInWords}} тенге',
-      style: { marginBottom: '20px' }
+      style: { textAlign: 'right', marginBottom: '20px' }
     },
     {
       id: 'executor-signature',
       type: 'text',
       content: 'Исполнитель: {{executorFullName}}',
-      style: { fontWeight: 'bold' }
+      style: { fontWeight: 'bold', textAlign: 'left', marginTop: '30px' }
     },
   ],
 };

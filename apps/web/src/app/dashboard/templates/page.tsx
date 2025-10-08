@@ -77,6 +77,19 @@ const mockTemplates: Template[] = [
       minute: "2-digit",
     }),
   },
+  {
+    id: "7",
+    name: "Договор возмездного оказания услуг",
+    documents: 0,
+    status: "Черновик",
+    lastModified: new Date().toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  },
 ];
 
 export default function TemplatesDashboard() {
@@ -219,6 +232,8 @@ export default function TemplatesDashboard() {
                           window.location.href = `/dashboard/templates/3`;
                         } else if (template.name === "Соглашение о Конфиденциальности") {
                           window.location.href = `/dashboard/templates/confidentiality-agreement`;
+                        } else if (template.name === "Договор возмездного оказания услуг") {
+                          window.location.href = `/dashboard/templates/service-agreement`;
                         }
                       }}
                     >
@@ -269,6 +284,8 @@ export default function TemplatesDashboard() {
                                   window.location.href = `/dashboard/templates/3`;
                                 } else if (template.name === "Соглашение о Конфиденциальности") {
                                   window.location.href = `/dashboard/templates/confidentiality-agreement`;
+                                } else if (template.name === "Договор возмездного оказания услуг") {
+                                  window.location.href = `/dashboard/templates/service-agreement`;
                                 }
                               }}
                             >

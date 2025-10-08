@@ -31,6 +31,7 @@ import ExactDocumentConverter from '@/lib/exact-document-converter';
 import TemplateProcessor from '@/lib/template-processor';
 import commercialOfferTemplate from '@/templates/template1';
 import confidentialityAgreementTemplate from '@/templates/confidentiality-agreement';
+import serviceAgreementTemplate from '@/templates/service-agreement';
 import { toast } from 'sonner';
 import { debounce } from 'lodash';
 
@@ -38,7 +39,8 @@ import { debounce } from 'lodash';
 const mockTemplates: Record<string, DocumentTemplate> = {
   '3': commercialOfferTemplate,
   'commercial-offer-kz': commercialOfferTemplate,
-  'confidentiality-agreement': confidentialityAgreementTemplate
+  'confidentiality-agreement': confidentialityAgreementTemplate,
+  'service-agreement': serviceAgreementTemplate
 };
 
 export default function TemplateEditorPage() {

@@ -30,39 +30,11 @@ interface Template {
 
 const mockTemplates: Template[] = [
   {
-    id: "1",
-    name: "Договор оказания услуг",
-    documents: 12,
-    status: "Опубликован",
-    lastModified: "15 дек 2023, 14:30",
-  },
-  {
-    id: "2",
-    name: "Акт выполненных работ",
-    documents: 8,
-    status: "Черновик",
-    lastModified: "14 дек 2023, 16:15",
-  },
-  {
     id: "3",
     name: "Коммерческое предложение",
     documents: 15,
     status: "Опубликован",
     lastModified: "13 дек 2023, 10:45",
-  },
-  {
-    id: "4",
-    name: "Счет на оплату",
-    documents: 6,
-    status: "Черновик",
-    lastModified: "12 дек 2023, 15:20",
-  },
-  {
-    id: "5",
-    name: "Соглашение о конфиденциальности",
-    documents: 9,
-    status: "Опубликован",
-    lastModified: "11 дек 2023, 13:10",
   },
   {
     id: "6",

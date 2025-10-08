@@ -36,6 +36,8 @@ export interface TemplateVariable {
       textAlign?: 'left' | 'center' | 'right';
       margin?: string;
       padding?: string;
+      marginBottom?: string;
+      marginLeft?: string;
     };
   }
   

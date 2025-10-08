@@ -1,0 +1,199 @@
+# Freedom Pay
+
+## Docs
+- [Overview](https://docs.freedompay.kz/doc-935332.md): 
+- Gateway API [Overview](https://docs.freedompay.kz/doc-660954.md): 
+- Gateway API > Sync API [Overview](https://docs.freedompay.kz/doc-643556.md): 
+- Gateway API > Sync API > Purchase [Overview](https://docs.freedompay.kz/doc-775791.md): 
+- Gateway API > Sync API > Payout [Overview](https://docs.freedompay.kz/doc-776031.md): 
+- Gateway API > Sync API > Transfer [Overview](https://docs.freedompay.kz/doc-776099.md): 
+- Gateway API > Sync API > Card [Overview](https://docs.freedompay.kz/doc-776133.md): 
+- Gateway API > Sync API > Token [Overview](https://docs.freedompay.kz/doc-776176.md): 
+- Gateway API > Async API [Overview](https://docs.freedompay.kz/doc-650923.md): 
+- Merchant API [Overview](https://docs.freedompay.kz/doc-741636.md): 
+- Merchant API [Purchase](https://docs.freedompay.kz/folder-2444932.md): 
+- Merchant API > Purchase [Overview](https://docs.freedompay.kz/doc-782024.md): 
+- Merchant API > Purchase [Checkout](https://docs.freedompay.kz/doc-852985.md): 
+- Merchant API > Purchase > Card token [Overview](https://docs.freedompay.kz/doc-786373.md): 
+- Merchant API > Payout [Overview](https://docs.freedompay.kz/doc-782127.md): 
+- Merchant API > Mobile balance [Overview](https://docs.freedompay.kz/doc-782315.md): 
+- Merchant API > Invoice [Overview](https://docs.freedompay.kz/doc-786384.md): 
+- Merchant API > SDK [JS SDK](https://docs.freedompay.kz/doc-869917.md): 
+- Merchant API > SDK [Google Pay](https://docs.freedompay.kz/doc-955839.md): 
+- Merchant API > SDK > Freedom QR [Reader SDK (Android)](https://docs.freedompay.kz/doc-690109.md): 
+- Merchant API > SDK > Freedom QR [Provider SDK (Android)](https://docs.freedompay.kz/doc-690111.md): 
+- Merchant API > SDK > Payment SDK [iOS](https://docs.freedompay.kz/doc-690101.md): 
+- Merchant API > SDK > Payment SDK [Android](https://docs.freedompay.kz/doc-690100.md): 
+- Merchant API > SDK > Merchant SDK [Android](https://docs.freedompay.kz/doc-1368420.md): 
+- Merchant API > CMS [Overview](https://docs.freedompay.kz/cms-introduction.md): 
+- Merchant API > CMS [Get Merchant ID and key](https://docs.freedompay.kz/doc-881613.md): 
+- Merchant API > CMS > WordPress [Overview](https://docs.freedompay.kz/cms-wordpress-introduction.md): 
+- Merchant API > CMS > WordPress [Installation](https://docs.freedompay.kz/cms-wordpress-installation.md): 
+- Merchant API > CMS > WordPress [Configuration](https://docs.freedompay.kz/cms-wordpress-configuration.md): 
+- Merchant API > CMS > WordPress [Test](https://docs.freedompay.kz/cms-wordpress-test.md): 
+- Merchant API > CMS > WordPress [Live payments](https://docs.freedompay.kz/cms-wordpress-live-payments.md): 
+- Merchant API > CMS > WordPress [Update](https://docs.freedompay.kz/cms-wordpress-update.md): 
+- Merchant API > CMS > Tilda [Overview](https://docs.freedompay.kz/cms-tilda-introduction.md): 
+- Merchant API > CMS > Tilda [Installation](https://docs.freedompay.kz/cms-tilda-installation.md): 
+- Merchant API > CMS > Tilda [Configuration](https://docs.freedompay.kz/cms-tilda-configuration.md): 
+- Merchant API > CMS > Tilda [Test](https://docs.freedompay.kz/cms-tilda-test.md): 
+- Merchant API > CMS > Tilda [Live payments](https://docs.freedompay.kz/cms-tilda-live-payments.md): 
+- Merchant API > CMS > InSales [Overview](https://docs.freedompay.kz/cms-insales-introduction.md): 
+- Merchant API > CMS > InSales [Installation](https://docs.freedompay.kz/cms-insales-installation.md): 
+- Merchant API > CMS > InSales [Configuration](https://docs.freedompay.kz/cms-insales-configuration.md): 
+- Merchant API > CMS > InSales [Test](https://docs.freedompay.kz/cms-insales-test.md): 
+- Merchant API > CMS > InSales [Live payments](https://docs.freedompay.kz/cms-insales-live-payments.md): 
+- Merchant API > CMS > Ecwid [Overview](https://docs.freedompay.kz/cms-ecwid-introduction.md): 
+- Merchant API > CMS > Ecwid [Installation](https://docs.freedompay.kz/cms-ecwid-installation.md): 
+- Merchant API > CMS > Ecwid [Configuration](https://docs.freedompay.kz/cms-ecwid-configuration.md): 
+- Merchant API > CMS > Ecwid [Test](https://docs.freedompay.kz/cms-ecwid-test.md): 
+- Merchant API > CMS > Ecwid [Live payments](https://docs.freedompay.kz/cms-ecwid-live-payments.md): 
+- Merchant API > CMS > Bitrix [Overview](https://docs.freedompay.kz/cms-bitrix-introduction.md): 
+- Merchant API > CMS > Bitrix [Installation](https://docs.freedompay.kz/cms-bitrix-installation.md): 
+- Merchant API > CMS > Bitrix [Configuration](https://docs.freedompay.kz/cms-bitrix-configuration.md): 
+- Merchant API > CMS > Bitrix [Test](https://docs.freedompay.kz/cms-bitrix-test.md): 
+- Merchant API > CMS > Bitrix [Live payments](https://docs.freedompay.kz/cms-bitrix-live-payments.md): 
+- Merchant API > CMS > PrestaShop [Overview](https://docs.freedompay.kz/cms-prestashop-introduction.md): 
+- Merchant API > CMS > PrestaShop [Installation](https://docs.freedompay.kz/cms-prestashop-installation.md): 
+- Merchant API > CMS > PrestaShop [Configuration](https://docs.freedompay.kz/cms-prestashop-configuration.md): 
+- Merchant API > CMS > PrestaShop [Test](https://docs.freedompay.kz/cms-prestashop-test.md): 
+- Merchant API > CMS > PrestaShop [Live payments](https://docs.freedompay.kz/cms-prestashop-live-payments.md): 
+- Merchant API > CMS > OpenCart [Overview](https://docs.freedompay.kz/cms-opencart-introduction.md): 
+- Merchant API > CMS > OpenCart [Installation](https://docs.freedompay.kz/cms-opencart-installation.md): 
+- Merchant API > CMS > OpenCart [Configuration](https://docs.freedompay.kz/cms-opencart-configuration.md): 
+- Merchant API > CMS > OpenCart [Test](https://docs.freedompay.kz/cms-opencart-test.md): 
+- Merchant API > CMS > OpenCart [Live payments](https://docs.freedompay.kz/cms-opencart-live-payments.md): 
+- Card API [Overview](https://docs.freedompay.kz/doc-760202.md): 
+- Card API > Payment Cards [Overview](https://docs.freedompay.kz/doc-862371.md): 
+- Card API > Payment Cards [Dictionaries](https://docs.freedompay.kz/doc-850764.md): 
+- Card API > Gift Cards [Overview](https://docs.freedompay.kz/doc-761007.md): 
+- Partner API > Rates [Overview](https://docs.freedompay.kz/doc-761018.md): 
+- Partner API > Products [Overview](https://docs.freedompay.kz/doc-761023.md): 
+- Partner API > Products [Dictionaries](https://docs.freedompay.kz/doc-856951.md): 
+- Partner API > E-Money [Overview](https://docs.freedompay.kz/doc-761039.md): 
+- Partner API > Device ID [Android SDK](https://docs.freedompay.kz/doc-966303.md): 
+- Partner API > Device ID [iOS SDK](https://docs.freedompay.kz/doc-966305.md): 
+- Partner API > Implement SuperApp [Overview](https://docs.freedompay.kz/doc-1159190.md): 
+- Partner API > Account > Settlement [Overview](https://docs.freedompay.kz/doc-1281608.md): 
+
+## API Docs
+- Gateway API > Sync API > Purchase [Create payment](https://docs.freedompay.kz/api-9890787.md): :::warning[]
+- Gateway API > Sync API > Purchase [Any amount](https://docs.freedompay.kz/api-9890672.md): :::info[]
+- Gateway API > Sync API > Purchase [Card](https://docs.freedompay.kz/api-9586997.md): :::info[]
+- Gateway API > Sync API > Purchase [3DSecure](https://docs.freedompay.kz/api-9586999.md): :::info[]
+- Gateway API > Sync API > Purchase [Recurrent](https://docs.freedompay.kz/api-18494941.md): 
+- Gateway API > Sync API > Purchase [Cancel](https://docs.freedompay.kz/api-9587002.md): :::info[]
+- Gateway API > Sync API > Purchase [Clearing](https://docs.freedompay.kz/api-9587001.md): :::info[]
+- Gateway API > Sync API > Purchase [Refund](https://docs.freedompay.kz/api-9587003.md): :::info[]
+- Gateway API > Sync API > Purchase [Status](https://docs.freedompay.kz/api-9587004.md): :::info[]
+- Gateway API > Sync API > Payout [Card](https://docs.freedompay.kz/api-9586998.md): :::info[]
+- Gateway API > Sync API > Payout [IBAN](https://docs.freedompay.kz/api-9880408.md): :::info[]
+- Gateway API > Sync API > Payout [Balance](https://docs.freedompay.kz/api-9884858.md): :::info[]
+- Gateway API > Sync API > Payout [Status](https://docs.freedompay.kz/api-9881016.md): :::info[]
+- Gateway API > Sync API > Transfer [Card](https://docs.freedompay.kz/api-9885527.md): :::info[]
+- Gateway API > Sync API > Transfer [3DSecure](https://docs.freedompay.kz/api-9886434.md): :::info[]
+- Gateway API > Sync API > Transfer [Rates](https://docs.freedompay.kz/api-9886534.md): :::info[]
+- Gateway API > Sync API > Transfer [Status](https://docs.freedompay.kz/api-9886515.md): :::info[]
+- Gateway API > Sync API > Card [Add](https://docs.freedompay.kz/api-9886819.md): :::info[]
+- Gateway API > Sync API > Card [3DSecure](https://docs.freedompay.kz/api-9888280.md): :::info[]
+- Gateway API > Sync API > Card [List](https://docs.freedompay.kz/api-9888586.md): :::info[]
+- Gateway API > Sync API > Card [Remove](https://docs.freedompay.kz/api-9888332.md): :::info[]
+- Gateway API > Sync API > Card [Status](https://docs.freedompay.kz/api-13528554.md): :::info[]
+- Gateway API > Sync API > Token [Token Pay](https://docs.freedompay.kz/api-9888724.md): 
+- Gateway API > Sync API > Token [Apple Pay](https://docs.freedompay.kz/api-9856298.md): 
+- Gateway API > Sync API > Token [Google Pay](https://docs.freedompay.kz/api-9890798.md): 
+- Gateway API > Sync API > Token [Token Payout](https://docs.freedompay.kz/api-9881026.md): 
+- Gateway API > Sync API > Token [Status](https://docs.freedompay.kz/api-13528434.md): 
+- Gateway API > Async API > create [create payment](https://docs.freedompay.kz/api-9587005.md): 
+- Gateway API > Async API > read [read payment](https://docs.freedompay.kz/api-9587007.md): 
+- Gateway API > Async API > read [read request](https://docs.freedompay.kz/api-9587008.md): 
+- Gateway API > Async API > edit [edit payment.refund](https://docs.freedompay.kz/api-9587009.md): 
+- Gateway API > Async API > edit [edit payment.reverse](https://docs.freedompay.kz/api-9587010.md): 
+- Gateway API > Async API > edit [edit payment.clearing](https://docs.freedompay.kz/api-9587011.md): 
+- Merchant API > Purchase > Card token [Tokenize card](https://docs.freedompay.kz/api-11621153.md): :::info[]
+- Merchant API > Purchase > Card token [Delete token](https://docs.freedompay.kz/api-11621159.md): :::info[]
+- Merchant API > Purchase > Card token [Card token list](https://docs.freedompay.kz/api-11622160.md): :::info[]
+- Merchant API > Purchase > Card token [Create payment (with CVC)](https://docs.freedompay.kz/api-11620882.md): :::info[]
+- Merchant API > Purchase > Card token [Confirm payment (with CVC)](https://docs.freedompay.kz/api-11776977.md): :::info[]
+- Merchant API > Purchase > Card token [Create payment](https://docs.freedompay.kz/api-11620900.md): :::info[]
+- Merchant API > Purchase > Card token [Confirm payment](https://docs.freedompay.kz/api-11777421.md): :::info[]
+- Merchant API > Purchase [Create payment](https://docs.freedompay.kz/api-11620859.md): :::warning[]
+- Merchant API > Purchase [Any amount](https://docs.freedompay.kz/api-11620875.md): :::info[]
+- Merchant API > Purchase [Reccuring payment](https://docs.freedompay.kz/api-21166426.md): ::: info
+- Merchant API > Purchase [Cancel payment](https://docs.freedompay.kz/api-11621007.md): :::info[]
+- Merchant API > Purchase [Clearing](https://docs.freedompay.kz/api-11621002.md): :::info[]
+- Merchant API > Purchase [Refund payment](https://docs.freedompay.kz/api-11621013.md): :::info[]
+- Merchant API > Purchase [Status](https://docs.freedompay.kz/api-11620963.md): :::info[]
+- Merchant API > Payout > Card token [Tokenize card](https://docs.freedompay.kz/api-12006980.md): :::info[]
+- Merchant API > Payout > Card token [Delete token](https://docs.freedompay.kz/api-16058742.md): :::info[]
+- Merchant API > Payout > Card token [Card token list](https://docs.freedompay.kz/api-16058744.md): :::info[]
+- Merchant API > Payout > Card token [Create payment](https://docs.freedompay.kz/api-11621024.md): :::info[]
+- Merchant API > Payout [Create payment](https://docs.freedompay.kz/api-11621022.md): :::info[]
+- Merchant API > Payout [IBAN](https://docs.freedompay.kz/api-11621076.md): :::info[]
+- Merchant API > Payout [Balance status](https://docs.freedompay.kz/api-11621144.md): :::info[]
+- Merchant API > Payout [Status by order_id](https://docs.freedompay.kz/api-12090694.md): 
+- Merchant API > Payout [Status by Payment ID](https://docs.freedompay.kz/api-12100638.md): 
+- Merchant API > Payout [Status](https://docs.freedompay.kz/api-12100676.md): :::info[]
+- Merchant API > Mobile balance [Init](https://docs.freedompay.kz/api-11620954.md): :::info[]
+- Merchant API > Mobile balance [Pay](https://docs.freedompay.kz/api-11968976.md): :::info[]
+- Merchant API > Mobile balance [Approve](https://docs.freedompay.kz/api-11977161.md): :::info[]
+- Merchant API > Mobile balance [Resend code](https://docs.freedompay.kz/api-11977162.md): :::info[]
+- Merchant API > Mobile balance [Status](https://docs.freedompay.kz/api-12108543.md): :::info[]
+- Merchant API > Invoice [Init](https://docs.freedompay.kz/api-11622180.md): :::info[]
+- Merchant API > Invoice [Info](https://docs.freedompay.kz/api-11622182.md): :::info[]
+- Merchant API > Invoice [Pay](https://docs.freedompay.kz/api-11622183.md): :::info[]
+- Merchant API > Invoice [Status](https://docs.freedompay.kz/api-11622184.md): :::info[]
+- Merchant API [Redirect back](https://docs.freedompay.kz/api-12108349.md): :::info[]
+- Merchant API [Result notify](https://docs.freedompay.kz/api-12007677.md): :::info[]
+- Merchant API [Payout notify](https://docs.freedompay.kz/api-11622162.md): :::info[]
+- Merchant API [Check request](https://docs.freedompay.kz/api-12007679.md): :::warning[]
+- Card API > Payment Cards [Bulk issue](https://docs.freedompay.kz/api-12056276.md): This method enables the bulk issuance of instant cards, allowing multiple cards to be created and activated simultaneously.
+- Card API > Payment Cards [Issue card](https://docs.freedompay.kz/api-12074875.md): This method allows for the issuance of a single instant card, creating and activating it with the specified details.
+- Card API > Payment Cards [Issue plastic card](https://docs.freedompay.kz/api-12075106.md): This method enables the issuance of a physical card linked to a previously created instant card, allowing users to transition from a digital to a physical card format.
+- Card API > Payment Cards [Activate card](https://docs.freedompay.kz/api-12074979.md): This method activates a previously issued card, enabling it for use with the associated account or service.
+- Card API > Payment Cards [Block card](https://docs.freedompay.kz/api-12074981.md): The card blocking method is used to temporarily or permanently restrict card transactions to prevent fraud, protect the client's funds, or comply with regulatory requirements. One of the types from the directory can be used for blocking.
+- Card API > Payment Cards [Unblock card](https://docs.freedompay.kz/api-12074991.md): The `Unblock Card` method is used to restore access to a previously blocked payment card. This method allows users to continue using their card for transactions, withdrawals, and other banking operations after a temporary restriction has been lifted.
+- Card API > Payment Cards [Set PIN](https://docs.freedompay.kz/api-12075062.md): The PIN setup method is designed to set or change the Personal Identification Number (PIN) on a payment card. This process is essential for ensuring security when performing card transactions, such as cash withdrawals from ATMs and payments at retail locations.
+- Card API > Payment Cards [Reset PIN counter](https://docs.freedompay.kz/api-12075070.md): This method is designed to reset the incorrect PIN entry attempt counter on a payment card. It is required when a card is temporarily blocked due to exceeding the allowed number of unsuccessful PIN entry attempts.
+- Card API > Payment Cards [Close card](https://docs.freedompay.kz/api-12075208.md): The card closure method is designed to terminate the use of a payment card and deactivate it within the system. This process is necessary in cases where the card is no longer needed, has expired, is being reissued, or at the request of the cardholder.
+- Card API > Payment Cards [Update client](https://docs.freedompay.kz/api-12074684.md): This method is designed to link a previously created client (using the Create Client method) with a previously issued card (using the Bulk Issue method).
+- Card API > Payment Cards [Card info](https://docs.freedompay.kz/api-12074999.md): This method is designed to retrieve detailed information about a payment card issued by Freedom Processing. It provides up-to-date information about the card's status, balance, expiration date, and other important details.
+- Card API > Payment Cards [Balance](https://docs.freedompay.kz/api-12075042.md): The method is designed to retrieve up-to-date information about the available funds on a payment card. It allows users to check the current status of all accounts, available and blocked amounts, as well as balances considering other currency accounts.
+- Card API > Payment Cards [Secret data](https://docs.freedompay.kz/api-12075077.md): The method is designed to retrieve confidential information about a payment card, including the full card number (PAN) and the security code (CVC).
+- Card API > Payment Cards [Secret data (version 2)](https://docs.freedompay.kz/api-16116305.md): The method is designed to retrieve confidential information about a payment card, including the full card number (PAN) and the security code (CVC).
+- Card API > Payment Cards [Operations' list](https://docs.freedompay.kz/api-12075219.md): This method is used to obtain a detailed statement for a payment card issued by Freedom Processing. The statement provides information on all transactions performed with the card over a specified period.
+- Card API > Payment Cards [Statement extended](https://docs.freedompay.kz/api-14425115.md): The Statement Extended method is used to retrieve a detailed statement for a payment card issued within the Freedom Processing system. Compared to the standard Statement method, it provides additional information on accounts, available balances, and clearly separates authorization holds from completed transactions.
+- Card API > Payment Cards [Create client](https://docs.freedompay.kz/api-12074751.md): This method is used to create a client in the Freedom Processing system. As a result, the client is assigned a unique identifier `client_id`, which is then used to link the client to issued payment cards.
+- Card API > Payment Cards [Edit client](https://docs.freedompay.kz/api-12074967.md): This method is designed to edit client information associated with a payment card. It allows сhanging the client’s phone number, which is used to receive OTP codes for 3D Secure (3DS) authentication.
+- Card API > Payment Cards [Сards' list](https://docs.freedompay.kz/api-12075033.md): This method is designed to retrieve a list of all payment cards issued in Freedom Processing that belong to a specific client. The response contains the same information as the Card Info method but for all of the client’s cards at once.
+- Card API > Payment Cards [Request' status](https://docs.freedompay.kz/api-12075613.md): This method is used to retrieve the result of asynchronous requests in the Freedom Processing system. It allows checking the current status of a request and determining whether it was successfully completed or an error occurred.
+- Card API > Payment Cards [Create transaction](https://docs.freedompay.kz/api-14317918.md): This section describes the request for creating a new transaction. It specifies the required request parameters and data formats.
+- Card API > Payment Cards [Clearing transaction](https://docs.freedompay.kz/api-14318358.md): This section describes the method for clearing (final confirmation) a previously created transaction. Clearing can be either full or partial. If the amount field is not provided in the request, the transaction will be cleared for the full amount of the previously created transaction.
+- Card API > Payment Cards [Refund transaction](https://docs.freedompay.kz/api-14318477.md): This section describes the method for refunding a previously completed transaction. The refund can be either full or partial. If the amount field is not provided in the request, the refund will be processed for the full amount of the previously created transaction.
+- Card API > Payment Cards [Transaction info](https://docs.freedompay.kz/api-14319174.md): 
+- Card API > Payment Cards [Cardholder validation](https://docs.freedompay.kz/api-17842385.md): This method is used by partners to verify whether the cardholder’s data (first name, last name, and phone number) matches the information associated with a given card token. It returns a confidence score and a fraud suspicion flag
+- Card API > Payment Cards [Set limits](https://docs.freedompay.kz/api-18613819.md): The method is designed to set limits on financial operations for a specific object — a `card`, `account`, or `client`. Limits allow controlling and restricting a user's financial activity in various scenarios: by transaction type, period, currency, and transaction method (e.g., with or without 3DS authentication).
+- Card API > Payment Cards [Limits list](https://docs.freedompay.kz/api-18614458.md): This method is used to retrieve a list of `all active limits` set for a specific object: a `card`, `account`, or `client`.
+- Card API > Gift Cards [List](https://docs.freedompay.kz/api-12075768.md): 
+- Card API > Gift Cards [Issue](https://docs.freedompay.kz/api-12075781.md): 
+- Card API > Gift Cards [Confirm](https://docs.freedompay.kz/api-12075782.md): 
+- Card API > Gift Cards [Resend](https://docs.freedompay.kz/api-12075784.md): 
+- Card API > Gift Cards [Resend code](https://docs.freedompay.kz/api-12075783.md): 
+- Card API > Gift Cards [Status](https://docs.freedompay.kz/api-12075785.md): 
+- Partner API > Rates [Rates](https://docs.freedompay.kz/api-12075837.md): 
+- Partner API > Products [Add client with product](https://docs.freedompay.kz/api-12075992.md): 
+- Partner API > Products [Request status](https://docs.freedompay.kz/api-12076005.md): 
+- Partner API > Products [Create terminal](https://docs.freedompay.kz/api-19294442.md): :::info 
+- Partner API > E-Money [Add](https://docs.freedompay.kz/api-12076131.md): 
+- Partner API > E-Money [Owner identification](https://docs.freedompay.kz/api-12076133.md): 
+- Partner API > E-Money [Info](https://docs.freedompay.kz/api-12076155.md): 
+- Partner API > E-Money [Close](https://docs.freedompay.kz/api-12076160.md): 
+- Partner API > E-Money [Block](https://docs.freedompay.kz/api-12076168.md): 
+- Partner API > E-Money [Balance](https://docs.freedompay.kz/api-12076169.md): 
+- Partner API > E-Money [Statement](https://docs.freedompay.kz/api-12076170.md): 
+- Partner API > E-Money [Request Status](https://docs.freedompay.kz/api-12076139.md): 
+- Partner API > Implement SuperApp [Pay](https://docs.freedompay.kz/api-18076262.md): 
+- Partner API > Implement SuperApp [Refund](https://docs.freedompay.kz/api-18076376.md): 
+- Partner API > Account > Settlement [Create payment](https://docs.freedompay.kz/api-19237244.md): :::info[] 
+- Partner API > Account > Settlement [Payment status](https://docs.freedompay.kz/api-19285405.md): :::info[]
+- Partner API [Invoice](https://docs.freedompay.kz/api-19290352.md): :::info[]

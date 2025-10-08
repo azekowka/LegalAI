@@ -83,10 +83,6 @@ export default function CreateDocumentPage() {
             onClick={() => handleTemplateSelect(template)}
           >
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <FileText className="h-8 w-8 text-primary" />
-                <Badge variant="secondary">{template.category}</Badge>
-              </div>
               <CardTitle className="text-xl">{template.name}</CardTitle>
               <CardDescription className="text-sm">
                 {template.description}
@@ -144,7 +140,6 @@ export default function CreateDocumentPage() {
                 </p>
               </div>
             </div>
-            <Badge variant="outline">{selectedTemplate?.category}</Badge>
           </div>
         </div>
       </div>
@@ -180,10 +175,6 @@ export default function CreateDocumentPage() {
                 <div>
                   <span className="font-medium">Описание:</span>
                   <p className="text-sm text-muted-foreground">{selectedTemplate?.description}</p>
-                </div>
-                <div>
-                  <span className="font-medium">Категория:</span>
-                  <p className="text-sm text-muted-foreground">{selectedTemplate?.category}</p>
                 </div>
                 <Separator />
                 <div className="text-xs text-muted-foreground">

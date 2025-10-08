@@ -314,7 +314,6 @@ export default function TemplateEditorPage() {
                 </p>
               </div>
             </div>
-            <Badge variant="secondary">{template.category}</Badge>
           </div>
           
           <div className="flex items-center space-x-2">
@@ -478,19 +477,6 @@ export default function TemplateEditorPage() {
                     <div className="space-y-2">
                       <Label>Описание</Label>
                       <Input value={template.description} readOnly />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Категория</Label>
-                      <Select value={template.category} disabled>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="business">Бизнес</SelectItem>
-                          <SelectItem value="legal">Юридические</SelectItem>
-                          <SelectItem value="financial">Финансовые</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </div>
                   </CardContent>
                 </Card>

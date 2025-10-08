@@ -4,7 +4,6 @@ export const confidentialityAgreementTemplate: DocumentTemplate = {
   id: 'confidentiality-agreement',
   name: 'Соглашение о Конфиденциальности',
   description: 'Шаблон соглашения о конфиденциальности',
-  category: 'legal',
   createdAt: new Date(),
   updatedAt: new Date(),
   variables: [

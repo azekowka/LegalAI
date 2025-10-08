@@ -4,7 +4,6 @@ export const serviceAgreementTemplate: DocumentTemplate = {
   id: 'service-agreement',
   name: 'Договор возмездного оказания услуг',
   description: 'Шаблон договора возмездного оказания услуг',
-  category: 'legal',
   createdAt: new Date(),
   updatedAt: new Date(),
   variables: [

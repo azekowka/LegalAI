@@ -4,7 +4,6 @@ export const commercialOfferTemplate: DocumentTemplate = {
   id: 'commercial-offer-kz',
   name: 'Коммерческое предложение',
   description: 'Шаблон коммерческого предложения для казахстанского рынка',
-  category: 'business',
   createdAt: new Date(),
   updatedAt: new Date(),
   variables: [

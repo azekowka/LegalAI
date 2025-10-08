@@ -37,7 +37,6 @@ export interface TemplateVariable {
     id: string;
     name: string;
     description: string;
-    category: string;
     sections: TemplateSection[];
     variables: TemplateVariable[]; // глобальные переменные для всего документа
     createdAt: Date;

@@ -296,7 +296,6 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
         {/* Информация о документе */}
         <div className="text-sm text-muted-foreground space-y-1">
           <div>Шаблон: {template.name}</div>
-          <div>Категория: {template.category}</div>
           <div>Переменных заполнено: {Object.keys(data.variables).length}</div>
           {data.tableData && (
             <div>

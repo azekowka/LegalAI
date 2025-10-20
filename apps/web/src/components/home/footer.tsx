@@ -17,8 +17,9 @@ export default function Footer() {
 					<Link href="/privacy" className="text-xs underline underline-offset-2 md:text-sm">
 						Privacy Policy
 					</Link>
+					<HealthStatus />
 				</div>
-				<HealthStatus />
+				<img src="https://static.tildacdn.pro/tild6666-3961-4132-b932-323433646564/fpay-logo.svg" alt="Freedom Pay" className="h-20 w-20" />
 			</div>
 		</footer>
 	);

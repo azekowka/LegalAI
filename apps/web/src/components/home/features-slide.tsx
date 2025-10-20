@@ -37,6 +37,14 @@ const items = [
 export default function Demos() {
   return (
     <main className="max-w-4xl px-10 mx-auto">
+      
+      <div className="text-center mb-6 max-w-3xl mx-auto md:text-6xl sm:text-4xl text-3xl font-medium text-gray-900 mb-4">
+				Features for your{" "}
+				<span className="border border-dashed border-blue-500 px-2 py-1 rounded-xl bg-blue-100 capitalize inline-block">
+					business
+				</span>
+      </div>
+
       <ProgressSlider vertical={false} activeSlider='bridge'>
         <SliderContent>
           {items.map((item, index) => (

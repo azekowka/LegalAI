@@ -6,6 +6,7 @@ import Pricing from "@/components/home/pricing";
 import FAQ from "@/components/home/faq";
 import Footer from "@/components/home/footer";
 import FeaturesSlide from "@/components/home/features-slide";
+import CookieToast from "@/components/ui/cookie-toast";
 
 export default function Home() {
 	return (
@@ -16,6 +17,7 @@ export default function Home() {
 			<Pricing />
 			<FAQ />
 			<Footer />
+			<CookieToast />
 		</>
 	);
 }

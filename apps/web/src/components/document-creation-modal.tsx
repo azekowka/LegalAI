@@ -12,10 +12,11 @@ interface DocumentCreationModalProps {
 }
 
 const templates = [
-  { id: 'work-act', name: 'Акт Выполненных Работ', icon: FileText },
-  { id: 'commercial-proposal', name: 'Коммерческое предложение', icon: FileText },
-  { id: 'invoice', name: 'Счет на оплату', icon: FileText },
-  { id: 'confidentiality', name: 'Соглашение о Конфиденциальности', icon: FileText },
+  { id: 'work-act', name: 'Акт Выполненных Работ', icon: FileText, path: '/dashboard/templates/act-of-completed-works' },
+  { id: 'commercial-proposal', name: 'Коммерческое предложение', icon: FileText, path: '/dashboard/templates/commercial-proposal' },
+  { id: 'invoice', name: 'Счет на оплату', icon: FileText, path: '/dashboard/templates/invoice' },
+  { id: 'confidentiality', name: 'Соглашение о Конфиденциальности', icon: FileText, path: '/dashboard/templates/confidentiality-agreement' },
+  { id: 'service-agreement', name: 'Договор об оказании услуг', icon: FileText, path: '/dashboard/templates/service-agreement' },
 ];
 
 export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModalProps) {
@@ -56,8 +57,8 @@ export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModal
     onClose();
   };
 
-  const handleTemplateSelect = (templateId: string) => {
-    console.log('Template selected:', templateId);
+  const handleTemplateSelect = (path: string) => {
+    router.push(path);
     onClose();
   };
 
@@ -112,7 +113,7 @@ export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModal
                 Выберите файл или перенесите его сюда
               </p>
               <p className="text-sm text-gray-500">
-                Можно выбрать несколько файлов: pdf, doc, docx, rtf
+                Можно выбрать несколько файлов: pdf, doc, docx
               </p>
             </div>
           </div>
@@ -124,7 +125,7 @@ export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModal
               {templates.map((template) => (
                 <Button
                   key={template.id}
-                  onClick={() => handleTemplateSelect(template.id)}
+                  onClick={() => handleTemplateSelect(template.path)}
                   variant="outline"
                   className="w-full justify-start h-12 text-base font-normal hover:bg-gray-50 transition-colors"
                 >

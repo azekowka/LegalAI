@@ -28,10 +28,10 @@ function ClientFeedback() {
       <section className="relative  h-full container mx-auto  rounded-lg  py-14 bg-white" ref={testimonialRef}>
         <article className={"max-w-screen-md mx-auto text-center space-y-2 "} >
           <TimelineContent as="h1" className={"xl:text-4xl text-3xl  font-medium"} animationNum={0} customVariants={revealVariants} timelineRef={testimonialRef}>
-            Trusted by Startups and the worlds's largest companies
+            Trusted by Startups and the world's largest companies
           </TimelineContent>
           <TimelineContent as="p" className={"mx-auto text-gray-500"} animationNum={1} customVariants={revealVariants} timelineRef={testimonialRef}>
-            Let's hear how hypershpere client's feels about our service
+            Let's hear how Legal AI client's feels about our product
           </TimelineContent>
         </article>
         <div className="lg:grid lg:grid-cols-3  gap-2 flex flex-col w-full lg:py-10 pt-10 pb-4 lg:px-10 px-4">
@@ -48,15 +48,15 @@ function ClientFeedback() {
               </figure>*/}
               <article className="mt-auto">
                 <p>
-                  "Hypersphere has been a game-changer for us. Their service is
-                  top-notch and their team is incredibly responsive."
+                  "Legal AI has revolutionized our contract review process. What
+                  used to take days now takes minutes, with higher accuracy."
                 </p>
                 <div className="flex justify-between pt-5">
                   <div>
                     <h2 className=" font-semibold lg:text-xl text-sm">
-                      Guillermo Rauch
+                      Sarah Thompson
                     </h2>
-                    <p className="">CEO of Enigma</p>
+                    <p className="">General Counsel, Innovate Corp</p>
                   </div>
                   <Image
                     src="/aam1.webp"
@@ -71,13 +71,13 @@ function ClientFeedback() {
             <TimelineContent animationNum={1} customVariants={revealVariants} timelineRef={testimonialRef} className="lg:flex-[3] flex-[4] lg:h-fit  lg:shrink-0 flex flex-col justify-between relative bg-blue-600 text-white overflow-hidden rounded-lg border border-gray-200 p-5">
               <article className="mt-auto">
                 <p>
-                  "We've seen incredible results with Hypersphere. Their
-                  expertise, dedication."
+                  "Incredible tool for due diligence. Legal AI saved us
+                  countless hours."
                 </p>
                 <div className="flex justify-between pt-5">
                   <div>
-                    <h2 className=" font-semibold text-xl">Rika Shinoda</h2>
-                    <p className="">CEO of Kintsugi</p>
+                    <h2 className=" font-semibold text-xl">Michael Chen</h2>
+                    <p className="">Partner, Chen & Associates</p>
                   </div>
                   <Image
                     src="/aam3.webp"
@@ -94,15 +94,17 @@ function ClientFeedback() {
             <TimelineContent animationNum={2} customVariants={revealVariants} timelineRef={testimonialRef} className="flex flex-col justify-between relative bg-[#111111] text-white overflow-hidden rounded-lg border border-gray-200 p-5">
               <article className="mt-auto">
                 <p className="2xl:text-base text-sm">
-                  "Their team is highly professional, and their innovative
-                  solutions have truly transformed the way we operate."
+                  "Their AI-powered legal research is second to none. It's
+                  transformed how we prepare for cases."
                 </p>
                 <div className="flex justify-between items-end pt-5">
                   <div>
                     <h2 className=" font-semibold lg:text-xl text-lg">
-                      Reacher{" "}
+                      Jessica Rodriguez
                     </h2>
-                    <p className="lg:text-base text-sm">CEO of OdeaoLabs</p>
+                    <p className="lg:text-base text-sm">
+                      Senior Partner, Rodriguez Legal Group
+                    </p>
                   </div>
                   <Image
                     src="/aam4.webp"
@@ -117,13 +119,17 @@ function ClientFeedback() {
             <TimelineContent animationNum={3} customVariants={revealVariants} timelineRef={testimonialRef} className="flex flex-col justify-between relative bg-[#111111] text-white overflow-hidden rounded-lg border border-gray-200 p-5">
               <article className="mt-auto">
                 <p className="2xl:text-base text-sm">
-                  "We're extremely satisfied with Hypersphere. Their expertise
-                  and dedication have exceeded our expectations."
+                  "We're extremely satisfied with Legal AI. The accuracy of
+                  document analysis is remarkable."
                 </p>
                 <div className="flex justify-between items-end pt-5">
                   <div>
-                    <h2 className=" font-semibold lg:text-xl text-lg">John </h2>
-                    <p className="lg:text-base text-sm">CEO of Labsbo</p>
+                    <h2 className=" font-semibold lg:text-xl text-lg">
+                      David Lee
+                    </h2>
+                    <p className="lg:text-base text-sm">
+                      Head of Legal, FinTech Solutions
+                    </p>
                   </div>
                   <Image
                     src="/am2.webp"
@@ -144,9 +150,9 @@ function ClientFeedback() {
                 <div className="flex justify-between items-end pt-5">
                   <div>
                     <h2 className=" font-semibold lg:text-xl text-lg">
-                      Steven Sunny
+                      Emily Carter
                     </h2>
-                    <p className="lg:text-base text-sm">CEO of boxefi</p>
+                    <p className="lg:text-base text-sm">Solo Practitioner</p>
                   </div>
                   <Image
                     src="/aam3.webp"
@@ -163,12 +169,13 @@ function ClientFeedback() {
             <TimelineContent animationNum={5} customVariants={revealVariants} timelineRef={testimonialRef} className=" lg:flex-[3] flex-[4] flex flex-col justify-between relative bg-blue-600 text-white overflow-hidden rounded-lg border border-gray-200 p-5">
               <article className="mt-auto">
                 <p>
-                  "Hypersphere has been a key partner in our growth journey."
+                  "Legal AI has been a key partner in scaling our legal
+                  operations."
                 </p>
                 <div className="flex justify-between pt-5">
                   <div>
-                    <h2 className=" font-semibold text-xl">Guillermo Rauch</h2>
-                    <p className="">CEO of OdeaoLabs</p>
+                    <h2 className=" font-semibold text-xl">James Wilson</h2>
+                    <p className="">COO, Global Enterprises</p>
                   </div>
                   <Image
                     src="/aam1.webp"
@@ -192,15 +199,14 @@ function ClientFeedback() {
               </figure>
               <article className="mt-auto">
                 <p>
-                  "Hypersphere has been a true game-changer for us. Their
-                  exceptional service, combined with their deep expertise and
-                  commitment to excellence, has made a significant impact on our
-                  business."
+                  "Legal AI is a game-changer. The platform is intuitive,
+                  powerful, and has significantly improved our team's
+                  efficiency. A must-have for any modern law firm."
                 </p>
                 <div className="flex justify-between pt-5">
                   <div>
-                    <h2 className=" font-semibold text-xl">Paul Brauch</h2>
-                    <p className="">CTO of Spectrum</p>
+                    <h2 className=" font-semibold text-xl">Laura Evans</h2>
+                    <p className="">Managing Partner, Evans & Moore LLP</p>
                   </div>
                   <Image
                     src="/am2.webp"

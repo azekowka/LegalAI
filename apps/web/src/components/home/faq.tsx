@@ -23,54 +23,61 @@ import { useRef } from "react";
 const productDetails = [
   {
     icon: Bot,
-    question: "What services does your AI agency offer?",
+    question: "What is Legal AI?",
     answer:
-      "We specialize in custom AI solutions including chatbots, predictive analytics, computer vision, NLP, and automation workflows tailored to your business needs.",
+      "Legal AI is a platform that leverages artificial intelligence to streamline legal workflows. It can analyze legal documents, conduct research, generate contracts, and assist with due diligence, helping legal professionals save time and reduce errors.",
+  },
+  {
+    icon: ShieldCheck,
+    question: "Is my data secure with Legal AI?",
+    answer:
+      "Data security is our top priority. We use state-of-the-art encryption and comply with industry-standard data protection regulations to ensure your confidential information is always secure.",
   },
   {
     icon: Settings2,
-    question: "Can you integrate AI into our existing systems?",
+    question: "Who can benefit from using Legal AI?",
     answer:
-      "Absolutely! We offer seamless integration with CRMs, ERPs, databases, APIs, and other third-party tools your business relies on.",
+      "Legal AI is designed for law firms, in-house legal teams, and individual legal practitioners. It's also beneficial for businesses that handle a large volume of contracts and legal documents.",
   },
 ];
 
 const howToUse = [
   {
-    icon: AlertCircle,
-    question: "What if the AI model doesn't perform well?",
+    icon: MailCheck,
+    question: "How do I get started with Legal AI?",
     answer:
-      "We conduct thorough testing and offer ongoing optimization post-launch. If something's off, we'll tweak it until it delivers results.",
+      "Getting started is easy! Simply sign up for a demo on our website. We'll walk you through the platform's features and help you set up your account.",
+  },
+  {
+    icon: Settings2,
+    question:
+      "Can Legal AI integrate with my current document management system?",
+    answer:
+      "Yes, Legal AI is designed to integrate seamlessly with popular document management systems, cloud storage services, and legal practice management software.",
   },
   {
     icon: BookOpenText,
-    question: "Do you provide documentation and training?",
+    question: "What kind of support do you offer?",
     answer:
-      "Yes, we provide clear documentation and offer team training to help you and your staff understand and make the most of the AI systems we implement.",
+      "We offer comprehensive support, including a detailed knowledge base, email support, and live chat. For enterprise clients, we provide dedicated account managers and personalized training sessions.",
   },
   {
     icon: Wallet,
-    question: "What's your pricing model?",
+    question: "What are the pricing plans for Legal AI?",
     answer:
-      "We offer flexible pricing based on project complexity and duration—ranging from fixed project fees to retainer and hourly models.",
-  },
-  {
-    icon: MailCheck,
-    question: "How do we get started?",
-    answer:
-      "Just reach out via our contact form or email. We'll schedule a free consultation to understand your needs and propose the best AI strategy for you.",
-  },
-  {
-    icon: ShieldCheck,
-    question: "Do you offer support post-deployment?",
-    answer:
-      "Yes, our partnership doesn't end after delivery. We offer maintenance plans, bug fixes, performance monitoring, and continuous updates.",
+      "We offer various pricing plans to suit different needs, from solo practitioners to large enterprises. You can find detailed information on our pricing page or contact our sales team for a custom quote.",
   },
   {
     icon: Presentation,
-    question: "Can we see previous case studies or demos?",
+    question: "Can I try Legal AI before committing to a subscription?",
     answer:
-      "Definitely! We're happy to share relevant case studies and showcase live demos of our previous AI solutions, depending on NDA limitations.",
+      "Yes, we offer a free trial period that gives you access to all of Legal AI's features. This allows you to experience the benefits firsthand before making a decision.",
+  },
+  {
+    icon: AlertCircle,
+    question: "How accurate is the AI?",
+    answer:
+      "Our AI models are trained on vast datasets of legal documents and are constantly updated to ensure high accuracy. However, Legal AI is intended to be a tool to assist legal professionals, not replace their professional judgment.",
   },
 ];
 

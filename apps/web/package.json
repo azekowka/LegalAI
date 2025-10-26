@@ -73,6 +73,7 @@
     "unified": "^11.0.5",
     "use-stick-to-bottom": "^1.1.1",
     "uuid": "^12.0.0",
+    "vaul": "^1.1.2",
     "zod": "^4.0.17"
   },
   "devDependencies": {

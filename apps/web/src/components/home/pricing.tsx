@@ -151,7 +151,7 @@ export default function PricingSection() {
     setIsYearly(Number.parseInt(value) === 1);
 
   return (
-    <div className="px-4 pt-20 min-h-screen mx-auto relative bg-neutral-100" ref={pricingRef}>
+    <div id="pricing" className="px-4 pt-20 min-h-screen mx-auto relative bg-neutral-100" ref={pricingRef}>
       <div
         className="absolute top-0 left-[10%] right-[10%] w-[80%] h-full z-0"
         style={{

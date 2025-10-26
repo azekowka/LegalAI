@@ -96,6 +96,7 @@ export default function Faqs4() {
 
   return (
     <div
+      id="faq"
       className="p-5 mx-auto rounded-2xl max-w-3xl shadow-sm mt-4"
       ref={faqsRef}
     >

@@ -65,8 +65,8 @@ function OrganizationHero() {
             <h1 className="text-xl">Legal AI</h1>
             <nav className="flex gap-4 font-medium">
               <a href="#">Features</a>
-              <a href="#">Pricing</a>
-              <a href="#">FAQ</a>
+              <a href="#pricing">Pricing</a>
+              <a href="#faq">FAQ</a>
             </nav>
             <Link href="/dashboard">
               <button className="text-lg h-10 px-4 rounded-lg text-white flex items-center gap-2 bg-neutral-800 relative before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-2 before:bg-gradient-to-t before:from-neutral-800 before:to-neutral-300 before:rounded-t-lg  transition-all group">
@@ -104,13 +104,17 @@ function OrganizationHero() {
                   <div className="rounded-b-md py-2 px-3">
                     <ul className="space-y-2">
                       <li className="hover:bg-neutral-800 cursor-pointer p-1.5 px-2 rounded-md">
-                        Features
+                        <a href="#">Features</a>
                       </li>
                       <li className="hover:bg-neutral-800 cursor-pointer p-1.5 px-2 rounded-md">
-                        Pricing
+                        <a href="#pricing" onClick={() => setIsOpen(false)}>
+                          Pricing
+                        </a>
                       </li>
                       <li className="hover:bg-neutral-800 cursor-pointer p-1.5 px-2 rounded-md">
-                        FAQ
+                        <a href="#faq" onClick={() => setIsOpen(false)}>
+                          FAQ
+                        </a>
                       </li>
                     </ul>
                   </div>

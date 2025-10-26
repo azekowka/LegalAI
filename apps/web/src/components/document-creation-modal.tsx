@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { FileText, Upload, Plus, X } from 'lucide-react';
 
@@ -72,6 +72,9 @@ export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModal
       <DialogContent className="sm:max-w-[600px] p-0 gap-0">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="text-xl font-semibold">Создать документ</DialogTitle>
+          <DialogDescription>
+            Выберите способ создания нового документа.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-6 pb-6 space-y-6">
@@ -105,7 +108,7 @@ export function DocumentCreationModal({ isOpen, onClose }: DocumentCreationModal
                 type="file"
                 id="file-upload"
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                accept=".pdf,.doc,.docx,.rtf"
+                accept=".pdf,.doc,.docx"
                 onChange={handleFileSelect}
               />
               <Upload className="mx-auto h-10 w-10 text-gray-400 mb-4" />

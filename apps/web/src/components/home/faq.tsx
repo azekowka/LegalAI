@@ -31,7 +31,7 @@ const productDetails = [
     icon: ShieldCheck,
     question: "Is my data secure with Legal AI?",
     answer:
-      "Data security is our top priority. We use state-of-the-art encryption and comply with industry-standard data protection regulations to ensure your confidential information is always secure.",
+      "Data security is our top priority. We use state-of-the-art encryption and comply with industry-standard data protection regulations to ensure your confidential information is always secure. For more information, please see our Privacy Policy.",
   },
   {
     icon: Settings2,
@@ -115,7 +115,7 @@ export default function Faqs4() {
           customVariants={revealVariants}
           className="text-sm font-semibold"
         >
-          TRUSTED BY
+          FAQs
         </TimelineContent>
 
         <h2 className="sm:text-4xl text-3xl font-medium">
@@ -143,8 +143,7 @@ export default function Faqs4() {
           timelineRef={faqsRef}
           customVariants={revealVariants}
         >
-          We have posted frequently asked questions about product usage and
-          sales. Please select the question that applies to you and check it.
+          Explore detailed answers to the most commonly asked questions about our platform, features, integrations
         </TimelineContent>
       </article>
 

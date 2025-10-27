@@ -2,7 +2,6 @@
 
 import { DiscordIcon, GitHubIcon, LanguagesIcon, LogoIcon, XPlatformIcon } from "@/components/icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -61,7 +60,6 @@ export default function Header() {
 					</TooltipTrigger>
 					<TooltipContent>X (Twitter)</TooltipContent>
 				</Tooltip>
-				<ModeToggle />
 			</div>
 		</header>
 	);

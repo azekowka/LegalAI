@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { ChatResponse } from '@/components/chat/chat-response'
 
+const API_BASE_URL = 'https://legalai.azekowka.me'
+
 interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -78,7 +80,7 @@ export default function ChatPage() {
 
   const loadFiles = async () => {
     try {
-      const response = await fetch('https://legalai-backend-8jqq.onrender.com/files')
+      const response = await fetch(`${API_BASE_URL}/files`)
       const data = await response.json()
       setFiles(data.files || [])
     } catch (error) {
@@ -95,7 +97,7 @@ export default function ChatPage() {
 
     setUploadStatus('Uploading...')
     try {
-      const response = await fetch('https://legalai-backend-8jqq.onrender.com/upload', {
+      const response = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         body: formData
       })
@@ -138,7 +140,7 @@ export default function ChatPage() {
     }
 
     try {
-      const response = await fetch('https://legalai-backend-8jqq.onrender.com/chat', {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -226,7 +228,7 @@ export default function ChatPage() {
         console.log('Sending chat history for suggestions:', chatHistory)
         
         if (chatHistory.length > 0) {
-          const suggestResponse = await fetch('https://legalai-backend-8jqq.onrender.com/suggest-questions', {
+          const suggestResponse = await fetch(`${API_BASE_URL}/suggest-questions`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -273,7 +275,7 @@ export default function ChatPage() {
 
     try {
       // Generate initial questions based on selected documents
-      const suggestResponse = await fetch('https://legalai-backend-8jqq.onrender.com/suggest-questions', {
+      const suggestResponse = await fetch(`${API_BASE_URL}/suggest-questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

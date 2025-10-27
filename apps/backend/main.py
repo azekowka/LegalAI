@@ -111,7 +111,7 @@ class Settings:
             "ktem.reasoning.rewoo.RewooAgentPipeline",
         ]
 
-        # --- Indices ---
+        # --- Indices (FORCE ONLY FILE INDEX) ---
         self.KH_INDICES = [
             {
                 "name": "File Collection",
@@ -189,6 +189,19 @@ def load_models_and_settings_blocking():
     index_manager = IndexManager(the_app)
     index_manager.on_application_startup()
     app_state["index_manager"] = index_manager
+    
+    # --- HOTFIX: Force only the File Collection Index ---
+    # The ktem framework loads default indices (like GraphRAG) automatically.
+    # We manually filter the list to keep only the 'File Collection' index
+    # to prevent errors from other APIs (Google, Cohere, etc.).
+    file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+    
+    if file_collection_index:
+        index_manager.indices = [file_collection_index]
+        print("--- HOTFIX APPLIED: Forcing use of 'File Collection' index ONLY. ---")
+    else:
+        print("--- HOTFIX WARNING: 'File Collection' index not found! ---")
+    # --- End of HOTFIX ---
     
     print(f"Initialized {len(index_manager.indices)} indices:")
     for i, index in enumerate(index_manager.indices):

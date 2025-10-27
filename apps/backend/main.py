@@ -12,17 +12,13 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from theflow.utils.modules import import_dotted_string
+from kotaemon.llms import ChatOpenAI
 
 from ktem.reasoning.prompt_optimization.suggest_followup_chat import (
     SuggestFollowupQuesPipeline,
 )
 from ktem.utils.lang import SUPPORTED_LANGUAGE_MAP
 
-
-# --- Initialize Application and Core Components ---
-
-# We'll store our core application components in this dictionary
-# to be initialized at startup.
 app_state = {}
 models_ready = asyncio.Event()
 
@@ -359,6 +355,13 @@ async def chat(request: ChatRequest):
         request_settings = deepcopy(settings)
         request_settings["reasoning.lang"] = request.language
         
+        # Force OpenAI embeddings and disable reranking to avoid using Google/Cohere
+        if index_manager.indices:
+            file_collection_index_id = str(index_manager.indices[0].id)
+            request_settings[f"index.options.{file_collection_index_id}.embedding_model"] = "openai"
+            request_settings[f"index.options.{file_collection_index_id}.reranker"] = "none"
+            print(f"Forcing embedding_model=openai and reranker=none for index {file_collection_index_id}")
+        
         # Add missing settings for simple pipeline
         reasoning_options_prefix = f"reasoning.options.{request.reasoning_mode}"
         if f"{reasoning_options_prefix}.highlight_citation" not in request_settings:
@@ -524,6 +527,18 @@ async def suggest_questions(request: SuggestRequest):
     """Generate suggested follow-up questions based on the chat history."""
     await models_ready.wait()
     try:
+        # Explicitly use the configured OpenAI LLM to avoid defaulting to Gemini
+        settings_obj = Settings()
+        openai_spec = settings_obj.KH_LLMS.get("openai", {}).get("spec")
+
+        llm = None
+        if openai_spec:
+            llm_spec = openai_spec.copy()
+            llm_spec.pop("__type__", None)
+            llm = ChatOpenAI(**llm_spec)
+        else:
+            print("WARNING: OpenAI LLM not configured for suggestions.")
+
         print(f"Generating suggestions for history: {request.history}")
         
         # Check if this is an initial request (no real history)
@@ -545,7 +560,7 @@ async def suggest_questions(request: SuggestRequest):
             return {"questions": questions[:3]}
         
         # Regular follow-up questions based on chat history
-        suggest_pipeline = SuggestFollowupQuesPipeline()
+        suggest_pipeline = SuggestFollowupQuesPipeline(llm=llm) if llm else SuggestFollowupQuesPipeline()
         suggest_pipeline.lang = SUPPORTED_LANGUAGE_MAP.get(request.language, "English")
         
         suggested_resp = suggest_pipeline(request.history).text

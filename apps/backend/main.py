@@ -382,11 +382,23 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        file_collection_index = index_manager.indices[0]
+        # Find and use the 'File Collection' index specifically
+        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+        if not file_collection_index:
+            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
         
         settings = app_state["settings"]
-        indexing_pipeline = file_collection_index.get_indexing_pipeline(settings, user_id)
+
+        # --- FINAL FIX: Make a copy and force OpenAI embeddings for indexing ---
+        request_settings = deepcopy(settings)
+        index_id_str = str(file_collection_index.id)
+        request_settings[f"index.options.{index_id_str}.embedding_model"] = "openai"
+        print(f"--- FINAL FIX APPLIED: Forcing openai embedding for indexing on index {index_id_str} ---")
+        # ---
+
+        indexing_pipeline = file_collection_index.get_indexing_pipeline(request_settings, user_id)
         
+        # Save the file temporarily
         settings_obj = Settings()
         temp_path = settings_obj.KH_APP_DATA_DIR / file.filename
         with open(temp_path, "wb") as buffer:
@@ -425,8 +437,12 @@ async def list_files(user_id: str = "default"):
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        file_collection_index = index_manager.indices[0]
+        # Find and use the 'File Collection' index specifically
+        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+        if not file_collection_index:
+            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
         
+        # The selector UI component has the logic to list files.
         selector_ui = file_collection_index.get_selector_component_ui()
         
         _, file_options = selector_ui.load_files([], user_id)

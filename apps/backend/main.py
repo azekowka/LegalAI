@@ -194,6 +194,26 @@ def load_models_and_settings_blocking():
     embedding_models_manager.load()
     reranking_models_manager.load()
 
+    # --- SURGICAL FIX: Manually inject API keys into manager instances ---
+    # The ktem framework's default indices ignore the settings configuration
+    # for API keys. We will patch the model instances directly after they
+    # have been loaded by their managers. This ensures that any subsequent
+    # use of these models will have the correct credentials.
+    print("--- Applying surgical fix to model managers ---")
+    google_api_key = config("GOOGLE_API_KEY", default=None)
+    cohere_api_key = config("COHERE_API_KEY", default=None)
+
+    if google_api_key and "google" in embedding_models_manager:
+        # The underlying object is GoogleEmbeddings from kotaemon
+        embedding_models_manager["google"].api_key = google_api_key
+        print("  -> Patched GoogleEmbeddings manager instance with API key.")
+
+    if cohere_api_key and "cohere" in reranking_models_manager:
+        # The underlying object is CohereReranking from kotaemon
+        reranking_models_manager["cohere"].api_key = cohere_api_key
+        print("  -> Patched CohereReranking manager instance with API key.")
+    # --- END OF FIX ---
+
 
     # Mocking the `app` object that ktem components expect
     the_app = type("App", (), {})()

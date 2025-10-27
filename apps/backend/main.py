@@ -234,12 +234,6 @@ def load_models_and_settings_blocking():
     default_settings.index.finalize()
     flattened_settings = default_settings.flatten()
     
-    # Debug: Print available settings
-    print("Available settings keys:")
-    for key in sorted(flattened_settings.keys()):
-        if "reasoning" in key:
-            print(f"  {key}: {flattened_settings[key]}")
-    
     app_state["settings"] = flattened_settings
     
     # This is the final step. If this is printed, loading was
@@ -266,7 +260,7 @@ app.add_middleware(
         "http://localhost:3000",
         "https://legal-ai-web.vercel.app"
     ],
-    allow_credentials=True,  # Set to False when using allow_origins=["*"]
+    allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
@@ -292,9 +286,9 @@ class ChatRequest(BaseModel):
     message: str
     conversation_id: Optional[str] = None
     history: List[List[str]] = []
-    reasoning_mode: str = "simple"  # Use the ID instead of full class path
+    reasoning_mode: str = "simple"
     selected_files: List[str] = []
-    user_id: str = "default"  # Assuming a single user for now
+    user_id: str = "default"
     language: str = "en"
     use_mindmap: bool = False
 
@@ -320,25 +314,23 @@ async def chat(request: ChatRequest):
     """
     await models_ready.wait()
     try:
-        # This logic is adapted from `ChatPage.create_pipeline`
         index_manager = app_state["index_manager"]
         settings = app_state["settings"]
         reasoning_map = app_state["reasoning_map"]
         
-        # Make a copy of settings to modify for this request
         request_settings = deepcopy(settings)
         request_settings["reasoning.lang"] = request.language
         
-        # Add missing settings for simple pipeline
         reasoning_options_prefix = f"reasoning.options.{request.reasoning_mode}"
         if f"{reasoning_options_prefix}.highlight_citation" not in request_settings:
             request_settings[f"{reasoning_options_prefix}.highlight_citation"] = "default"
+        if f"{reasoning_options_prefix}.create_mindmap" not in request_settings:
+            request_settings[f"{reasoning_options_prefix}.create_mindmap"] = False
             
         if request.use_mindmap:
             request_settings[f"{reasoning_options_prefix}.create_mindmap"] = True
-            print(f"Mindmap enabled in settings for {request.reasoning_mode}: {request_settings[f'{reasoning_options_prefix}.create_mindmap']}")
+            print(f"Mindmap enabled for {request.reasoning_mode}")
 
-        # Get reasoning class from our map
         if request.reasoning_mode not in reasoning_map:
             raise HTTPException(
                 status_code=400, 
@@ -347,47 +339,27 @@ async def chat(request: ChatRequest):
         
         reasoning_cls = reasoning_map[request.reasoning_mode]
 
-        # Get retrievers from the index manager
         retrievers = []
-        
-        # Debug: Check if indices exist
         if not index_manager.indices:
             raise HTTPException(status_code=500, detail="No indices available")
             
-        print(f"Available indices: {len(index_manager.indices)}")
-        print(f"Selected files: {request.selected_files}")
-        
-        # Find and use the 'File Collection' index specifically
-        if index_manager.indices:
-            index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
-            if not index:
-                raise HTTPException(status_code=500, detail="'File Collection' index not found.")
+        index = index_manager.indices[0]
+        try:
+            mock_components = ["all", [], request.user_id]
+            if request.selected_files:
+                mock_components = ["select", request.selected_files, request.user_id]
+            
+            index_retrievers = index.get_retriever_pipelines(
+                settings=request_settings, user_id=request.user_id, selected=mock_components
+            )
+            retrievers.extend(index_retrievers)
+            print(f"Added {len(index_retrievers)} retrievers from index {index.id}")
+        except Exception as e:
+            print(f"Error getting retrievers from index {index.id}: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to get document retrievers: {e}")
 
-            try:
-                # Mock the Gradio component format that get_selected_ids expects
-                # Format: [mode, selected_files, user_id]
-                if request.selected_files:
-                    # Select specific files
-                    mock_components = ["select", request.selected_files, request.user_id]
-                else:
-                    # Search all files
-                    mock_components = ["all", [], request.user_id]
-                
-                index_retrievers = index.get_retriever_pipelines(
-                    settings=request_settings, user_id=request.user_id, selected=mock_components
-                )
-                retrievers.extend(index_retrievers)
-                print(f"Added {len(index_retrievers)} retrievers from index {index.id}")
-            except Exception as e:
-                print(f"Error getting retrievers from index {index.id}: {e}")
-                # Create a fallback empty retriever list
-                raise HTTPException(status_code=500, detail=f"Failed to get document retrievers: {e}")
-
-        # Initialize the reasoning pipeline
-        print(f"Retrievers: {retrievers}")
         pipeline = reasoning_cls.get_pipeline(request_settings, {}, retrievers)
 
-        # Stream the response
         async def stream_generator():
             try:
                 for response in pipeline.stream(
@@ -407,56 +379,35 @@ async def chat(request: ChatRequest):
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...), user_id: str = "default"):
-    """
-    Endpoint to upload a file to the default 'File Collection' index.
-    """
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        # Find and use the 'File Collection' index specifically
-        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
-        if not file_collection_index:
-            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
+        file_collection_index = index_manager.indices[0]
         
         settings = app_state["settings"]
         indexing_pipeline = file_collection_index.get_indexing_pipeline(settings, user_id)
         
-        # Save the file temporarily
         settings_obj = Settings()
         temp_path = settings_obj.KH_APP_DATA_DIR / file.filename
         with open(temp_path, "wb") as buffer:
             buffer.write(await file.read())
 
-        # Use the stream method instead of run
-        # Set reindex=True to handle already indexed files
         output_stream = indexing_pipeline.stream([str(temp_path)], reindex=True)
         
         results = []
         errors = []
         try:
-            while True:
-                response = next(output_stream)
-                if response is None:
-                    continue
-                if response.channel == "index":
-                    if response.content["status"] == "success":
-                        results.append(response.content.get("file_id"))
-                    elif response.content["status"] == "failed":
-                        errors.append(response.content.get("message", "Unknown error"))
-        except StopIteration as e:
-            # The stream is exhausted, get the final results
-            final_results, final_errors, docs = e.value
+            final_results, final_errors, _ = aiter(output_stream)
             results.extend([r for r in final_results if r])
             errors.extend([e for e in final_errors if e])
         except Exception as e:
             print(f"Error during indexing: {e}")
             errors.append(str(e))
         
-        # Clean up the temporary file
         try:
             os.remove(temp_path)
         except:
-            pass  # File might already be moved by the indexing pipeline
+            pass
 
         return {
             "filename": file.filename, 
@@ -471,22 +422,15 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
 
 @app.get("/files")
 async def list_files(user_id: str = "default"):
-    """List available files in the index."""
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        # Find and use the 'File Collection' index specifically
-        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
-        if not file_collection_index:
-            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
+        file_collection_index = index_manager.indices[0]
         
-        # The selector UI component has the logic to list files.
         selector_ui = file_collection_index.get_selector_component_ui()
         
-        # Use the load_files method instead of get_choices
         _, file_options = selector_ui.load_files([], user_id)
         
-        # Transform the file options into a more frontend-friendly format
         files = [{"id": file_id, "name": file_name} for file_name, file_id in file_options if not file_name.startswith("group:")]
         
         return {"files": files}
@@ -497,10 +441,8 @@ async def list_files(user_id: str = "default"):
 
 @app.post("/suggest-questions")
 async def suggest_questions(request: SuggestRequest):
-    """Generate suggested follow-up questions based on the chat history."""
     await models_ready.wait()
     try:
-        # Explicitly use the configured OpenAI LLM to avoid defaulting to Gemini
         settings_obj = Settings()
         openai_spec = settings_obj.KH_LLMS.get("openai", {}).get("spec")
 
@@ -512,16 +454,10 @@ async def suggest_questions(request: SuggestRequest):
         else:
             print("WARNING: OpenAI LLM not configured for suggestions.")
 
-        print(f"Generating suggestions for history: {request.history}")
-        
-        # Check if this is an initial request (no real history)
-        is_initial_request = (
+        if (
             len(request.history) <= 1 and 
             any("what can you tell me about" in str(h).lower() for h in request.history if h)
-        )
-        
-        if is_initial_request:
-            # Generate document-based questions
+        ):
             questions = [
                 "What is the main purpose of this document?",
                 "What are the key terms and conditions?", 
@@ -529,58 +465,57 @@ async def suggest_questions(request: SuggestRequest):
                 "What are the important dates or deadlines?",
                 "What are the main obligations or requirements?"
             ]
-            print(f"Generated initial document questions: {questions}")
             return {"questions": questions[:3]}
         
-        # Regular follow-up questions based on chat history
         suggest_pipeline = SuggestFollowupQuesPipeline(llm=llm) if llm else SuggestFollowupQuesPipeline()
         suggest_pipeline.lang = SUPPORTED_LANGUAGE_MAP.get(request.language, "English")
         
         suggested_resp = suggest_pipeline(request.history).text
-        print(f"LLM suggested response: {suggested_resp}")
         
         questions = []
-        
-        # First try to parse as complete JSON object
         try:
-            # Look for JSON object with "questions" key
             json_match = re.search(r'\{[^}]*"questions"[^}]*\}', suggested_resp, re.DOTALL)
             if json_match:
-                json_str = json_match.group()
-                print(f"Found JSON object: {json_str}")
-                parsed_json = json.loads(json_str)
+                parsed_json = json.loads(json_match.group())
                 if "questions" in parsed_json:
                     questions = parsed_json["questions"]
-                    print(f"Parsed questions from JSON: {questions}")
-        except Exception as e:
-            print(f"JSON object parsing failed: {e}")
+        except Exception:
+            pass
         
-        # Fallback: try to extract array format
         if not questions:
-            if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
-                ques_res_str = ques_res.group()
-                print(f"Extracted array string: {ques_res_str}")
-                try:
-                    questions = json.loads(ques_res_str)
-                    print(f"Parsed questions from array: {questions}")
-                except Exception as e:
-                    print(f"Array parsing failed: {e}")
+            try:
+                if ques_res := re.search(r"\[(.*?)\]", re.sub("\n", "", suggested_resp)):
+                    questions = json.loads(ques_res.group())
+            except Exception:
+                pass
         
-        # Final fallback: extract questions manually
         if not questions:
-            print("Manual extraction fallback")
             lines = suggested_resp.split('\n')
             for line in lines:
-                line = line.strip()
-                if line and not line.startswith('#') and '?' in line:
-                    # Clean up the line
-                    line = re.sub(r'^[\d\.\-\*\s]+', '', line).strip()
-                    if len(line) > 10:  # Only add substantial questions
-                        questions.append(line)
+                line = re.sub(r'^[\d\.\-\*\s]+', '', line).strip()
+                if line and '?' in line and len(line) > 10:
+                    questions.append(line)
         
-        print(f"Final questions to return: {questions}")
-        return {"questions": questions[:3]}  # Limit to 3 questions
+        return {"questions": questions[:3]}
         
     except Exception as e:
         print(f"Error in suggest_questions: {e}")
         return {"questions": []}
+
+async def aiter(stream):
+    results, errors, docs = [], [], []
+    try:
+        while True:
+            response = next(stream)
+            if response is None:
+                continue
+            if response.channel == "index":
+                if response.content["status"] == "success":
+                    results.append(response.content.get("file_id"))
+                elif response.content["status"] == "failed":
+                    errors.append(response.content.get("message", "Unknown error"))
+    except StopIteration as e:
+        final_results, final_errors, docs = e.value
+        results.extend([r for r in final_results if r])
+        errors.extend([e for e in final_errors if e])
+    return results, errors, docs

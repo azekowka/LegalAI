@@ -190,6 +190,20 @@ def load_models_and_settings_blocking():
     index_manager.on_application_startup()
     app_state["index_manager"] = index_manager
     
+    # --- HOTFIX: Force only the File Collection Index ---
+    # The ktem framework loads default indices (like GraphRAG) automatically.
+    # We manually filter the list to keep only the 'File Collection' index
+    # to prevent errors from other APIs (Google, Cohere, etc.).
+    file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+    
+    if file_collection_index:
+        index_manager.indices = [file_collection_index]
+        print("--- HOTFIX APPLIED: Forcing use of 'File Collection' index ONLY. ---")
+    else:
+        # This is a critical error, the main index is missing.
+        raise RuntimeError("FATAL: 'File Collection' index not found during startup!")
+    # --- End of HOTFIX ---
+    
     print(f"Initialized {len(index_manager.indices)} indices:")
     for i, index in enumerate(index_manager.indices):
         print(f"  Index {i}: {index.name} (ID: {index.id})")
@@ -409,13 +423,25 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
         results = []
         errors = []
         try:
-            final_results, final_errors, _ = aiter(output_stream)
+            while True:
+                response = next(output_stream)
+                if response is None:
+                    continue
+                if response.channel == "index":
+                    if response.content["status"] == "success":
+                        results.append(response.content.get("file_id"))
+                    elif response.content["status"] == "failed":
+                        errors.append(response.content.get("message", "Unknown error"))
+        except StopIteration as e:
+            # The stream is exhausted, get the final results
+            final_results, final_errors, docs = e.value
             results.extend([r for r in final_results if r])
             errors.extend([e for e in final_errors if e])
         except Exception as e:
             print(f"Error during indexing: {e}")
             errors.append(str(e))
         
+        # Clean up the temporary file
         try:
             os.remove(temp_path)
         except:

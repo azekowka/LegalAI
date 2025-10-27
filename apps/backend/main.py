@@ -360,14 +360,15 @@ async def chat(request: ChatRequest):
         request_settings["reasoning.lang"] = request.language
         
         # Add missing settings for simple pipeline
-        if "reasoning.options.simple.highlight_citation" not in request_settings:
-            request_settings["reasoning.options.simple.highlight_citation"] = "default"
-        if "reasoning.options.simple.create_mindmap" not in request_settings:
-            request_settings["reasoning.options.simple.create_mindmap"] = False
+        reasoning_options_prefix = f"reasoning.options.{request.reasoning_mode}"
+        if f"{reasoning_options_prefix}.highlight_citation" not in request_settings:
+            request_settings[f"{reasoning_options_prefix}.highlight_citation"] = "default"
+        if f"{reasoning_options_prefix}.create_mindmap" not in request_settings:
+            request_settings[f"{reasoning_options_prefix}.create_mindmap"] = False
             
         if request.use_mindmap:
-            request_settings["reasoning.options.simple.create_mindmap"] = True
-            print(f"Mindmap enabled in settings: {request_settings['reasoning.options.simple.create_mindmap']}")
+            request_settings[f"{reasoning_options_prefix}.create_mindmap"] = True
+            print(f"Mindmap enabled in settings for {request.reasoning_mode}: {request_settings[f'{reasoning_options_prefix}.create_mindmap']}")
 
         # Get reasoning class from our map
         if request.reasoning_mode not in reasoning_map:
@@ -409,7 +410,7 @@ async def chat(request: ChatRequest):
             except Exception as e:
                 print(f"Error getting retrievers from index {index.id}: {e}")
                 # Create a fallback empty retriever list
-                pass
+                raise HTTPException(status_code=500, detail=f"Failed to get document retrievers: {e}")
 
         # Initialize the reasoning pipeline
         print(f"Retrievers: {retrievers}")

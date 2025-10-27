@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { ChatResponse } from '@/components/chat/chat-response'
+import { ChatResponse as ChatResponseType } from '@/components/chat/chat-response'
 
 const API_BASE_URL = 'https://legalai.azekowka.me'
 
@@ -9,6 +9,16 @@ interface Message {
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
+}
+
+const generateChatHistory = (msgs: Message[]): [string, string][] => {
+  const history: [string, string][] = []
+  for (let i = 0; i < msgs.length; i += 2) {
+    if (i + 1 < msgs.length && msgs[i].role === 'user' && msgs[i + 1].role === 'assistant') {
+      history.push([msgs[i].content, msgs[i + 1].content])
+    }
+  }
+  return history
 }
 
 interface FileInfo {
@@ -147,7 +157,7 @@ export default function ChatPage() {
         },
         body: JSON.stringify({
           message: inputMessage,
-          history: messages.map(m => [m.role === 'user' ? m.content : '', m.role === 'assistant' ? m.content : '']).filter(([user, assistant]) => user || assistant),
+          history: generateChatHistory(messages),
           selected_files: selectedFiles,
           language: selectedLanguage,
           reasoning_mode: selectedReasoning,
@@ -220,10 +230,13 @@ export default function ChatPage() {
       // Get follow-up questions ALWAYS after any response
       try {
         // Create proper history format for suggestion pipeline
-        const allMessages = [...messages, { role: 'assistant', content: assistantMessage, timestamp: new Date() }]
-        const chatHistory = allMessages
-          .map(m => [m.role === 'user' ? m.content : '', m.role === 'assistant' ? m.content : ''])
-          .filter(([user, assistant]) => user || assistant)
+        const newAssistantMessage: Message = {
+          role: 'assistant',
+          content: assistantMessage,
+          timestamp: new Date(),
+        }
+        const allMessages = [...messages, newMessage, newAssistantMessage]
+        const chatHistory = generateChatHistory(allMessages)
         
         console.log('Sending chat history for suggestions:', chatHistory)
         
@@ -417,9 +430,9 @@ export default function ChatPage() {
               >
                 {message.role === 'assistant' ? (
                   <div className="text-gray-800 dark:text-gray-200">
-                    <ChatResponse className="min-h-0">
+                    <ChatResponseType className="min-h-0">
                       {message.content}
-                    </ChatResponse>
+                    </ChatResponseType>
                     <div className="text-xs mt-2 text-gray-500 dark:text-gray-400">
                       {message.timestamp.toLocaleTimeString()}
                     </div>

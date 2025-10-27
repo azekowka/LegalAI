@@ -152,6 +152,15 @@ Description=LegalAI FastAPI Backend Service
 After=network.target
 
 [Service]
+Environment="OPENAI_API_BASE=https://api.openai.com/v1"
+Environment="OPENAI_API_KEY=YOUR KEY"
+Environment="OPENAI_CHAT_MODEL=gpt-4o-mini"
+Environment="OPENAI_EMBEDDINGS_MODEL=text-embedding-3-large"
+Environment="PDF_SERVICES_CLIENT_ID=b867dcfe46574e119df99f3dfd0c7496"
+Environment="PDF_SERVICES_CLIENT_SECRET=YOUR KEY"
+Environment="PDFJS_VERSION_DIST=pdfjs-4.0.379-dist"
+Environment="VOYAGE_API_KEY=YOUR KEY"
+
 User=azureuser
 Group=azureuser
 WorkingDirectory=/home/azureuser/LegalAI/apps/backend

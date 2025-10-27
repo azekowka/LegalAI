@@ -357,9 +357,12 @@ async def chat(request: ChatRequest):
         print(f"Available indices: {len(index_manager.indices)}")
         print(f"Selected files: {request.selected_files}")
         
-        # Only use the first index (File Collection) to avoid selector issues
+        # Find and use the 'File Collection' index specifically
         if index_manager.indices:
-            index = index_manager.indices[0]  # Use only the first index
+            index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+            if not index:
+                raise HTTPException(status_code=500, detail="'File Collection' index not found.")
+
             try:
                 # Mock the Gradio component format that get_selected_ids expects
                 # Format: [mode, selected_files, user_id]
@@ -410,8 +413,10 @@ async def upload(file: UploadFile = File(...), user_id: str = "default"):
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        # Assuming the first index is our target File Collection
-        file_collection_index = index_manager.indices[0]
+        # Find and use the 'File Collection' index specifically
+        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+        if not file_collection_index:
+            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
         
         settings = app_state["settings"]
         indexing_pipeline = file_collection_index.get_indexing_pipeline(settings, user_id)
@@ -470,7 +475,10 @@ async def list_files(user_id: str = "default"):
     await models_ready.wait()
     try:
         index_manager = app_state["index_manager"]
-        file_collection_index = index_manager.indices[0]
+        # Find and use the 'File Collection' index specifically
+        file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
+        if not file_collection_index:
+            raise HTTPException(status_code=500, detail="'File Collection' index not found.")
         
         # The selector UI component has the logic to list files.
         selector_ui = file_collection_index.get_selector_component_ui()

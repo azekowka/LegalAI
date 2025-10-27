@@ -172,9 +172,18 @@ RestartSec=3
 WantedBy=multi-user.target
 ```
 
+
+## Swap:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl start legalai
 sudo systemctl status legalai # status check
 sudo journalctl -u legalai -f # real-time logs
+```
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
 ```

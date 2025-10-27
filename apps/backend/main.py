@@ -67,28 +67,47 @@ class Settings:
         else:
             print("WARNING: No OpenAI API key found. Chat functionality will not work.")
 
-        # --- Embeddings (FORCE ONLY OPENAI) ---
+        # --- Embeddings (Multi-API: OpenAI, Google) ---
         self.KH_EMBEDDINGS = {}
         if OPENAI_API_KEY:
             self.KH_EMBEDDINGS["openai"] = {
                 "spec": {
                     "__type__": "kotaemon.embeddings.OpenAIEmbeddings",
-                    "base_url": config(
-                        "OPENAI_API_BASE", default="https://api.openai.com/v1"
-                    ),
+                    "base_url": config("OPENAI_API_BASE", default="https://api.openai.com/v1"),
                     "api_key": OPENAI_API_KEY,
-                    "model": config(
-                        "OPENAI_EMBEDDINGS_MODEL", default="text-embedding-3-large"
-                    ),
+                    "model": config("OPENAI_EMBEDDINGS_MODEL", default="text-embedding-3-large"),
                     "timeout": 10,
                 },
                 "default": True,
             }
+
+        GOOGLE_API_KEY = config("GOOGLE_API_KEY", default="")
+        if GOOGLE_API_KEY:
+            print("Google API Key loaded: Yes")
+            self.KH_EMBEDDINGS["google"] = {
+                "spec": {
+                    "__type__": "kotaemon.embeddings.GoogleEmbeddings",
+                    "api_key": GOOGLE_API_KEY,
+                },
+                "default": False,
+            }
         else:
-            print("WARNING: No OpenAI API key found. Embeddings will not work.")
+            print("WARNING: No Google API Key found. Some indices may fail.")
         
-        # --- Rerankings (FORCE DISABLED) ---
+        # --- Rerankings (Cohere) ---
         self.KH_RERANKINGS = {}
+        COHERE_API_KEY = config("COHERE_API_KEY", default="")
+        if COHERE_API_KEY:
+            print("Cohere API Key loaded: Yes")
+            self.KH_RERANKINGS["cohere"] = {
+                "spec": {
+                    "__type__": "kotaemon.rerankings.CohereReranking",
+                    "api_key": COHERE_API_KEY,
+                },
+                "default": True,
+            }
+        else:
+            print("WARNING: No Cohere API Key found. Reranking may fail.")
 
 
         # --- Storage ---
@@ -189,20 +208,6 @@ def load_models_and_settings_blocking():
     index_manager = IndexManager(the_app)
     index_manager.on_application_startup()
     app_state["index_manager"] = index_manager
-    
-    # --- HOTFIX: Force only the File Collection Index ---
-    # The ktem framework loads default indices (like GraphRAG) automatically.
-    # We manually filter the list to keep only the 'File Collection' index
-    # to prevent errors from other APIs (Google, Cohere, etc.).
-    file_collection_index = next((idx for idx in index_manager.indices if idx.name == "File Collection"), None)
-    
-    if file_collection_index:
-        index_manager.indices = [file_collection_index]
-        print("--- HOTFIX APPLIED: Forcing use of 'File Collection' index ONLY. ---")
-    else:
-        # This is a critical error, the main index is missing.
-        raise RuntimeError("FATAL: 'File Collection' index not found during startup!")
-    # --- End of HOTFIX ---
     
     print(f"Initialized {len(index_manager.indices)} indices:")
     for i, index in enumerate(index_manager.indices):

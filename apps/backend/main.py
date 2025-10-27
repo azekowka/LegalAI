@@ -67,7 +67,7 @@ class Settings:
         else:
             print("WARNING: No OpenAI API key found. Chat functionality will not work.")
 
-        # --- Embeddings (filtered for OpenAI and VoyageAI) ---
+        # --- Embeddings (FORCE ONLY OPENAI) ---
         self.KH_EMBEDDINGS = {}
         if OPENAI_API_KEY:
             self.KH_EMBEDDINGS["openai"] = {
@@ -84,37 +84,11 @@ class Settings:
                 },
                 "default": True,
             }
-        # VOYAGE_API_KEY = config("VOYAGE_API_KEY", default="")
-        # if VOYAGE_API_KEY:
-        #     self.KH_EMBEDDINGS["voyageai"] = {
-        #         "spec": {
-        #             "__type__": "kotaemon.embeddings.VoyageAIEmbeddings",
-        #             "api_key": VOYAGE_API_KEY,
-        #             "model": config(
-        #                 "VOYAGE_EMBEDDINGS_MODEL", default="voyage-large-2-instruct"
-        #             ),
-        #         },
-        #         "default": False,
-        #     }
+        else:
+            print("WARNING: No OpenAI API key found. Embeddings will not work.")
         
-        # from ktem.embeddings.manager import embedding_models_manager
-        # embedding_models_manager.load_from_settings(self)
-
-
-        # --- Rerankings (filtered for VoyageAI) ---
+        # --- Rerankings (FORCE DISABLED) ---
         self.KH_RERANKINGS = {}
-        # if VOYAGE_API_KEY:
-        #     self.KH_RERANKINGS["voyageai"] = {
-        #         "spec": {
-        #             "__type__": "kotaemon.rerankings.VoyageAIReranking",
-        #             "api_key": VOYAGE_API_KEY,
-        #             "model": "rerank-lite-1",
-        #         },
-        #         "default": False,
-        #     }
-        
-        # from ktem.rerankings.manager import reranking_models_manager
-        # reranking_models_manager.load_from_settings(self)
 
 
         # --- Storage ---
@@ -355,19 +329,10 @@ async def chat(request: ChatRequest):
         request_settings = deepcopy(settings)
         request_settings["reasoning.lang"] = request.language
         
-        # Force OpenAI embeddings and disable reranking to avoid using Google/Cohere
-        if index_manager.indices:
-            file_collection_index_id = str(index_manager.indices[0].id)
-            request_settings[f"index.options.{file_collection_index_id}.embedding_model"] = "openai"
-            request_settings[f"index.options.{file_collection_index_id}.reranker"] = "none"
-            print(f"Forcing embedding_model=openai and reranker=none for index {file_collection_index_id}")
-        
         # Add missing settings for simple pipeline
         reasoning_options_prefix = f"reasoning.options.{request.reasoning_mode}"
         if f"{reasoning_options_prefix}.highlight_citation" not in request_settings:
             request_settings[f"{reasoning_options_prefix}.highlight_citation"] = "default"
-        if f"{reasoning_options_prefix}.create_mindmap" not in request_settings:
-            request_settings[f"{reasoning_options_prefix}.create_mindmap"] = False
             
         if request.use_mindmap:
             request_settings[f"{reasoning_options_prefix}.create_mindmap"] = True

@@ -129,14 +129,14 @@ function OrganizationHero() {
         animationNum={1}
         timelineRef={heroRef}
         customVariants={revealVariants}
-        className="text-neutral-800 py-32 w-fit max-w-5xl mx-auto text-center space-y-4 relative z-10 lg:px-0 px-4"
+        className="text-neutral-800 py-20 w-fit max-w-5xl mx-auto text-center space-y-4 relative z-10 lg:px-0 px-4"
       >
         <Link href="/dashboard">
           <TimelineContent
             animationNum={2}
             timelineRef={heroRef}
             customVariants={revealVariants}
-            className="flex gap-2 items-center mb-4 bg-black text-white w-fit mx-auto py-1 px-1.5 sm:text-sm text-xs rounded-md cursor-pointer"
+            className="flex gap-2 items-center bg-black text-white w-fit mx-auto py-1 px-1.5 sm:text-sm text-xs rounded-md cursor-pointer"
           >
             <span className="bg-blue-500 px-1 rounded-sm">NEW </span>{" "}
             Introducing legal document templates

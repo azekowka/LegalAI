@@ -37,6 +37,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import LinkIcon from "@/components/icons/link-icon"
+import { recordActivity } from "@/lib/activity-tracker"
 
 interface ChatMessage {
   role: "user" | "assistant"
@@ -80,6 +81,7 @@ export default function EditorPage() {
   const [showShareDialog, setShowShareDialog] = useState(false) // Renamed from showLinkDialog
   const [sidebarWidth, setSidebarWidth] = useState(384) // default 24rem (w-96)
   const isResizingRef = useRef(false)
+  const activityRecordedRef = useRef(false)
 
   // Removed sharedLink and isSharedLinkPublic states
 
@@ -136,6 +138,11 @@ export default function EditorPage() {
         setDocumentsList(res.data)
       }
     })()
+
+    if (!activityRecordedRef.current) {
+      recordActivity()
+      activityRecordedRef.current = true
+    }
   }, [documentId])
 
   // Auto-save 2s after user stops typing or changing title
@@ -144,6 +151,11 @@ export default function EditorPage() {
     if (!title && !content) return
     if (!title && content === JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }])) return
     
+    if (!activityRecordedRef.current) {
+      recordActivity()
+      activityRecordedRef.current = true
+    }
+
     console.log('Auto-save timer set for title:', title, 'content length:', content?.length)
     
     const timeout = setTimeout(() => {
@@ -305,6 +317,11 @@ export default function EditorPage() {
             share_link_id: response.data.share_link_id || null,
             is_public: response.data.is_public || false,
           });
+
+          if (!activityRecordedRef.current) {
+              recordActivity()
+              activityRecordedRef.current = true
+          }
         }
       }
 

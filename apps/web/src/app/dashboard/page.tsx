@@ -37,9 +37,16 @@ import {
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
+import {
+  ContributionGraph,
+  ContributionGraphCalendar,
+  ContributionGraphBlock,
+} from "@/components/kibo-ui/contribution-graph";
+import { getActivities, type Activity } from "@/lib/activity-tracker";
 
 export default function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([])
+  const [activities, setActivities] = useState<Activity[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedDocuments, setSelectedDocuments] = useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = useState(false)
@@ -65,6 +72,8 @@ export default function DashboardPage() {
     if (docsResponse.data) {
       setDocuments(docsResponse.data)
     }
+
+    setActivities(getActivities());
 
     setIsLoading(false)
   }
@@ -360,9 +369,17 @@ export default function DashboardPage() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {documents.length > 0 ? formatDate(documents[0].updated_at || "") : "Нет данных"}
-              </div>
+              <ContributionGraph data={activities}>
+                <ContributionGraphCalendar>
+                  {({ activity, dayIndex, weekIndex }) => (
+                    <ContributionGraphBlock
+                      activity={activity}
+                      dayIndex={dayIndex}
+                      weekIndex={weekIndex}
+                    />
+                  )}
+                </ContributionGraphCalendar>
+              </ContributionGraph>
             </CardContent>
           </Card>
         </div>

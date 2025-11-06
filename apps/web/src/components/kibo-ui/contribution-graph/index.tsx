@@ -26,6 +26,12 @@ import {
   useEffect,
 } from "react";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type Activity = {
   date: string;
@@ -379,29 +385,35 @@ export const ContributionGraphBlock = ({
   };
 
   return (
-    <g>
-      <rect
-        className={cn(
-          'data-[level="0"]:fill-muted',
-          'data-[level="1"]:fill-muted-foreground/20',
-          'data-[level="2"]:fill-muted-foreground/40',
-          'data-[level="3"]:fill-muted-foreground/60',
-          'data-[level="4"]:fill-muted-foreground/80',
-          className
-        )}
-        data-count={activity.count}
-        data-date={activity.date}
-        data-level={activity.level}
-        height={blockSize}
-        rx={blockRadius}
-        ry={blockRadius}
-        width={blockSize}
-        x={(blockSize + blockMargin) * weekIndex}
-        y={labelHeight + (blockSize + blockMargin) * dayIndex}
-        {...props}
-      />
-      <title>{getTooltipText()}</title>
-    </g>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <rect
+            className={cn(
+              'data-[level="0"]:fill-muted',
+              'data-[level="1"]:fill-muted-foreground/20',
+              'data-[level="2"]:fill-muted-foreground/40',
+              'data-[level="3"]:fill-muted-foreground/60',
+              'data-[level="4"]:fill-muted-foreground/80',
+              className
+            )}
+            data-count={activity.count}
+            data-date={activity.date}
+            data-level={activity.level}
+            height={blockSize}
+            rx={blockRadius}
+            ry={blockRadius}
+            width={blockSize}
+            x={(blockSize + blockMargin) * weekIndex}
+            y={labelHeight + (blockSize + blockMargin) * dayIndex}
+            {...props}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{getTooltipText()}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

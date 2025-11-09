@@ -387,7 +387,7 @@ export default function DashboardPage() {
         {/* Documents Section */}
         <div className="flex flex-1 flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold tracking-tight">Ваши документы</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Мои документы</h2>
             <div className="flex items-center gap-2">
               {documents.length > 0 && isDeleteMode && (
                 <>
@@ -437,11 +437,11 @@ export default function DashboardPage() {
                   onClick={toggleDeleteMode}
                   className="flex items-center gap-2"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Удалить
                 </Button>
               )}
-              <Button onClick={() => setIsDocumentModalOpen(true)}>
+              <Button size="sm" className="flex items-center gap-2" onClick={() => setIsDocumentModalOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Создать документ
               </Button>

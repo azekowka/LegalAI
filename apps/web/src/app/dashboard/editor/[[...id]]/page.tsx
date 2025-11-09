@@ -526,9 +526,8 @@ export default function EditorPage() {
         </div>
       </div>
 
-      {/* AI Chat Sidebar with AI Elements */}
-      <div className="w-96 bg-background border-l border-border flex flex-col">
-        {/* Chat Header */}
+
+{/* AI Chat Sidebar with AI Elements      <div className="w-96 bg-background border-l border-border flex flex-col">
         <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground">
@@ -545,10 +544,8 @@ export default function EditorPage() {
             </Button>
           </div>
         </div>
-
-        {/* AI Chat Demo - точная копия ai-sdk.dev example */}
-        <ChatBotDemo />
-      </div>
+        <ChatBotDemo /> {/* AI Chat Demo - точная копия ai-sdk.dev example 
+      </div>*/}
 
       {/* Word Count Dialog */}
       <WordCountDialog

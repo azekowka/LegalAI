@@ -18,6 +18,12 @@ import {
   ChevronDown,
   Earth,
   Share2,
+  UploadIcon,
+  ImageIcon,
+  CameraIcon,
+  ScreenShareIcon,
+  MicIcon,
+  GlobeIcon,
 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RichTextEditor } from "@/components/rich-text-editor"
@@ -26,6 +32,21 @@ import { WordCountDialog } from "@/components/dialogs/word-count-dialog"
 import { ShareDialog } from "@/components/dialogs/share-dialog" // Renamed from LinkDialog
 import ChatBotDemo from '@/components/chatbot-demo'
 import { useToast } from "@/components/ui/use-toast"
+import AiToolkit from "@/components/ai-toolkit";
+import {
+  PromptInput,
+  PromptInputAttachButton,
+  PromptInputButton,
+  PromptInputModelSelect,
+  PromptInputModelSelectContent,
+  PromptInputModelSelectItem,
+  PromptInputModelSelectTrigger,
+  PromptInputModelSelectValue,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputToolbar,
+  PromptInputTools,
+} from '@/components/ai-elements/prompt-input';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -57,6 +78,13 @@ interface Conversation {
   }>
 }
 
+const models = [
+  { id: 'gpt-5', name: 'GPT-5' },
+  { id: 'claude-4', name: 'Claude-4' },
+];
+
+
+
 export default function EditorPage() {
   const params = useParams()
   const router = useRouter()
@@ -82,6 +110,10 @@ export default function EditorPage() {
   const [sidebarWidth, setSidebarWidth] = useState(384) // default 24rem (w-96)
   const isResizingRef = useRef(false)
   const activityRecordedRef = useRef(false)
+  const [input, setInput] = useState('');
+  const [model, setModel] = useState<string>(models[0].id);
+  const [webSearch, setWebSearch] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   // Removed sharedLink and isSharedLinkPublic states
 
@@ -391,6 +423,10 @@ export default function EditorPage() {
   }
 
   // Chat is now handled by useChat hook from AI SDK
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted with input:", input);
+  };
 
   return (
     <div className="flex h-screen bg-background">
@@ -417,6 +453,9 @@ export default function EditorPage() {
 
         {/* Main Content Area */}
         <div className="flex-1 flex">
+          <div className="p-4">
+            <AiToolkit />
+          </div>
           {/* Document Editor */}
           <div className="flex-1 flex flex-col">
             {/* Editor Section */}
@@ -533,6 +572,80 @@ export default function EditorPage() {
           currentUserImage={user.image}
         />
       )}
+
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4">
+        <PromptInput onSubmit={handleSubmit}>
+          <PromptInputTextarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="What would you like to know?"
+          />
+          <PromptInputToolbar>
+            <PromptInputTools>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <PromptInputAttachButton />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <UploadIcon size={16} className="mr-2" />
+                    Upload File
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ImageIcon size={16} className="mr-2" />
+                    Upload Image
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <CameraIcon size={16} className="mr-2" />
+                    Take Photo
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ScreenShareIcon size={16} className="mr-2" />
+                    Screen Capture
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DropdownMenu>
+                 <DropdownMenuTrigger asChild>
+                   <PromptInputButton>
+                     <MicIcon size={16} />
+                   </PromptInputButton>
+                 </DropdownMenuTrigger>
+                 <DropdownMenuContent>
+                   <DropdownMenuItem>
+                     <MicIcon size={16} className="mr-2" />
+                     Record Voice
+                   </DropdownMenuItem>
+                   <DropdownMenuItem>
+                     <UploadIcon size={16} className="mr-2" />
+                     Upload Audio
+                   </DropdownMenuItem>
+                 </DropdownMenuContent>
+               </DropdownMenu>
+              <PromptInputButton
+                onClick={() => setWebSearch(!webSearch)}
+                variant={webSearch ? 'default' : 'ghost'}
+              >
+                <GlobeIcon size={16} />
+                <span>Search</span>
+              </PromptInputButton>
+              <PromptInputModelSelect value={model} onValueChange={setModel}>
+                <PromptInputModelSelectTrigger>
+                  <PromptInputModelSelectValue placeholder="Select model" />
+                </PromptInputModelSelectTrigger>
+                <PromptInputModelSelectContent>
+                  {models.map((model) => (
+                    <PromptInputModelSelectItem key={model.id} value={model.id}>
+                      {model.name}
+                    </PromptInputModelSelectItem>
+                  ))}
+                </PromptInputModelSelectContent>
+              </PromptInputModelSelect>
+            </PromptInputTools>
+            <PromptInputSubmit disabled={!input.trim()} status={isStreaming ? 'streaming' : 'ready'} />
+          </PromptInputToolbar>
+        </PromptInput>
+      </div>
     </div>
   )
 }
